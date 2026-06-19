@@ -1,19 +1,16 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
   <defs>
-    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#8A66FF;stop-opacity:1" />
-      <stop offset="100%" style="stop-color:#EDC0F2;stop-opacity:1" />
+    <linearGradient id="bg" x1="0%" y1="50%" x2="100%" y2="50%">
+      <stop offset="0%" style="stop-color:#B94EFF;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#F8C8FF;stop-opacity:1" />
     </linearGradient>
     <linearGradient id="ring" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#ffffff;stop-opacity:0.12" />
-      <stop offset="100%" style="stop-color:#ffffff;stop-opacity:0.06" />
+      <stop offset="0%" style="stop-color:#ffffff;stop-opacity:0.1" />
+      <stop offset="100%" style="stop-color:#ffffff;stop-opacity:0.05" />
     </linearGradient>
     <filter id="glow">
-      <feGaussianBlur stdDeviation="4" result="blur"/>
+      <feGaussianBlur stdDeviation="3" result="blur"/>
       <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
-    </filter>
-    <filter id="softGlow">
-      <feGaussianBlur stdDeviation="20" />
     </filter>
     <clipPath id="round">
       <rect width="512" height="512" rx="108" ry="108"/>
@@ -24,30 +21,22 @@
     <!-- Purple gradient background -->
     <rect width="512" height="512" fill="url(#bg)"/>
     
-    <!-- Subtle ambient glow -->
-    <circle cx="200" cy="200" r="200" fill="#ffffff" opacity="0.04" filter="url(#softGlow)"/>
-    
-    <!-- Scanner rings — very subtle -->
+    <!-- Subtle scanner rings -->
     <circle cx="256" cy="256" r="200" fill="none" stroke="url(#ring)" stroke-width="1"/>
     <circle cx="256" cy="256" r="160" fill="none" stroke="url(#ring)" stroke-width="1"/>
-    <circle cx="256" cy="256" r="120" fill="none" stroke="#ffffff" stroke-width="0.8" opacity="0.1"/>
+    <circle cx="256" cy="256" r="120" fill="none" stroke="#ffffff" stroke-width="0.7" opacity="0.08"/>
     
-    <!-- Sweep arc -->
-    <path d="M 256 256 L 256 56 A 200 200 0 0 1 430 140 Z" fill="#ffffff" opacity="0.04"/>
-    <line x1="256" y1="256" x2="256" y2="56" stroke="#ffffff" stroke-width="1.5" opacity="0.3"/>
-    
-    <!-- Network nodes — subtle white -->
-    <g opacity="0.5">
-      <circle cx="256" cy="56" r="5" fill="#ffffff"/>
-      <circle cx="430" cy="140" r="4" fill="#ffffff" opacity="0.7"/>
-      <circle cx="82" cy="140" r="4" fill="#ffffff" opacity="0.7"/>
-      <circle cx="380" cy="350" r="3.5" fill="#ffffff" opacity="0.5"/>
-      <circle cx="132" cy="350" r="3.5" fill="#ffffff" opacity="0.5"/>
-      <circle cx="256" cy="456" r="3.5" fill="#ffffff" opacity="0.4"/>
+    <!-- Network nodes -->
+    <g opacity="0.35">
+      <circle cx="256" cy="56" r="4" fill="#ffffff"/>
+      <circle cx="430" cy="140" r="3.5" fill="#ffffff" opacity="0.7"/>
+      <circle cx="82" cy="140" r="3.5" fill="#ffffff" opacity="0.7"/>
+      <circle cx="380" cy="350" r="3" fill="#ffffff" opacity="0.5"/>
+      <circle cx="132" cy="350" r="3" fill="#ffffff" opacity="0.5"/>
     </g>
     
-    <!-- Connection lines — subtle -->
-    <g opacity="0.2" stroke="#ffffff" stroke-width="1">
+    <!-- Connection lines -->
+    <g opacity="0.12" stroke="#ffffff" stroke-width="1">
       <line x1="256" y1="56" x2="256" y2="170"/>
       <line x1="430" y1="140" x2="326" y2="256"/>
       <line x1="82" y1="140" x2="186" y2="256"/>
@@ -55,21 +44,23 @@
       <line x1="132" y1="350" x2="212" y2="290"/>
     </g>
     
-    <!-- Center diamond — subtle -->
-    <polygon points="256,200 312,256 256,312 200,256" fill="#ffffff" opacity="0.08"/>
-    <polygon points="256,215 298,256 256,297 214,256" fill="none" stroke="#ffffff" stroke-width="1" opacity="0.15"/>
+    <!-- Center diamond -->
+    <polygon points="256,200 312,256 256,312 200,256" fill="#ffffff" opacity="0.06"/>
+    <polygon points="256,215 298,256 256,297 214,256" fill="none" stroke="#ffffff" stroke-width="0.8" opacity="0.1"/>
     
-    <!-- ØG — White, bold, matching official style -->
+    <!-- ØG — Official 0G style -->
     <g filter="url(#glow)">
-      <!-- Ø: outer circle -->
-      <circle cx="210" cy="256" r="52" fill="none" stroke="#ffffff" stroke-width="22"/>
+      <!-- Ø: full thick circle -->
+      <circle cx="206" cy="256" r="62" fill="none" stroke="#ffffff" stroke-width="26"/>
       <!-- Ø: diagonal slash from bottom-left to top-right -->
-      <line x1="168" y1="298" x2="252" y2="214" stroke="#ffffff" stroke-width="22" stroke-linecap="round"/>
+      <line x1="156" y1="306" x2="256" y2="206" stroke="#ffffff" stroke-width="26" stroke-linecap="round"/>
       
-      <!-- G: outer circle with gap on right -->
-      <path d="M 308 204 A 52 52 0 1 0 308 308" fill="none" stroke="#ffffff" stroke-width="22" stroke-linecap="round"/>
-      <!-- G: horizontal bar -->
-      <line x1="308" y1="256" x2="360" y2="256" stroke="#ffffff" stroke-width="22" stroke-linecap="round"/>
+      <!-- G: thick circle — draw as near-full arc with gap at right-center -->
+      <!-- Gap is around 3 o'clock position (right side, centered vertically) -->
+      <circle cx="326" cy="256" r="62" fill="none" stroke="#ffffff" stroke-width="26" 
+              stroke-dasharray="326 70" stroke-dashoffset="-55"/>
+      <!-- G: horizontal bar from right edge inward to center -->
+      <line x1="388" y1="256" x2="326" y2="256" stroke="#ffffff" stroke-width="26" stroke-linecap="round"/>
     </g>
   </g>
 </svg>
