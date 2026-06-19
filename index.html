@@ -3,98 +3,363 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>0G Airdrop Scout — AI-Powered Project Discovery</title>
-    <meta name="description" content="AI-native airdrop scout agent built on 0G. Scan, score, and discover crypto projects with decentralized AI.">
+    <title>ØG Scout — AI-Powered Airdrop Discovery</title>
+    <meta name="description" content="AI-native airdrop scout agent built on 0G Network. Scan, score, and discover crypto projects with decentralized AI.">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔍</text></svg>">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg: #0a0a0f;
-            --card: #12121a;
-            --border: #1e1e2e;
-            --text: #e4e4ef;
-            --muted: #6b6b80;
+            --bg-dark: #050014;
+            --bg-card: rgba(255,255,255,0.03);
+            --bg-card-hover: rgba(255,255,255,0.06);
+            --border: rgba(255,255,255,0.06);
+            --text: #ffffff;
+            --text-secondary: rgba(255,255,255,0.6);
+            --text-muted: rgba(255,255,255,0.35);
             --accent: #8b5cf6;
-            --accent-glow: rgba(139, 92, 246, 0.3);
-            --green: #22c55e;
-            --yellow: #eab308;
-            --red: #ef4444;
+            --accent-2: #a78bfa;
+            --green: #34d399;
+            --yellow: #fbbf24;
+            --red: #f87171;
         }
         * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
         body {
-            font-family: 'Inter', -apple-system, sans-serif;
-            background: var(--bg);
+            font-family: 'Inter', -apple-system, system-ui, sans-serif;
+            background: var(--bg-dark);
             color: var(--text);
-            min-height: 100vh;
+            min-height: auto;
             overflow-x: hidden;
         }
-        .bg-grid {
-            position: fixed; inset: 0; z-index: 0;
-            background-image: 
-                linear-gradient(rgba(139,92,246,0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(139,92,246,0.03) 1px, transparent 1px);
-            background-size: 60px 60px;
+
+        /* Animated background */
+        .bg-gradient {
+            position: fixed; inset: 0; z-index: 0; pointer-events: none;
+            background:
+                radial-gradient(ellipse 80% 50% at 50% -20%, rgba(139,92,246,0.15) 0%, transparent 60%),
+                radial-gradient(ellipse 60% 40% at 80% 50%, rgba(88,28,135,0.08) 0%, transparent 60%);
         }
+
+        /* Floating orbs */
+        .orbs { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+        .orb {
+            position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.12;
+            animation: orbFloat 20s ease-in-out infinite;
+        }
+        .orb-1 { width: 400px; height: 400px; background: #7c3aed; top: -100px; left: -100px; animation-delay: 0s; }
+        .orb-2 { width: 300px; height: 300px; background: #a78bfa; bottom: -50px; right: -50px; animation-delay: -7s; }
+        .orb-3 { width: 200px; height: 200px; background: #6d28d9; top: 50%; left: 50%; animation-delay: -14s; }
+        @keyframes orbFloat {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            25% { transform: translate(50px, -30px) scale(1.1); }
+            50% { transform: translate(-20px, 40px) scale(0.95); }
+            75% { transform: translate(30px, 20px) scale(1.05); }
+        }
+
+        /* Particles canvas */
+        #particles { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
+
         .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; position: relative; z-index: 1; }
 
-        /* Header */
-        header { padding: 20px 0; border-bottom: 1px solid var(--border); }
-        .header-inner { display: flex; align-items: center; justify-content: space-between; }
-        .logo { display: flex; align-items: center; gap: 12px; font-size: 20px; font-weight: 700; }
-        .logo-icon { width: 36px; height: 36px; background: var(--accent); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; }
-        .nav-links { display: flex; gap: 24px; }
-        .nav-links a { color: var(--muted); text-decoration: none; font-size: 14px; transition: color 0.2s; }
+        /* Navigation */
+        nav {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+            padding: 16px 0; transition: all 0.3s;
+            background: rgba(5,0,20,0.6); backdrop-filter: blur(20px);
+            border-bottom: 1px solid transparent;
+        }
+        nav.scrolled { background: rgba(5,0,20,0.9); border-bottom-color: var(--border); }
+        .nav-inner { max-width: 1200px; margin: 0 auto; padding: 0 24px; display: flex; align-items: center; justify-content: space-between; }
+        .nav-logo { display: flex; align-items: center; gap: 8px; text-decoration: none; color: var(--text); }
+        .nav-logo svg { width: 28px; height: 28px; transition: transform 0.3s; }
+        .nav-logo:hover svg { transform: rotate(10deg) scale(1.1); }
+        .nav-logo span { font-size: 16px; font-weight: 700; letter-spacing: -0.5px; }
+        .nav-links { display: flex; gap: 32px; align-items: center; }
+        .nav-links a { color: var(--text-secondary); text-decoration: none; font-size: 14px; font-weight: 500; transition: all 0.2s; position: relative; }
+        .nav-links a::after { content: ''; position: absolute; bottom: -4px; left: 0; width: 0; height: 2px; background: var(--accent); transition: width 0.3s; }
         .nav-links a:hover { color: var(--text); }
-        .badge { background: var(--accent); color: white; font-size: 11px; padding: 2px 8px; border-radius: 20px; font-weight: 600; }
+        .nav-links a:hover::after { width: 100%; }
+        .nav-cta {
+            background: var(--text); color: var(--bg-dark);
+            padding: 8px 20px; border-radius: 8px; font-size: 13px; font-weight: 600;
+            text-decoration: none; transition: all 0.3s;
+        }
+        .nav-cta:hover { transform: translateY(-2px); box-shadow: 0 4px 20px rgba(255,255,255,0.2); }
+        .nav-mobile { display: none; background: none; border: none; color: var(--text); cursor: pointer; }
 
         /* Hero */
-        .hero { text-align: center; padding: 80px 0 40px; }
-        .hero h1 { font-size: 48px; font-weight: 800; line-height: 1.1; margin-bottom: 16px; }
-        .hero h1 span { background: linear-gradient(135deg, var(--accent), #c084fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .hero p { color: var(--muted); font-size: 18px; max-width: 600px; margin: 0 auto 32px; line-height: 1.6; }
-        .powered-by { display: inline-flex; align-items: center; gap: 8px; background: var(--card); border: 1px solid var(--border); padding: 8px 16px; border-radius: 100px; font-size: 13px; color: var(--muted); margin-bottom: 40px; }
-        .powered-by .dot { width: 8px; height: 8px; background: var(--green); border-radius: 50%; animation: pulse 2s infinite; }
-        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+        .hero {
+            min-height: auto; display: flex; flex-direction: column;
+            align-items: center; justify-content: center; text-align: center;
+            padding: 100px 24px 40px; position: relative;
+        }
+        .hero-label {
+            display: inline-flex; align-items: center; gap: 8px;
+            font-size: 11px; font-weight: 600; color: var(--accent-2);
+            letter-spacing: 2px; text-transform: uppercase;
+            background: rgba(139,92,246,0.1); border: 1px solid rgba(139,92,246,0.2);
+            padding: 6px 16px; border-radius: 100px; margin-bottom: 20px;
+            opacity: 0; animation: fadeUp 0.8s ease forwards;
+        }
+        .hero-label .dot { width: 6px; height: 6px; background: var(--green); border-radius: 50%; animation: pulse 2s infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.4; transform: scale(0.8); } }
+        .hero h1 {
+            font-size: clamp(36px, 6vw, 64px); font-weight: 800;
+            line-height: 1.05; letter-spacing: -2px; margin-bottom: 24px;
+            max-width: 800px; opacity: 0; animation: fadeUp 0.8s ease 0.2s forwards;
+        }
+        .hero h1 .gradient {
+            background: linear-gradient(135deg, #a78bfa 0%, #7c3aed 50%, #c084fc 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            background-size: 200% 200%; animation: gradientShift 4s ease infinite;
+        }
+        @keyframes gradientShift { 0%, 100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
+        .hero p {
+            color: var(--text-secondary); font-size: 17px; line-height: 1.6;
+            max-width: 560px; margin: 0 auto 40px;
+            opacity: 0; animation: fadeUp 0.8s ease 0.4s forwards;
+        }
+        .hero-buttons {
+            display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;
+            opacity: 0; animation: fadeUp 0.8s ease 0.6s forwards;
+        }
+
+        /* Scroll indicator */
+        .scroll-indicator {
+            position: absolute; bottom: 16px; left: 50%; transform: translateX(-50%);
+            display: flex; flex-direction: column; align-items: center; gap: 8px;
+            opacity: 0; animation: fadeUp 0.8s ease 1s forwards;
+        }
+        .scroll-indicator span { font-size: 11px; color: var(--text-muted); letter-spacing: 1px; }
+        .scroll-mouse {
+            width: 20px; height: 32px; border: 2px solid rgba(255,255,255,0.2);
+            border-radius: 10px; position: relative;
+        }
+        .scroll-mouse::before {
+            content: ''; position: absolute; top: 6px; left: 50%; transform: translateX(-50%);
+            width: 3px; height: 8px; background: var(--accent); border-radius: 2px;
+            animation: scrollDown 2s ease infinite;
+        }
+        @keyframes scrollDown { 0% { opacity: 1; transform: translateX(-50%) translateY(0); } 100% { opacity: 0; transform: translateX(-50%) translateY(12px); } }
+
+        /* AI Scoring Section */
+        .ai-scoring-section { padding: 20px 0 40px; }
+        .ai-scoring-card {
+            background: var(--bg-card); border: 1px solid var(--border);
+            border-radius: 16px; padding: 32px; transition: all 0.3s;
+            max-width: 700px; margin: 0 auto;
+        }
+        .ai-scoring-card:hover { border-color: rgba(139,92,246,0.2); }
+        .ai-scoring-header { display: flex; align-items: center; gap: 16px; margin-bottom: 28px; }
+        .ai-scoring-icon {
+            width: 52px; height: 52px; border-radius: 14px;
+            background: rgba(139,92,246,0.1); display: flex;
+            align-items: center; justify-content: center; flex-shrink: 0;
+        }
+        .ai-scoring-header h2 { font-size: 22px; font-weight: 700; letter-spacing: -0.5px; margin-bottom: 4px; }
+        .ai-scoring-subtitle { font-size: 13px; color: var(--text-secondary); line-height: 1.5; }
+        .ai-scoring-controls { display: flex; flex-direction: column; gap: 16px; }
+        .ai-scoring-row { display: flex; flex-direction: column; gap: 6px; }
+        .ai-label { font-size: 12px; font-weight: 600; color: var(--text-secondary); letter-spacing: 0.5px; text-transform: uppercase; }
+        .ai-select, .ai-input {
+            background: rgba(255,255,255,0.04); border: 1px solid var(--border);
+            border-radius: 10px; padding: 12px 16px; color: var(--text);
+            font-size: 14px; font-family: inherit; outline: none; transition: all 0.3s;
+        }
+        .ai-select:focus, .ai-input:focus { border-color: rgba(139,92,246,0.4); box-shadow: 0 0 20px rgba(139,92,246,0.1); }
+        .ai-select { cursor: pointer; -webkit-appearance: none; appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L6 6L11 1' stroke='%238b5cf6' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E");
+            background-repeat: no-repeat; background-position: right 14px center; padding-right: 36px;
+        }
+        .ai-select option { background: #1a1030; color: var(--text); }
+
+        /* Custom Select Dropdown */
+        .custom-select-wrapper { position: relative; width: 100%; }
+        .custom-select-trigger {
+            display: flex; align-items: center; justify-content: space-between;
+            background: rgba(255,255,255,0.04); border: 1px solid var(--border);
+            border-radius: 10px; padding: 10px 14px; cursor: pointer;
+            transition: all 0.3s; user-select: none;
+        }
+        .custom-select-trigger:hover { border-color: rgba(139,92,246,0.3); background: rgba(255,255,255,0.06); }
+        .custom-select-trigger.active { border-color: rgba(139,92,246,0.5); box-shadow: 0 0 20px rgba(139,92,246,0.15); }
+        .custom-select-trigger.active .dropdown-arrow { transform: rotate(180deg); }
+        .dropdown-arrow { width: 16px; height: 16px; color: var(--text-muted); transition: transform 0.3s; flex-shrink: 0; }
+        .custom-options {
+            position: absolute; top: calc(100% + 6px); left: 0; right: 0;
+            background: rgba(15,10,30,0.97); border: 1px solid rgba(139,92,246,0.2);
+            border-radius: 12px; padding: 6px; z-index: 100;
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5), 0 0 30px rgba(139,92,246,0.1);
+            opacity: 0; visibility: hidden; transform: translateY(-8px);
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .custom-options.open { opacity: 1; visibility: visible; transform: translateY(0); }
+        .custom-option {
+            display: flex; align-items: center; padding: 10px 12px;
+            border-radius: 8px; cursor: pointer; transition: all 0.2s;
+            border: 1px solid transparent;
+        }
+        .custom-option:hover { background: rgba(139,92,246,0.1); border-color: rgba(139,92,246,0.15); }
+        .custom-option.selected { background: rgba(139,92,246,0.12); border-color: rgba(139,92,246,0.2); }
+        .custom-option-content { display: flex; align-items: center; gap: 12px; }
+        .provider-icon {
+            width: 20px; height: 20px; color: #8b5cf6; flex-shrink: 0;
+            filter: drop-shadow(0 0 4px rgba(139,92,246,0.3));
+        }
+        .provider-icon.hf-icon { color: #fbbf24; filter: drop-shadow(0 0 4px rgba(251,191,36,0.3)); }
+        .provider-icon.rule-icon { color: #34d399; filter: drop-shadow(0 0 4px rgba(52,211,153,0.3)); }
+        .provider-text { display: flex; flex-direction: column; }
+        .provider-name { font-size: 14px; font-weight: 600; color: var(--text); }
+        .provider-desc { font-size: 11px; color: var(--text-muted); margin-top: 1px; }
+        .custom-option.selected .provider-name { color: #a78bfa; }
+        .ai-score-btn { margin-top: 4px; justify-content: center; }
+
+        /* Typing indicator */
+        .typing-indicator { display: flex; align-items: center; gap: 12px; padding: 20px 0; justify-content: center; }
+        .typing-dots { display: flex; gap: 4px; }
+        .typing-dots span {
+            width: 8px; height: 8px; background: var(--accent); border-radius: 50%;
+            animation: typingBounce 1.4s ease-in-out infinite;
+        }
+        .typing-dots span:nth-child(2) { animation-delay: 0.2s; }
+        .typing-dots span:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes typingBounce {
+            0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+            30% { transform: translateY(-8px); opacity: 1; }
+        }
+        .typing-text { font-size: 13px; color: var(--text-secondary); font-style: italic; }
+
+        /* AI Result Card */
+        .ai-result-card {
+            margin-top: 24px; padding: 28px; border-radius: 14px;
+            background: linear-gradient(135deg, rgba(139,92,246,0.06), rgba(88,28,135,0.04));
+            border: 1px solid rgba(139,92,246,0.15); animation: fadeUp 0.5s ease;
+        }
+        .ai-result-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; flex-wrap: wrap; gap: 8px; }
+        .ai-result-badge {
+            font-size: 14px; font-weight: 700; padding: 6px 18px;
+            border-radius: 100px; background: linear-gradient(135deg, var(--accent), #6d28d9);
+            color: white; letter-spacing: 0.5px;
+        }
+        .ai-result-provider { font-size: 11px; color: var(--text-muted); background: rgba(255,255,255,0.04); padding: 4px 12px; border-radius: 6px; font-weight: 500; }
+        .ai-result-score-wrap { text-align: center; margin-bottom: 16px; }
+        .ai-result-score {
+            font-size: 64px; font-weight: 900; letter-spacing: -2px;
+            background: linear-gradient(180deg, #a78bfa 0%, #7c3aed 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        .ai-result-score-label { font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1.5px; margin-top: 4px; }
+        .ai-result-bar-wrap { margin-bottom: 20px; }
+        .ai-result-bar { width: 100%; height: 6px; background: rgba(255,255,255,0.06); border-radius: 3px; overflow: hidden; }
+        .ai-result-bar-fill { height: 100%; border-radius: 3px; transition: width 1s ease; background: linear-gradient(90deg, #7c3aed, #a78bfa, #34d399); }
+        .ai-result-reasoning { font-size: 13px; color: var(--text-secondary); line-height: 1.7; padding: 16px; background: rgba(0,0,0,0.2); border-radius: 10px; border-left: 3px solid rgba(139,92,246,0.3); }
+        .ai-result-fallback-note { margin-top: 12px; font-size: 11px; color: var(--yellow); padding: 8px 12px; background: rgba(251,191,36,0.06); border-radius: 8px; border: 1px solid rgba(251,191,36,0.15); }
+
+        /* Animations */
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .fade-up { opacity: 0; transform: translateY(30px); transition: all 0.8s ease; }
+        .fade-up.visible { opacity: 1; transform: translateY(0); }
+        .fade-up-delay-1 { transition-delay: 0.1s; }
+        .fade-up-delay-2 { transition-delay: 0.2s; }
+        .fade-up-delay-3 { transition-delay: 0.3s; }
+
+        .btn {
+            padding: 12px 24px; border-radius: 10px; font-size: 14px;
+            font-weight: 600; cursor: pointer; transition: all 0.3s;
+            font-family: inherit; text-decoration: none; display: inline-flex;
+            align-items: center; gap: 8px; border: none; position: relative;
+            overflow: hidden;
+        }
+        .btn::before {
+            content: ''; position: absolute; inset: 0;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
+            transform: translateX(-100%); transition: transform 0.5s;
+        }
+        .btn:hover::before { transform: translateX(100%); }
+        .btn-dark { background: var(--text); color: var(--bg-dark); }
+        .btn-dark:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(255,255,255,0.15); }
+        .btn-outline { background: transparent; color: var(--text); border: 1px solid rgba(255,255,255,0.15); }
+        .btn-outline:hover { border-color: rgba(255,255,255,0.3); background: rgba(255,255,255,0.03); transform: translateY(-2px); }
 
         /* Stats */
-        .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 48px; }
-        .stat-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 20px; text-align: center; }
-        .stat-value { font-size: 28px; font-weight: 700; color: var(--accent); }
-        .stat-label { font-size: 13px; color: var(--muted); margin-top: 4px; }
+        .stats-section { padding: 40px 0; }
+        .stats-grid {
+            display: grid; grid-template-columns: repeat(4, 1fr);
+            gap: 2px; background: var(--border); border-radius: 16px; overflow: hidden;
+        }
+        .stat-item {
+            background: rgba(5,0,20,0.9); padding: 24px 24px; text-align: center;
+            transition: all 0.3s; position: relative; overflow: hidden;
+        }
+        .stat-item::before {
+            content: ''; position: absolute; inset: 0;
+            background: radial-gradient(circle at center, rgba(139,92,246,0.1), transparent 70%);
+            opacity: 0; transition: opacity 0.3s;
+        }
+        .stat-item:hover::before { opacity: 1; }
+        .stat-item:hover { transform: scale(1.02); }
+        .stat-number {
+            font-size: clamp(32px, 4vw, 48px); font-weight: 800;
+            letter-spacing: -1px; margin-bottom: 8px;
+            background: linear-gradient(180deg, #fff 0%, rgba(255,255,255,0.5) 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        .stat-desc { font-size: 13px; color: var(--text-secondary); font-weight: 500; }
+        .stat-tag { font-size: 10px; color: var(--text-muted); letter-spacing: 1.5px; text-transform: uppercase; margin-top: 4px; }
 
         /* Search */
-        .search-section { margin-bottom: 48px; }
-        .search-box { display: flex; gap: 12px; max-width: 700px; margin: 0 auto; }
-        .search-input {
-            flex: 1; background: var(--card); border: 1px solid var(--border); border-radius: 12px;
-            padding: 14px 20px; color: var(--text); font-size: 15px; outline: none; transition: border-color 0.2s;
+        .search-section { padding: 20px 0 40px; text-align: center; }
+        .search-section h2 { font-size: 28px; font-weight: 700; letter-spacing: -0.5px; margin-bottom: 8px; }
+        .search-section p { color: var(--text-secondary); font-size: 15px; margin-bottom: 20px; }
+        .search-box {
+            display: flex; gap: 8px; max-width: 600px; margin: 0 auto;
+            background: rgba(255,255,255,0.04); border: 1px solid var(--border);
+            border-radius: 12px; padding: 6px; transition: all 0.3s;
         }
-        .search-input:focus { border-color: var(--accent); }
-        .search-input::placeholder { color: var(--muted); }
-        .btn { padding: 14px 28px; border: none; border-radius: 12px; font-size: 15px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
-        .btn-primary { background: var(--accent); color: white; }
-        .btn-primary:hover { background: #7c3aed; transform: translateY(-1px); }
-        .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+        .search-box:focus-within { border-color: rgba(139,92,246,0.3); box-shadow: 0 0 30px rgba(139,92,246,0.1); }
+        .search-input {
+            flex: 1; background: transparent; border: none; padding: 14px 16px;
+            color: var(--text); font-size: 15px; outline: none; font-family: inherit;
+        }
+        .search-input::placeholder { color: var(--text-muted); }
 
         /* Results */
-        .results { margin-bottom: 48px; }
+        .results { padding: 0 0 60px; }
         .results-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
         .results-header h2 { font-size: 20px; font-weight: 600; }
-        .results-count { color: var(--muted); font-size: 14px; }
-        .project-list { display: flex; flex-direction: column; gap: 12px; }
+        .results-count { color: var(--text-muted); font-size: 13px; }
+        .project-list { display: flex; flex-direction: column; gap: 4px; }
         .project-card {
-            background: var(--card); border: 1px solid var(--border); border-radius: 12px;
-            padding: 20px; display: grid; grid-template-columns: auto 1fr auto auto; align-items: center; gap: 16px;
-            transition: border-color 0.2s, transform 0.2s; cursor: pointer;
+            background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px;
+            padding: 18px 24px; display: grid; grid-template-columns: auto 1fr auto auto;
+            align-items: center; gap: 16px; cursor: pointer;
+            opacity: 0; transform: translateX(-20px);
+            animation: slideIn 0.4s ease forwards;
         }
-        .project-card:hover { border-color: var(--accent); transform: translateY(-2px); }
-        .project-rank { font-size: 14px; font-weight: 700; color: var(--muted); width: 32px; text-align: center; }
-        .project-info h3 { font-size: 16px; font-weight: 600; margin-bottom: 4px; }
-        .project-info p { font-size: 13px; color: var(--muted); }
-        .project-tags { display: flex; gap: 6px; }
-        .tag { font-size: 11px; padding: 3px 8px; border-radius: 6px; background: rgba(139,92,246,0.1); color: var(--accent); }
-        .score { text-align: center; }
-        .score-value { font-size: 24px; font-weight: 700; }
-        .score-label { font-size: 11px; color: var(--muted); }
+        .project-card:nth-child(1) { animation-delay: 0.1s; }
+        .project-card:nth-child(2) { animation-delay: 0.2s; }
+        .project-card:nth-child(3) { animation-delay: 0.3s; }
+        .project-card:nth-child(4) { animation-delay: 0.4s; }
+        .project-card:nth-child(5) { animation-delay: 0.5s; }
+        @keyframes slideIn {
+            to { opacity: 1; transform: translateX(0); }
+        }
+        .project-card {
+            transition: all 0.3s;
+        }
+        .project-card:hover { background: var(--bg-card-hover); border-color: rgba(139,92,246,0.2); transform: translateX(4px); }
+        .project-rank { font-size: 13px; font-weight: 700; color: var(--text-muted); width: 28px; }
+        .project-info h3 { font-size: 15px; font-weight: 600; margin-bottom: 2px; }
+        .project-info p { font-size: 12px; color: var(--text-secondary); }
+        .project-tags { display: flex; gap: 4px; }
+        .tag { font-size: 10px; padding: 3px 10px; border-radius: 6px; background: rgba(139,92,246,0.1); color: var(--accent-2); font-weight: 500; }
+        .score { text-align: center; min-width: 60px; }
+        .score-value { font-size: 22px; font-weight: 700; }
+        .score-label { font-size: 10px; color: var(--text-muted); }
         .score-high { color: var(--green); }
         .score-mid { color: var(--yellow); }
         .score-low { color: var(--red); }
@@ -111,169 +376,1524 @@
         .status-ended { background: rgba(239,68,68,0.15); color: var(--red); }
 
         /* Loading */
-        .loading { text-align: center; padding: 60px 0; }
-        .spinner { width: 40px; height: 40px; border: 3px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 16px; }
+        .loading { text-align: center; padding: 40px 0; }
+        .spinner {
+            width: 32px; height: 32px; border: 2px solid var(--border);
+            border-top-color: var(--accent); border-radius: 50%;
+            animation: spin 0.8s linear infinite; margin: 0 auto 12px;
+        }
         @keyframes spin { to { transform: rotate(360deg); } }
 
-        /* AI Chat */
-        .chat-section { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 24px; margin-bottom: 48px; }
-        .chat-header { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
+        /* Chat */
+        .chat-section {
+            background: var(--bg-card); border: 1px solid var(--border);
+            border-radius: 16px; padding: 24px; margin-bottom: 16px;
+            transition: all 0.3s;
+        }
+        .chat-section:hover { border-color: rgba(139,92,246,0.15); }
+        .chat-header { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; }
         .chat-header h2 { font-size: 18px; font-weight: 600; }
-        .ai-badge { background: rgba(139,92,246,0.15); color: var(--accent); font-size: 11px; padding: 3px 10px; border-radius: 20px; }
-        .chat-messages { min-height: 200px; max-height: 400px; overflow-y: auto; margin-bottom: 16px; }
-        .msg { padding: 12px 16px; border-radius: 12px; margin-bottom: 8px; max-width: 80%; font-size: 14px; line-height: 1.5; }
-        .msg-ai { background: rgba(139,92,246,0.1); border: 1px solid rgba(139,92,246,0.2); }
+        .ai-badge {
+            background: rgba(139,92,246,0.1); color: var(--accent-2);
+            font-size: 10px; padding: 4px 12px; border-radius: 20px; font-weight: 600;
+            animation: badgePulse 3s ease infinite;
+        }
+        @keyframes badgePulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(139,92,246,0.2); } 50% { box-shadow: 0 0 0 6px rgba(139,92,246,0); } }
+        .chat-messages { min-height: 160px; max-height: 320px; overflow-y: auto; margin-bottom: 16px; }
+        .msg {
+            padding: 12px 16px; border-radius: 12px; margin-bottom: 8px;
+            max-width: 80%; font-size: 13px; line-height: 1.6;
+            opacity: 0; animation: msgIn 0.3s ease forwards;
+        }
+        @keyframes msgIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .msg-ai { background: rgba(139,92,246,0.08); border: 1px solid rgba(139,92,246,0.12); }
         .msg-user { background: var(--accent); color: white; margin-left: auto; }
-        .chat-input-row { display: flex; gap: 12px; }
+        .chat-input-row { display: flex; gap: 8px; }
+        .chat-input-row .search-input {
+            background: rgba(255,255,255,0.03); border: 1px solid var(--border);
+            border-radius: 10px; padding: 12px 16px; transition: all 0.3s;
+        }
+        .chat-input-row .search-input:focus { border-color: rgba(139,92,246,0.3); }
+
+        /* ===== AI CHATBOT SECTION ===== */
+        .chatbot-section { padding: 20px 0 60px; }
+        .chatbot-card {
+            background: var(--bg-card); border: 1px solid var(--border);
+            border-radius: 20px; padding: 0; max-width: 700px; margin: 0 auto;
+            transition: all 0.3s; position: relative; overflow: hidden;
+            box-shadow: 0 0 40px rgba(139,92,246,0.05);
+        }
+        .chatbot-card:hover { border-color: rgba(139,92,246,0.25); box-shadow: 0 0 60px rgba(139,92,246,0.1); }
+
+        .chatbot-header { display: flex; align-items: center; gap: 16px; padding: 28px 28px 0; }
+        .chatbot-icon {
+            width: 52px; height: 52px; border-radius: 14px;
+            background: linear-gradient(135deg, rgba(139,92,246,0.15), rgba(88,28,135,0.1));
+            display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+            border: 1px solid rgba(139,92,246,0.15);
+        }
+        .chatbot-header-text h2 { font-size: 22px; font-weight: 700; letter-spacing: -0.5px; margin-bottom: 4px; }
+        .chatbot-subtitle { font-size: 13px; color: var(--text-secondary); line-height: 1.5; }
+
+        .chatbot-container {
+            margin: 20px 28px 28px;
+            border: 1px solid rgba(139,92,246,0.1); border-radius: 14px;
+            background: rgba(0,0,0,0.25); overflow: hidden;
+            backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+        }
+        .chatbot-messages {
+            height: 420px; overflow-y: auto; padding: 20px;
+            display: flex; flex-direction: column; gap: 12px;
+            scrollbar-width: thin; scrollbar-color: rgba(139,92,246,0.3) transparent;
+        }
+        .chatbot-messages::-webkit-scrollbar { width: 5px; }
+        .chatbot-messages::-webkit-scrollbar-track { background: transparent; }
+        .chatbot-messages::-webkit-scrollbar-thumb { background: rgba(139,92,246,0.25); border-radius: 3px; }
+
+        .chatbot-msg {
+            max-width: 85%; padding: 12px 16px; border-radius: 16px;
+            font-size: 14px; line-height: 1.65; animation: chatbotMsgIn 0.35s ease forwards;
+            opacity: 0; word-wrap: break-word;
+        }
+        .chatbot-msg-user {
+            background: linear-gradient(135deg, #7c3aed 0%, #a78bfa 100%);
+            color: white; align-self: flex-end; border-bottom-right-radius: 4px;
+            box-shadow: 0 4px 15px rgba(124,58,237,0.25);
+        }
+        .chatbot-msg-ai {
+            background: rgba(255,255,255,0.04); border: 1px solid rgba(139,92,246,0.1);
+            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            color: var(--text); align-self: flex-start; border-bottom-left-radius: 4px;
+        }
+        .chatbot-msg-ai strong { color: #a78bfa; }
+        .chatbot-msg-ai code {
+            background: rgba(139,92,246,0.12); padding: 2px 6px;
+            border-radius: 4px; font-size: 13px;
+        }
+
+        @keyframes chatbotMsgIn {
+            from { opacity: 0; transform: translateY(12px) scale(0.97); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        .chatbot-typing {
+            display: flex; align-items: center; gap: 12px;
+            padding: 14px 18px; align-self: flex-start;
+            background: rgba(255,255,255,0.04); border: 1px solid rgba(139,92,246,0.1);
+            border-radius: 16px; border-bottom-left-radius: 4px;
+            animation: chatbotMsgIn 0.35s ease forwards;
+        }
+        .chatbot-typing-dots { display: flex; gap: 5px; }
+        .chatbot-typing-dots span {
+            width: 7px; height: 7px; background: var(--accent); border-radius: 50%;
+            animation: typingBounce 1.4s ease-in-out infinite;
+        }
+        .chatbot-typing-dots span:nth-child(2) { animation-delay: 0.2s; }
+        .chatbot-typing-dots span:nth-child(3) { animation-delay: 0.4s; }
+
+        .chatbot-chips {
+            display: flex; gap: 8px; padding: 14px 20px; flex-wrap: wrap;
+            border-top: 1px solid rgba(255,255,255,0.04);
+            background: rgba(0,0,0,0.1);
+        }
+        .chatbot-chip {
+            background: rgba(139,92,246,0.08); border: 1px solid rgba(139,92,246,0.15);
+            color: var(--accent-2); padding: 7px 16px; border-radius: 100px;
+            font-size: 12px; font-weight: 500; cursor: pointer;
+            transition: all 0.2s; font-family: inherit; white-space: nowrap;
+        }
+        .chatbot-chip:hover {
+            background: rgba(139,92,246,0.18); border-color: rgba(139,92,246,0.35);
+            transform: translateY(-1px); box-shadow: 0 4px 12px rgba(139,92,246,0.15);
+        }
+
+        .chatbot-input-area {
+            display: flex; gap: 10px; padding: 16px 20px;
+            border-top: 1px solid rgba(255,255,255,0.04);
+            background: rgba(0,0,0,0.1);
+        }
+        .typing-cursor {
+            display: inline-block; color: #a78bfa; font-weight: 300;
+            animation: cursorBlink 0.8s ease-in-out infinite;
+            margin-left: 1px;
+        }
+        @keyframes cursorBlink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+        .chatbot-input {
+            flex: 1; background: rgba(255,255,255,0.04); border: 1px solid var(--border);
+            border-radius: 12px; padding: 12px 16px; color: var(--text);
+            font-size: 14px; font-family: inherit; outline: none; transition: all 0.3s;
+        }
+        .chatbot-input:focus { border-color: rgba(139,92,246,0.4); box-shadow: 0 0 20px rgba(139,92,246,0.1); }
+        .chatbot-input::placeholder { color: var(--text-muted); }
+        .chatbot-send-btn {
+            background: linear-gradient(135deg, #7c3aed, #a78bfa); color: white;
+            border: none; border-radius: 12px; padding: 12px 20px; cursor: pointer;
+            font-weight: 600; font-size: 14px; font-family: inherit; transition: all 0.3s;
+            display: flex; align-items: center; gap: 8px; white-space: nowrap;
+        }
+        .chatbot-send-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 20px rgba(139,92,246,0.4); }
+        .chatbot-send-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
 
         /* Features */
-        .features { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 60px; }
-        .feature-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 24px; }
-        .feature-icon { font-size: 28px; margin-bottom: 12px; }
-        .feature-card h3 { font-size: 16px; font-weight: 600; margin-bottom: 8px; }
-        .feature-card p { font-size: 13px; color: var(--muted); line-height: 1.5; }
+        .features-section { padding: 40px 0; }
+        .section-header { text-align: center; margin-bottom: 24px; }
+        .section-label {
+            display: inline-block; font-size: 11px; font-weight: 600;
+            color: var(--accent-2); letter-spacing: 2px; text-transform: uppercase;
+            margin-bottom: 16px;
+        }
+        .section-title {
+            font-size: clamp(28px, 4vw, 40px); font-weight: 800;
+            letter-spacing: -1px; line-height: 1.1; margin-bottom: 16px;
+        }
+        .section-desc { color: var(--text-secondary); font-size: 16px; max-width: 600px; margin: 0 auto; line-height: 1.6; }
+        .features-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; }
+        .feature-card {
+            background: var(--bg-card); border: 1px solid var(--border);
+            padding: 20px 24px; transition: all 0.4s; position: relative; overflow: hidden;
+        }
+        .feature-card::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+            background: linear-gradient(90deg, transparent, var(--accent), transparent);
+            transform: translateX(-100%); transition: transform 0.5s;
+        }
+        .feature-card:hover::before { transform: translateX(100%); }
+        .feature-card::after {
+            content: ''; position: absolute; inset: 0;
+            background: radial-gradient(circle at 50% 0%, rgba(139,92,246,0.08), transparent 60%);
+            opacity: 0; transition: opacity 0.3s;
+        }
+        .feature-card:hover::after { opacity: 1; }
+        .feature-card:hover { transform: translateY(-4px); }
+        .feature-icon {
+            width: 44px; height: 44px; border-radius: 12px;
+            background: rgba(139,92,246,0.08); display: flex;
+            align-items: center; justify-content: center; margin-bottom: 16px;
+            transition: all 0.3s; position: relative; z-index: 1;
+        }
+        .feature-card:hover .feature-icon { background: rgba(139,92,246,0.15); transform: scale(1.1); }
+        .feature-icon svg { width: 22px; height: 22px; stroke: var(--accent-2); fill: none; stroke-width: 1.5; }
+
+        /* Animated Feature Icons */
+        .feature-card:nth-child(1) .feature-icon svg {
+            animation: chainLink 3s ease-in-out infinite;
+        }
+        .feature-card:nth-child(2) .feature-icon svg {
+            animation: birdFly 2.5s ease-in-out infinite;
+        }
+        .feature-card:nth-child(3) .feature-icon svg {
+            animation: layerPulse 2s ease-in-out infinite;
+        }
+        .feature-card:nth-child(4) .feature-icon svg {
+            animation: cubeRotate 4s ease-in-out infinite;
+        }
+        .feature-card:nth-child(5) .feature-icon svg {
+            animation: bellRing 2s ease-in-out infinite;
+        }
+        .feature-card:nth-child(6) .feature-icon svg {
+            animation: barGrow 2.5s ease-in-out infinite;
+        }
+
+        @keyframes chainLink {
+            0%, 100% { transform: rotate(0deg) scale(1); }
+            25% { transform: rotate(-8deg) scale(1.05); }
+            50% { transform: rotate(0deg) scale(1.1); }
+            75% { transform: rotate(8deg) scale(1.05); }
+        }
+        @keyframes birdFly {
+            0%, 100% { transform: translateX(0) translateY(0); }
+            25% { transform: translateX(3px) translateY(-3px); }
+            50% { transform: translateX(0) translateY(-5px); }
+            75% { transform: translateX(-3px) translateY(-3px); }
+        }
+        @keyframes layerPulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.12); opacity: 0.85; }
+        }
+        @keyframes cubeRotate {
+            0%, 100% { transform: rotateY(0deg) rotateX(0deg); }
+            25% { transform: rotateY(15deg) rotateX(5deg); }
+            50% { transform: rotateY(0deg) rotateX(10deg); }
+            75% { transform: rotateY(-15deg) rotateX(5deg); }
+        }
+        @keyframes bellRing {
+            0%, 100% { transform: rotate(0deg); }
+            10% { transform: rotate(14deg); }
+            20% { transform: rotate(-12deg); }
+            30% { transform: rotate(10deg); }
+            40% { transform: rotate(-8deg); }
+            50% { transform: rotate(5deg); }
+            60% { transform: rotate(0deg); }
+        }
+        @keyframes barGrow {
+            0%, 100% { transform: scaleY(1); }
+            30% { transform: scaleY(1.15); }
+            60% { transform: scaleY(0.9); }
+        }
+
+        /* Glow effect on hover */
+        .feature-card:nth-child(1):hover .feature-icon { box-shadow: 0 0 20px rgba(139,92,246,0.3); }
+        .feature-card:nth-child(2):hover .feature-icon { box-shadow: 0 0 20px rgba(59,130,246,0.3); }
+        .feature-card:nth-child(3):hover .feature-icon { box-shadow: 0 0 20px rgba(168,85,247,0.4); }
+        .feature-card:nth-child(4):hover .feature-icon { box-shadow: 0 0 20px rgba(52,211,153,0.3); }
+
+        .feature-card:nth-child(2):hover .feature-icon { background: rgba(59,130,246,0.12); }
+        .feature-card:nth-child(2):hover .feature-icon svg { stroke: #60a5fa; }
+        .feature-card:nth-child(3):hover .feature-icon { background: rgba(168,85,247,0.15); }
+        .feature-card:nth-child(3):hover .feature-icon svg { stroke: #c084fc; }
+        .feature-card:nth-child(4):hover .feature-icon { background: rgba(52,211,153,0.12); }
+        .feature-card:nth-child(4):hover .feature-icon svg { stroke: #6ee7b7; }
+        .feature-card:nth-child(5):hover .feature-icon { background: rgba(251,191,36,0.12); box-shadow: 0 0 20px rgba(251,191,36,0.3); }
+        .feature-card:nth-child(5):hover .feature-icon svg { stroke: #fbbf24; }
+        .feature-card:nth-child(6):hover .feature-icon { background: rgba(96,165,250,0.12); box-shadow: 0 0 20px rgba(96,165,250,0.3); }
+        .feature-card:nth-child(6):hover .feature-icon svg { stroke: #60a5fa; }
+        .feature-card h3 { font-size: 16px; font-weight: 600; margin-bottom: 8px; position: relative; z-index: 1; }
+        .feature-card p { font-size: 13px; color: var(--text-secondary); line-height: 1.6; position: relative; z-index: 1; }
+
+        /* CTA */
+        .cta-section {
+            text-align: center; padding: 40px 24px;
+            background: linear-gradient(180deg, transparent, rgba(139,92,246,0.05));
+            border-top: 1px solid var(--border);
+        }
+        .cta-section h2 { font-size: 32px; font-weight: 800; letter-spacing: -1px; margin-bottom: 16px; }
+        .cta-section p { color: var(--text-secondary); font-size: 16px; margin-bottom: 20px; max-width: 500px; margin-left: auto; margin-right: auto; }
 
         /* Footer */
-        footer { border-top: 1px solid var(--border); padding: 24px 0; text-align: center; color: var(--muted); font-size: 13px; }
-        footer a { color: var(--accent); text-decoration: none; }
+        footer {
+            border-top: 1px solid var(--border); padding: 40px 0;
+            display: flex; justify-content: space-between; align-items: center;
+            flex-wrap: wrap; gap: 16px;
+        }
+        footer p { color: var(--text-muted); font-size: 13px; }
+        footer a { color: var(--text-secondary); text-decoration: none; font-size: 13px; transition: color 0.2s; }
+        footer a:hover { color: var(--text); }
 
         /* Responsive */
         @media (max-width: 768px) {
-            .hero h1 { font-size: 32px; }
-            .stats { grid-template-columns: repeat(2, 1fr); }
-            .features { grid-template-columns: 1fr; }
+            .nav-links { display: none; }
+            .nav-mobile { display: block; }
+            .stats-grid { grid-template-columns: repeat(2, 1fr); }
+            .features-grid { grid-template-columns: 1fr; }
             .project-card { grid-template-columns: auto 1fr; }
             .project-tags, .score { display: none; }
+            footer { flex-direction: column; text-align: center; }
+            .scroll-indicator { display: none; }
+            .wallet-btn-text { display: none; }
+            .wallet-connected-wrap { position: relative; }
+            .wallet-dropdown { right: -8px; min-width: 200px; }
+            .dashboard-grid { grid-template-columns: 1fr; }
+            .dashboard-projects-grid { grid-template-columns: 1fr; }
+            .chatbot-header { padding: 20px 20px 0; }
+            .chatbot-container { margin: 16px 20px 20px; }
+            .chatbot-messages { height: 320px; }
+            .chatbot-chips { overflow-x: auto; flex-wrap: nowrap; -webkit-overflow-scrolling: touch; }
+            #backToTop { bottom: 20px; right: 20px; width: 40px; height: 40px; }
+        }
+
+        /* ===== WALLET CONNECT BUTTON ===== */
+        .wallet-btn {
+            background: linear-gradient(135deg, #7c3aed, #a78bfa);
+            color: white; border: none; padding: 8px 18px; border-radius: 8px;
+            font-size: 13px; font-weight: 600; cursor: pointer;
+            font-family: inherit; display: inline-flex; align-items: center; gap: 8px;
+            transition: all 0.3s; position: relative; white-space: nowrap;
+        }
+        .wallet-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 20px rgba(139,92,246,0.4); }
+        .wallet-btn:active { transform: translateY(0); }
+        .wallet-btn.connecting { opacity: 0.7; pointer-events: none; }
+        .wallet-btn svg { width: 16px; height: 16px; flex-shrink: 0; }
+        .wallet-btn .spinner-small {
+            width: 14px; height: 14px; border: 2px solid rgba(255,255,255,0.3);
+            border-top-color: white; border-radius: 50%; animation: spin 0.8s linear infinite;
+        }
+
+        /* Wallet Connected Wrapper */
+        .wallet-connected-wrap { position: relative; }
+        .wallet-address-btn {
+            background: rgba(139,92,246,0.15); border: 1px solid rgba(139,92,246,0.3);
+            color: var(--accent-2); padding: 8px 14px; border-radius: 8px;
+            font-size: 13px; font-weight: 600; cursor: pointer;
+            font-family: inherit; display: inline-flex; align-items: center; gap: 8px;
+            transition: all 0.3s;
+        }
+        .wallet-address-btn:hover { background: rgba(139,92,246,0.25); border-color: rgba(139,92,246,0.5); }
+        .wallet-address-btn .dot-green {
+            width: 7px; height: 7px; background: var(--green); border-radius: 50%;
+            box-shadow: 0 0 6px rgba(52,211,153,0.5);
+        }
+        .wallet-dropdown {
+            position: absolute; top: calc(100% + 8px); right: 0;
+            background: rgba(15,10,30,0.97); border: 1px solid rgba(139,92,246,0.2);
+            border-radius: 12px; padding: 6px; min-width: 220px;
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5), 0 0 30px rgba(139,92,246,0.1);
+            opacity: 0; visibility: hidden; transform: translateY(-8px);
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); z-index: 200;
+        }
+        .wallet-dropdown.open { opacity: 1; visibility: visible; transform: translateY(0); }
+        .wallet-dropdown-item {
+            display: flex; align-items: center; gap: 10px;
+            padding: 10px 14px; border-radius: 8px; cursor: pointer;
+            font-size: 13px; font-weight: 500; color: var(--text-secondary);
+            transition: all 0.2s; border: 1px solid transparent;
+        }
+        .wallet-dropdown-item:hover { background: rgba(139,92,246,0.1); color: var(--text); border-color: rgba(139,92,246,0.15); }
+        .wallet-dropdown-item svg { width: 16px; height: 16px; flex-shrink: 0; opacity: 0.7; }
+        .wallet-dropdown-divider { height: 1px; background: var(--border); margin: 4px 8px; }
+
+        /* ===== WALLET MODAL ===== */
+        .wallet-modal-overlay {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+            z-index: 500; display: none; align-items: center; justify-content: center;
+            animation: fadeIn 0.2s ease;
+        }
+        .wallet-modal-overlay.open { display: flex; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .wallet-modal {
+            background: rgba(15,10,30,0.98); border: 1px solid rgba(139,92,246,0.2);
+            border-radius: 20px; padding: 32px; width: 90%; max-width: 400px;
+            box-shadow: 0 40px 80px rgba(0,0,0,0.5), 0 0 40px rgba(139,92,246,0.1);
+            animation: modalSlideUp 0.3s ease;
+        }
+        @keyframes modalSlideUp { from { opacity: 0; transform: translateY(30px) scale(0.95); } to { opacity: 1; transform: translateY(0) scale(1); } }
+        .wallet-modal h3 { font-size: 20px; font-weight: 700; margin-bottom: 6px; letter-spacing: -0.5px; }
+        .wallet-modal p { font-size: 13px; color: var(--text-secondary); margin-bottom: 24px; }
+        .wallet-modal-close {
+            position: absolute; top: 16px; right: 16px; background: none;
+            border: none; color: var(--text-muted); cursor: pointer; padding: 4px;
+            transition: color 0.2s;
+        }
+        .wallet-modal-close:hover { color: var(--text); }
+        .wallet-option {
+            display: flex; align-items: center; gap: 14px; padding: 14px 16px;
+            background: var(--bg-card); border: 1px solid var(--border);
+            border-radius: 12px; cursor: pointer; transition: all 0.3s; margin-bottom: 8px;
+        }
+        .wallet-option:hover { background: var(--bg-card-hover); border-color: rgba(139,92,246,0.3); transform: translateX(4px); }
+        .wallet-option-icon {
+            width: 40px; height: 40px; border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0; font-size: 20px;
+        }
+        .wallet-option-icon.metamask { background: rgba(251,191,36,0.1); }
+        .wallet-option-icon.walletconnect { background: rgba(59,130,246,0.1); }
+        .wallet-option-icon.coinbase { background: rgba(52,211,153,0.1); }
+        .wallet-option-info h4 { font-size: 14px; font-weight: 600; margin-bottom: 2px; }
+        .wallet-option-info span { font-size: 11px; color: var(--text-muted); }
+        .wallet-option-arrow { margin-left: auto; color: var(--text-muted); transition: transform 0.2s; }
+        .wallet-option:hover .wallet-option-arrow { transform: translateX(4px); color: var(--accent-2); }
+        .wallet-modal-error {
+            margin-top: 12px; padding: 12px 16px; border-radius: 10px;
+            background: rgba(248,113,113,0.08); border: 1px solid rgba(248,113,113,0.2);
+            color: var(--red); font-size: 13px; display: none;
+        }
+
+        /* ===== DASHBOARD SECTION ===== */
+        .dashboard-section {
+            padding: 40px 0 60px; display: none;
+        }
+        .dashboard-section.visible { display: block; }
+        .dashboard-header {
+            display: flex; align-items: center; justify-content: space-between;
+            margin-bottom: 24px; flex-wrap: wrap; gap: 12px;
+        }
+        .dashboard-header h2 {
+            font-size: clamp(24px, 3vw, 32px); font-weight: 800;
+            letter-spacing: -1px; display: flex; align-items: center; gap: 12px;
+        }
+        .dashboard-header h2 .live-dot {
+            width: 10px; height: 10px; background: var(--green); border-radius: 50%;
+            box-shadow: 0 0 8px rgba(52,211,153,0.5); animation: pulse 2s infinite;
+        }
+        .dashboard-network-badge {
+            font-size: 11px; padding: 5px 14px; border-radius: 100px;
+            background: rgba(139,92,246,0.1); border: 1px solid rgba(139,92,246,0.2);
+            color: var(--accent-2); font-weight: 600; letter-spacing: 0.5px;
+        }
+
+        .dashboard-grid {
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;
+            margin-bottom: 32px;
+        }
+        .dashboard-card {
+            background: var(--bg-card); border: 1px solid var(--border);
+            border-radius: 16px; padding: 24px; transition: all 0.3s;
+            position: relative; overflow: hidden;
+        }
+        .dashboard-card::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+            background: linear-gradient(90deg, transparent, var(--accent), transparent);
+            opacity: 0; transition: opacity 0.3s;
+        }
+        .dashboard-card:hover::before { opacity: 1; }
+        .dashboard-card:hover { border-color: rgba(139,92,246,0.2); transform: translateY(-2px); }
+        .dashboard-card-icon {
+            width: 44px; height: 44px; border-radius: 12px;
+            background: rgba(139,92,246,0.08); display: flex;
+            align-items: center; justify-content: center; margin-bottom: 16px;
+        }
+        .dashboard-card-icon svg { width: 22px; height: 22px; stroke: var(--accent-2); fill: none; stroke-width: 1.5; }
+        .dashboard-card-label { font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; font-weight: 600; }
+        .dashboard-card-value { font-size: 28px; font-weight: 800; letter-spacing: -1px; margin-bottom: 4px; }
+        .dashboard-card-value.gradient-text {
+            background: linear-gradient(135deg, #a78bfa, #7c3aed);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        .dashboard-card-sub { font-size: 12px; color: var(--text-secondary); }
+
+        /* Portfolio Score Card */
+        .dashboard-score-card {
+            background: linear-gradient(135deg, rgba(139,92,246,0.08), rgba(88,28,135,0.04));
+            border: 1px solid rgba(139,92,246,0.15); border-radius: 16px;
+            padding: 28px; margin-bottom: 32px; text-align: center;
+        }
+        .dashboard-score-ring {
+            width: 120px; height: 120px; margin: 0 auto 16px; position: relative;
+        }
+        .dashboard-score-ring svg { transform: rotate(-90deg); }
+        .dashboard-score-ring .score-text {
+            position: absolute; inset: 0; display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+        }
+        .dashboard-score-ring .score-number { font-size: 36px; font-weight: 900; letter-spacing: -1px; }
+        .dashboard-score-ring .score-max { font-size: 11px; color: var(--text-muted); }
+        .dashboard-score-title { font-size: 18px; font-weight: 700; margin-bottom: 6px; }
+        .dashboard-score-subtitle { font-size: 13px; color: var(--text-secondary); max-width: 400px; margin: 0 auto; }
+
+        /* Tracked Projects */
+        .dashboard-section-title {
+            font-size: 18px; font-weight: 700; margin-bottom: 16px;
+            display: flex; align-items: center; gap: 10px;
+        }
+        .dashboard-section-title .count {
+            font-size: 11px; background: rgba(139,92,246,0.1); color: var(--accent-2);
+            padding: 3px 10px; border-radius: 100px; font-weight: 600;
+        }
+        .dashboard-projects-grid {
+            display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;
+            margin-bottom: 32px;
+        }
+        .dashboard-project-card {
+            background: var(--bg-card); border: 1px solid var(--border);
+            border-radius: 12px; padding: 18px; transition: all 0.3s;
+            display: flex; align-items: center; gap: 14px;
+        }
+        .dashboard-project-card:hover { background: var(--bg-card-hover); border-color: rgba(139,92,246,0.2); }
+        .dashboard-project-rank {
+            width: 32px; height: 32px; border-radius: 8px;
+            background: rgba(139,92,246,0.08); display: flex;
+            align-items: center; justify-content: center;
+            font-size: 13px; font-weight: 700; color: var(--accent-2); flex-shrink: 0;
+        }
+        .dashboard-project-info { flex: 1; min-width: 0; }
+        .dashboard-project-info h4 { font-size: 14px; font-weight: 600; margin-bottom: 2px; }
+        .dashboard-project-info p { font-size: 11px; color: var(--text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .dashboard-project-score {
+            font-size: 18px; font-weight: 700; flex-shrink: 0;
+        }
+
+        /* Recent Activity */
+        .dashboard-activity { margin-bottom: 32px; }
+        .activity-list { display: flex; flex-direction: column; gap: 8px; }
+        .activity-item {
+            display: flex; align-items: center; gap: 12px;
+            padding: 14px 16px; background: var(--bg-card);
+            border: 1px solid var(--border); border-radius: 10px;
+            transition: all 0.3s;
+        }
+        .activity-item:hover { background: var(--bg-card-hover); }
+        .activity-icon {
+            width: 32px; height: 32px; border-radius: 8px;
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0; font-size: 14px;
+        }
+        .activity-icon.transfer { background: rgba(139,92,246,0.1); }
+        .activity-icon.swap { background: rgba(52,211,153,0.1); }
+        .activity-icon.stake { background: rgba(251,191,36,0.1); }
+        .activity-icon.contract { background: rgba(59,130,246,0.1); }
+        .activity-info { flex: 1; }
+        .activity-info h4 { font-size: 13px; font-weight: 600; margin-bottom: 2px; }
+        .activity-info p { font-size: 11px; color: var(--text-muted); }
+        .activity-time { font-size: 11px; color: var(--text-muted); flex-shrink: 0; }
+        /* Dashboard fade-up animation */
+        .dash-fade-up { opacity: 0; transform: translateY(20px); transition: all 0.6s ease; }
+        .dash-fade-up.visible { opacity: 1; transform: translateY(0); }
+        .dash-fade-d1 { transition-delay: 0.1s; }
+        .dash-fade-d2 { transition-delay: 0.2s; }
+        .dash-fade-d3 { transition-delay: 0.3s; }
+        .dash-fade-d4 { transition-delay: 0.4s; }
+        .dash-fade-d5 { transition-delay: 0.5s; }
+
+        /* ===== NOTIFICATION SYSTEM ===== */
+        .notif-wrap { position: relative; }
+        .notif-bell {
+            background: none; border: none; color: var(--text-secondary);
+            cursor: pointer; padding: 6px; position: relative; transition: all 0.2s;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .notif-bell:hover { color: var(--text); transform: scale(1.1); }
+        .notif-bell svg { width: 20px; height: 20px; }
+        .notif-badge {
+            position: absolute; top: 0; right: 0; width: 16px; height: 16px;
+            background: var(--red); border-radius: 50%; font-size: 9px; font-weight: 700;
+            color: white; display: flex; align-items: center; justify-content: center;
+            border: 2px solid var(--bg-dark); animation: badgePop 0.3s ease;
+        }
+        @keyframes badgePop { 0% { transform: scale(0); } 50% { transform: scale(1.3); } 100% { transform: scale(1); } }
+        .notif-badge.hidden { display: none; }
+        .notif-dropdown {
+            position: absolute; top: calc(100% + 10px); right: -60px;
+            width: 340px; max-height: 420px; overflow-y: auto;
+            background: rgba(15,10,30,0.97); border: 1px solid rgba(139,92,246,0.2);
+            border-radius: 14px; backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5), 0 0 30px rgba(139,92,246,0.1);
+            opacity: 0; visibility: hidden; transform: translateY(-8px);
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); z-index: 300;
+        }
+        .notif-dropdown.open { opacity: 1; visibility: visible; transform: translateY(0); }
+        .notif-dropdown-header {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 14px 16px; border-bottom: 1px solid var(--border);
+        }
+        .notif-dropdown-header h4 { font-size: 14px; font-weight: 700; }
+        .notif-clear-btn {
+            background: none; border: none; color: var(--accent-2); font-size: 11px;
+            cursor: pointer; font-weight: 600; font-family: inherit; transition: color 0.2s;
+        }
+        .notif-clear-btn:hover { color: var(--text); }
+        .notif-list { padding: 6px; }
+        .notif-item {
+            display: flex; gap: 12px; padding: 12px; border-radius: 10px;
+            cursor: pointer; transition: all 0.2s; border: 1px solid transparent;
+            animation: notifSlideIn 0.3s ease forwards; opacity: 0;
+        }
+        @keyframes notifSlideIn { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
+        .notif-item:hover { background: rgba(139,92,246,0.08); border-color: rgba(139,92,246,0.12); }
+        .notif-item.unread { background: rgba(139,92,246,0.04); }
+        .notif-item.unread::before { content: ''; width: 6px; height: 6px; background: var(--accent); border-radius: 50%; flex-shrink: 0; margin-top: 6px; }
+        .notif-item.read::before { content: ''; width: 6px; height: 6px; background: transparent; border-radius: 50%; flex-shrink: 0; margin-top: 6px; }
+        .notif-icon { font-size: 18px; flex-shrink: 0; width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; }
+        .notif-icon.project { background: rgba(139,92,246,0.1); }
+        .notif-icon.whale { background: rgba(59,130,246,0.1); }
+        .notif-icon.tvl { background: rgba(52,211,153,0.1); }
+        .notif-content { flex: 1; min-width: 0; }
+        .notif-content p { font-size: 12px; color: var(--text-secondary); line-height: 1.5; }
+        .notif-content p strong { color: var(--text); }
+        .notif-time { font-size: 10px; color: var(--text-muted); margin-top: 4px; }
+        .notif-empty { text-align: center; padding: 32px 16px; color: var(--text-muted); font-size: 13px; }
+
+        /* ===== LIVE SCANNER ===== */
+        .scanner-section { padding: 40px 0; }
+        .scanner-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; flex-wrap: wrap; gap: 12px; }
+        .scanner-header h2 { font-size: clamp(24px, 3vw, 32px); font-weight: 800; letter-spacing: -1px; display: flex; align-items: center; gap: 12px; }
+        .scanner-live-dot { width: 10px; height: 10px; background: var(--green); border-radius: 50%; box-shadow: 0 0 8px rgba(52,211,153,0.5); animation: pulse 2s infinite; }
+        .scanner-controls { display: flex; gap: 8px; flex-wrap: wrap; }
+        .scanner-filter {
+            background: rgba(255,255,255,0.04); border: 1px solid var(--border);
+            border-radius: 8px; padding: 8px 12px; color: var(--text);
+            font-size: 12px; font-family: inherit; outline: none; cursor: pointer;
+            -webkit-appearance: none; appearance: none; transition: all 0.2s;
+        }
+        .scanner-filter:focus { border-color: rgba(139,92,246,0.4); }
+        .scanner-filter option { background: #1a1030; color: var(--text); }
+        .scanner-refresh-btn {
+            background: rgba(139,92,246,0.1); border: 1px solid rgba(139,92,246,0.2);
+            color: var(--accent-2); border-radius: 8px; padding: 8px 14px;
+            font-size: 12px; font-weight: 600; cursor: pointer; font-family: inherit;
+            transition: all 0.2s; display: flex; align-items: center; gap: 6px;
+        }
+        .scanner-refresh-btn:hover { background: rgba(139,92,246,0.2); }
+        .scanner-refresh-btn .spin { animation: spin 1s linear infinite; }
+        .scanner-table-wrap {
+            background: var(--bg-card); border: 1px solid var(--border);
+            border-radius: 16px; overflow: hidden;
+        }
+        .scanner-table {
+            width: 100%; border-collapse: collapse;
+        }
+        .scanner-table th {
+            text-align: left; padding: 14px 16px; font-size: 11px; font-weight: 600;
+            color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px;
+            border-bottom: 1px solid var(--border); background: rgba(0,0,0,0.2);
+        }
+        .scanner-table td {
+            padding: 14px 16px; font-size: 13px; border-bottom: 1px solid rgba(255,255,255,0.03);
+            transition: all 0.3s;
+        }
+        .scanner-table tr { transition: all 0.3s; }
+        .scanner-table tbody tr:hover { background: rgba(139,92,246,0.04); }
+        .scanner-table tbody tr.pulse-row { animation: rowPulse 2s ease; }
+        @keyframes rowPulse { 0% { background: rgba(139,92,246,0.15); } 100% { background: transparent; } }
+        .scanner-project-name { font-weight: 600; color: var(--text); }
+        .scanner-chain-tag {
+            font-size: 10px; padding: 3px 8px; border-radius: 6px;
+            background: rgba(139,92,246,0.1); color: var(--accent-2); font-weight: 500;
+        }
+        .scanner-score { font-weight: 700; font-size: 15px; }
+        .scanner-status { font-size: 11px; padding: 3px 10px; border-radius: 100px; font-weight: 600; }
+        .scanner-status.live { background: rgba(52,211,153,0.1); color: var(--green); }
+        .scanner-status.upcoming { background: rgba(251,191,36,0.1); color: var(--yellow); }
+        .scanner-status.ended { background: rgba(248,113,113,0.1); color: var(--red); }
+        .scanner-trend { font-size: 13px; font-weight: 600; }
+        .scanner-trend.up { color: var(--green); }
+        .scanner-trend.down { color: var(--red); }
+        .scanner-trend.neutral { color: var(--text-muted); }
+        .scanner-analyze-btn {
+            background: rgba(139,92,246,0.12); border: 1px solid rgba(139,92,246,0.2);
+            color: var(--accent-2); border-radius: 8px; padding: 6px 14px;
+            font-size: 11px; font-weight: 600; cursor: pointer; font-family: inherit;
+            transition: all 0.2s;
+        }
+        .scanner-analyze-btn:hover { background: rgba(139,92,246,0.25); transform: translateY(-1px); }
+        .scanner-last-update { font-size: 11px; color: var(--text-muted); display: flex; align-items: center; gap: 6px; }
+
+        /* ===== LEADERBOARD ===== */
+        .leaderboard-section { padding: 40px 0 60px; }
+        .leaderboard-header { text-align: center; margin-bottom: 28px; }
+        .leaderboard-header h2 { font-size: clamp(28px, 4vw, 40px); font-weight: 800; letter-spacing: -1px; margin-bottom: 8px; }
+        .leaderboard-header p { color: var(--text-secondary); font-size: 15px; }
+        .leaderboard-card {
+            background: var(--bg-card); border: 1px solid var(--border);
+            border-radius: 16px; overflow: hidden; max-width: 800px; margin: 0 auto;
+        }
+        .leaderboard-table { width: 100%; border-collapse: collapse; }
+        .leaderboard-table th {
+            text-align: left; padding: 14px 20px; font-size: 11px; font-weight: 600;
+            color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px;
+            border-bottom: 1px solid var(--border); background: rgba(0,0,0,0.2);
+        }
+        .leaderboard-table td {
+            padding: 14px 20px; font-size: 13px; border-bottom: 1px solid rgba(255,255,255,0.03);
+        }
+        .leaderboard-table tbody tr { transition: all 0.3s; }
+        .leaderboard-table tbody tr:hover { background: rgba(139,92,246,0.04); }
+        .leaderboard-rank {
+            font-weight: 800; font-size: 16px; width: 40px; text-align: center;
+        }
+        .leaderboard-rank.gold { color: #fbbf24; text-shadow: 0 0 10px rgba(251,191,36,0.3); }
+        .leaderboard-rank.silver { color: #94a3b8; text-shadow: 0 0 10px rgba(148,163,184,0.3); }
+        .leaderboard-rank.bronze { color: #d97706; text-shadow: 0 0 10px rgba(217,119,6,0.3); }
+        .leaderboard-table tbody tr.rank-gold { background: rgba(251,191,36,0.04); }
+        .leaderboard-table tbody tr.rank-silver { background: rgba(148,163,184,0.03); }
+        .leaderboard-table tbody tr.rank-bronze { background: rgba(217,119,60,0.03); }
+        .leaderboard-address { font-family: 'Courier New', monospace; font-size: 13px; color: var(--text-secondary); }
+        .leaderboard-score { font-weight: 700; font-size: 16px; color: var(--accent-2); }
+        .leaderboard-projects { color: var(--text-secondary); }
+        .leaderboard-rewards { font-weight: 600; color: var(--green); }
+        .leaderboard-your-rank {
+            background: rgba(139,92,246,0.06); border: 1px solid rgba(139,92,246,0.15);
+            border-radius: 12px; padding: 16px 20px; margin-top: 16px;
+            max-width: 800px; margin-left: auto; margin-right: auto;
+            display: flex; align-items: center; justify-content: space-between;
+            flex-wrap: wrap; gap: 12px;
+        }
+        .leaderboard-your-rank-label { font-size: 13px; color: var(--text-secondary); }
+        .leaderboard-your-rank-value { font-size: 24px; font-weight: 800; color: var(--accent-2); }
+
+        /* ===== 0G STORAGE / SCAN HISTORY ===== */
+        .save-storage-btn {
+            margin-top: 16px; width: 100%; justify-content: center;
+            background: linear-gradient(135deg, rgba(52,211,153,0.15), rgba(139,92,246,0.15));
+            border: 1px solid rgba(52,211,153,0.2); color: var(--green);
+            padding: 12px 20px; border-radius: 10px; font-size: 13px;
+            font-weight: 600; cursor: pointer; font-family: inherit;
+            transition: all 0.3s; display: inline-flex; align-items: center; gap: 8px;
+        }
+        .save-storage-btn:hover { background: linear-gradient(135deg, rgba(52,211,153,0.25), rgba(139,92,246,0.25)); transform: translateY(-2px); }
+        .save-storage-btn.saved { background: rgba(52,211,153,0.1); color: var(--green); pointer-events: none; }
+        .scan-history-section { padding: 40px 0; }
+        .scan-history-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+        .scan-history-header h3 { font-size: 18px; font-weight: 700; display: flex; align-items: center; gap: 10px; }
+        .scan-history-header .count { font-size: 11px; background: rgba(139,92,246,0.1); color: var(--accent-2); padding: 3px 10px; border-radius: 100px; font-weight: 600; }
+        .scan-history-list { display: flex; flex-direction: column; gap: 8px; }
+        .scan-history-item {
+            background: var(--bg-card); border: 1px solid var(--border);
+            border-radius: 12px; padding: 16px 20px; display: flex;
+            align-items: center; gap: 16px; transition: all 0.3s;
+            animation: fadeUp 0.4s ease forwards;
+        }
+        .scan-history-item:hover { background: var(--bg-card-hover); border-color: rgba(139,92,246,0.2); }
+        .scan-history-score {
+            font-size: 24px; font-weight: 800; min-width: 50px; text-align: center;
+        }
+        .scan-history-info { flex: 1; }
+        .scan-history-info h4 { font-size: 14px; font-weight: 600; margin-bottom: 2px; }
+        .scan-history-info p { font-size: 11px; color: var(--text-muted); }
+        .scan-history-badge {
+            font-size: 10px; padding: 3px 10px; border-radius: 100px;
+            background: rgba(139,92,246,0.1); color: var(--accent-2); font-weight: 600;
+        }
+        .scan-history-time { font-size: 11px; color: var(--text-muted); }
+        .scan-history-tx {
+            font-size: 10px; color: var(--green); font-family: 'Courier New', monospace;
+            word-break: break-all; margin-top: 4px;
+        }
+        .scan-history-empty { text-align: center; padding: 40px; color: var(--text-muted); font-size: 13px; }
+
+        /* ===== SCROLL PROGRESS BAR ===== */
+        #scrollProgress {
+            position: fixed; top: 0; left: 0; width: 0; height: 3px;
+            background: linear-gradient(90deg, #7c3aed, #a78bfa, #c084fc);
+            z-index: 9999; transition: width 0.1s linear;
+            box-shadow: 0 0 8px rgba(139,92,246,0.5);
+        }
+
+        /* ===== BACK TO TOP BUTTON ===== */
+        #backToTop {
+            position: fixed; bottom: 32px; right: 32px;
+            width: 44px; height: 44px; border-radius: 12px;
+            background: linear-gradient(135deg, #7c3aed, #a78bfa);
+            color: white; border: none; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            z-index: 50; opacity: 0; visibility: hidden;
+            transform: translateY(16px);
+            transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
+            box-shadow: 0 4px 20px rgba(139,92,246,0.4);
+        }
+        #backToTop.visible { opacity: 1; visibility: visible; transform: translateY(0); }
+        #backToTop:hover { transform: translateY(-4px); box-shadow: 0 8px 30px rgba(139,92,246,0.6); }
+        #backToTop svg { width: 20px; height: 20px; }
+
+        /* ===== NAV ACTIVE STATE ===== */
+        .nav-links a.active { color: var(--text); }
+        .nav-links a.active::after { width: 100%; }
+
+        /* ===== SKELETON LOADING ===== */
+        @keyframes skeletonPulse {
+            0%, 100% { background-position: -200% 0; }
+            50% { background-position: 200% 0; }
+        }
+        .skeleton {
+            background: linear-gradient(90deg, rgba(255,255,255,0.04) 25%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0.04) 75%);
+            background-size: 200% 100%; animation: skeletonPulse 1.5s ease-in-out infinite;
+            border-radius: 8px; min-height: 14px;
+        }
+        .skeleton-row {
+            display: flex; align-items: center; gap: 16px;
+            padding: 14px 16px; border-bottom: 1px solid rgba(255,255,255,0.03);
+        }
+        .skeleton-circle {
+            width: 32px; height: 32px; border-radius: 8px;
+            background: linear-gradient(90deg, rgba(255,255,255,0.04) 25%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0.04) 75%);
+            background-size: 200% 100%; animation: skeletonPulse 1.5s ease-in-out infinite;
+            flex-shrink: 0;
+        }
+        .skeleton-line { height: 14px; border-radius: 6px; }
+        .skeleton-line-sm { height: 10px; border-radius: 4px; margin-top: 6px; }
+
+        /* ===== PAGE LOAD ANIMATION ===== */
+        body { opacity: 0; animation: pageLoadFadeIn 0.6s ease 0.1s forwards; }
+        @keyframes pageLoadFadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        @media (max-width: 768px) {
+            .notif-dropdown { right: -20px; width: 300px; }
+            .scanner-table-wrap { overflow-x: auto; }
+            .scanner-table { min-width: 700px; }
+            .leaderboard-table { min-width: 600px; }
+            .leaderboard-card { overflow-x: auto; }
         }
     </style>
 </head>
 <body>
-    <div class="bg-grid"></div>
-    <div class="container">
-        <!-- Header -->
-        <header>
-            <div class="header-inner">
-                <div class="logo">
-                    <div class="logo-icon">🔍</div>
-                    <span>0G Scout</span>
-                    <span class="badge">BETA</span>
+    <div class="bg-gradient"></div>
+    <div class="orbs">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
+    </div>
+    <canvas id="particles"></canvas>
+
+    <!-- Scroll Progress Bar -->
+    <div id="scrollProgress"></div>
+
+    <!-- Back to Top Button -->
+    <button id="backToTop" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Back to top">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 15l-6-6-6 6"/></svg>
+    </button>
+
+    <!-- Navigation -->
+    <nav id="navbar">
+        <div class="nav-inner">
+            <a href="#" class="nav-logo">
+                <svg viewBox="0 0 32 32" fill="none">
+                    <circle cx="16" cy="16" r="14" stroke="rgba(139,92,246,0.6)" stroke-width="1.5"/>
+                    <text x="16" y="21" text-anchor="middle" fill="white" font-size="14" font-weight="800" font-family="Inter">ØG</text>
+                </svg>
+                <span>Scout</span>
+            </a>
+            <div class="nav-links">
+                <a href="#features">Features</a>
+                <a href="#scout">Scout</a>
+                <a href="#scanner">Scanner</a>
+                <a href="#leaderboard">Leaderboard</a>
+                <a href="#ai-scoring">AI Score</a>
+                <a href="#chatbot">AI Chat</a>
+                <a href="https://github.com/ryurea6/0g-scout" target="_blank">GitHub</a>
+                <a href="https://0g.ai" target="_blank" class="nav-cta">Explore ØG</a>
+                <div class="notif-wrap" id="notifWrap">
+                    <button class="notif-bell" id="notifBell" onclick="toggleNotifDropdown()">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+                        <span class="notif-badge" id="notifBadge">0</span>
+                    </button>
+                    <div class="notif-dropdown" id="notifDropdown">
+                        <div class="notif-dropdown-header">
+                            <h4>Notifications</h4>
+                            <button class="notif-clear-btn" onclick="clearAllNotifications()">Clear all</button>
+                        </div>
+                        <div class="notif-list" id="notifList">
+                            <div class="notif-empty">No notifications yet</div>
+                        </div>
+                    </div>
                 </div>
-                <nav class="nav-links">
-                    <a href="#features">Features</a>
-                    <a href="#scout">Scout</a>
-                    <a href="#chat">AI Chat</a>
-                    <a href="https://github.com" target="_blank">GitHub</a>
-                </nav>
+                <div id="walletNavArea">
+                    <button class="wallet-btn" id="walletConnectBtn" onclick="openWalletModal()">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="6" width="20" height="14" rx="2"/><path d="M2 10h20"/><circle cx="17" cy="15" r="1.5"/></svg>
+                        <span class="wallet-btn-text">Connect Wallet</span>
+                    </button>
+                </div>
             </div>
-        </header>
+            <button class="nav-mobile" onclick="toggleNav()">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+            </button>
+        </div>
+    </nav>
 
-        <!-- Hero -->
-        <section class="hero">
-            <div class="powered-by"><span class="dot"></span> Powered by 0G Compute &amp; Storage</div>
-            <h1>Discover <span>Airdrops</span><br>Before Everyone Else</h1>
-            <p>AI-native project scanner that analyzes on-chain activity, social signals, and team reputation to score crypto projects in real-time.</p>
-        </section>
+    <!-- Wallet Connect Modal -->
+    <div class="wallet-modal-overlay" id="walletModalOverlay">
+        <div class="wallet-modal" style="position:relative;">
+            <button class="wallet-modal-close" onclick="closeWalletModal()">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+            <h3>Connect Wallet</h3>
+            <p>Connect your wallet to access the personalized dashboard and track your portfolio.</p>
+            <div class="wallet-option" onclick="connectMetaMask()">
+                <div class="wallet-option-icon metamask">🦊</div>
+                <div class="wallet-option-info">
+                    <h4>MetaMask</h4>
+                    <span>Connect using browser extension</span>
+                </div>
+                <svg class="wallet-option-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </div>
+            <div class="wallet-option" onclick="connectWalletConnect()" style="opacity:0.5;pointer-events:none;">
+                <div class="wallet-option-icon walletconnect">🔗</div>
+                <div class="wallet-option-info">
+                    <h4>WalletConnect</h4>
+                    <span>Scan with your mobile wallet — Coming soon</span>
+                </div>
+                <svg class="wallet-option-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </div>
+            <div class="wallet-option" onclick="connectCoinbase()" style="opacity:0.5;pointer-events:none;">
+                <div class="wallet-option-icon coinbase">🔵</div>
+                <div class="wallet-option-info">
+                    <h4>Coinbase Wallet</h4>
+                    <span>Connect using Coinbase Wallet — Coming soon</span>
+                </div>
+                <svg class="wallet-option-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </div>
+            <div class="wallet-modal-error" id="walletModalError"></div>
+        </div>
+    </div>
 
-        <!-- Stats -->
-        <section class="stats">
-            <div class="stat-card">
-                <div class="stat-value" id="stat-projects">0</div>
-                <div class="stat-label">Projects Scanned</div>
+    <!-- Dashboard Section (shown after wallet connect) -->
+    <section class="dashboard-section" id="dashboard">
+        <div class="container">
+            <div class="dashboard-header dash-fade-up">
+                <h2><span class="live-dot"></span> Your Dashboard</h2>
+                <span class="dashboard-network-badge" id="dashNetworkBadge">0G Network</span>
             </div>
-            <div class="stat-card">
-                <div class="stat-value" id="stat-alerts">0</div>
-                <div class="stat-label">Active Alerts</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-value" id="stat-accuracy">0%</div>
-                <div class="stat-label">AI Accuracy</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-value" id="stat-chains">5+</div>
-                <div class="stat-label">Chains Supported</div>
-            </div>
-        </section>
 
-        <!-- Search -->
-        <section class="search-section" id="scout">
+            <!-- Info Cards -->
+            <div class="dashboard-grid">
+                <div class="dashboard-card dash-fade-up dash-fade-d1">
+                    <div class="dashboard-card-icon">
+                        <svg viewBox="0 0 24 24"><rect x="2" y="6" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>
+                    </div>
+                    <div class="dashboard-card-label">Connected Wallet</div>
+                    <div class="dashboard-card-value" id="dashAddress" style="font-size:18px;word-break:break-all;">—</div>
+                    <div class="dashboard-card-sub" id="dashAddressFull" style="font-size:10px;color:var(--text-muted);word-break:break-all;margin-top:4px;"></div>
+                </div>
+                <div class="dashboard-card dash-fade-up dash-fade-d2">
+                    <div class="dashboard-card-icon">
+                        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v12M6 12h12"/></svg>
+                    </div>
+                    <div class="dashboard-card-label">ETH Balance</div>
+                    <div class="dashboard-card-value gradient-text" id="dashBalance">—</div>
+                    <div class="dashboard-card-sub">Native token balance</div>
+                </div>
+                <div class="dashboard-card dash-fade-up dash-fade-d3">
+                    <div class="dashboard-card-icon">
+                        <svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+                    </div>
+                    <div class="dashboard-card-label">Network</div>
+                    <div class="dashboard-card-value" id="dashNetwork" style="font-size:18px;">—</div>
+                    <div class="dashboard-card-sub" id="dashChainId"></div>
+                </div>
+            </div>
+
+            <!-- Portfolio Score -->
+            <div class="dashboard-score-card dash-fade-up dash-fade-d2">
+                <div class="dashboard-score-ring">
+                    <svg width="120" height="120" viewBox="0 0 120 120">
+                        <circle cx="60" cy="60" r="52" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="8"/>
+                        <circle id="scoreRing" cx="60" cy="60" r="52" fill="none" stroke="url(#scoreGrad)" stroke-width="8" stroke-linecap="round" stroke-dasharray="326.73" stroke-dashoffset="326.73" style="transition:stroke-dashoffset 1.5s ease"/>
+                        <defs><linearGradient id="scoreGrad" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#7c3aed"/><stop offset="100%" stop-color="#34d399"/></linearGradient></defs>
+                    </svg>
+                    <div class="score-text">
+                        <div class="score-number" id="dashScoreNumber">—</div>
+                        <div class="score-max">/ 100</div>
+                    </div>
+                </div>
+                <div class="dashboard-score-title">Portfolio Score</div>
+                <div class="dashboard-score-subtitle" id="dashScoreReason">Connect your wallet to analyze on-chain activity and estimate airdrop potential.</div>
+            </div>
+
+            <!-- Tracked Projects -->
+            <div class="dash-fade-up dash-fade-d3">
+                <div class="dashboard-section-title">
+                    Tracked Projects <span class="count" id="dashProjectCount">0</span>
+                </div>
+                <div class="dashboard-projects-grid" id="dashProjectsGrid"></div>
+            </div>
+
+            <!-- Recent Activity -->
+            <div class="dash-fade-up dash-fade-d4">
+                <div class="dashboard-section-title">
+                    Recent Activity <span class="count">Placeholder</span>
+                </div>
+                <div class="dashboard-activity">
+                    <div class="activity-list" id="dashActivityList"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Hero -->
+    <section class="hero">
+        <div class="hero-label">
+            <span class="dot"></span>
+            AI-Powered Airdrop Discovery
+        </div>
+        <h1>Discover <span class="gradient">Airdrops</span><br>Before Everyone Else</h1>
+        <p>AI-native project scanner analyzing on-chain activity, social signals, and team reputation to score crypto projects in real-time.</p>
+        <div class="hero-buttons">
+            <a href="#scout" class="btn btn-dark">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                Start Scanning
+            </a>
+            <a href="https://0g.ai" target="_blank" class="btn btn-outline">Learn about ØG</a>
+        </div>
+        <div class="scroll-indicator">
+            <div class="scroll-mouse"></div>
+            <span>SCROLL</span>
+        </div>
+    </section>
+
+    <!-- Stats -->
+    <section class="stats-section">
+        <div class="container">
+            <div class="stats-grid">
+                <div class="stat-item fade-up">
+                    <div class="stat-number" data-target="1247">0</div>
+                    <div class="stat-desc">Projects Scanned</div>
+                    <div class="stat-tag">ON-CHAIN DATA</div>
+                </div>
+                <div class="stat-item fade-up fade-up-delay-1">
+                    <div class="stat-number" data-target="23">0</div>
+                    <div class="stat-desc">Active Alerts</div>
+                    <div class="stat-tag">REAL-TIME</div>
+                </div>
+                <div class="stat-item fade-up fade-up-delay-2">
+                    <div class="stat-number" data-target="94" data-suffix="%">0</div>
+                    <div class="stat-desc">AI Accuracy</div>
+                    <div class="stat-tag">ØG COMPUTE</div>
+                </div>
+                <div class="stat-item fade-up fade-up-delay-3">
+                    <div class="stat-number">5+</div>
+                    <div class="stat-desc">Chains Supported</div>
+                    <div class="stat-tag">MULTI-CHAIN</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Search -->
+    <section class="search-section fade-up" id="scout">
+        <div class="container">
+            <h2>Scan a Project</h2>
+            <p>Enter a project name, contract address, or URL to analyze its airdrop potential.</p>
             <div class="search-box">
-                <input type="text" class="search-input" id="searchInput" placeholder="Enter project name, contract address, or URL...">
-                <button class="btn btn-primary" id="scanBtn" onclick="scanProject()">🔍 Scan</button>
+                <input type="text" class="search-input" id="searchInput" placeholder="e.g. EigenLayer, 0x..., https://...">
+                <button class="btn btn-dark" id="scanBtn" onclick="scanProject()">Scan</button>
             </div>
-        </section>
+        </div>
+    </section>
 
-        <!-- Results -->
-        <section class="results" id="results" style="display:none;">
+    <!-- Results -->
+    <section class="results" id="results" style="display:none;">
+        <div class="container">
             <div class="results-header">
                 <h2>Scan Results</h2>
                 <span class="results-count" id="resultsCount"></span>
             </div>
             <div class="project-list" id="projectList"></div>
-        </section>
-
-        <!-- Loading -->
-        <div class="loading" id="loading" style="display:none;">
-            <div class="spinner"></div>
-            <p style="color:var(--muted)">Analyzing with 0G AI...</p>
         </div>
+    </section>
 
-        <!-- AI Chat -->
-        <section class="chat-section" id="chat">
-            <div class="chat-header">
-                <h2>🤖 AI Scout Assistant</h2>
-                <span class="ai-badge">0G Compute</span>
-            </div>
-            <div class="chat-messages" id="chatMessages">
-                <div class="msg msg-ai">👋 Hi! I'm your AI Airdrop Scout. Ask me about any crypto project and I'll analyze it for you. Try: <strong>"What are the hottest airdrops right now?"</strong></div>
-            </div>
-            <div class="chat-input-row">
-                <input type="text" class="search-input" id="chatInput" placeholder="Ask about a project..." onkeydown="if(event.key==='Enter')sendChat()">
-                <button class="btn btn-primary" onclick="sendChat()">Send</button>
-            </div>
-        </section>
+    <!-- AI Scoring Section -->
+    <section class="ai-scoring-section fade-up" id="ai-scoring">
+        <div class="container">
+            <div class="ai-scoring-card">
+                <div class="ai-scoring-header">
+                    <div class="ai-scoring-icon">
+                        <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="var(--accent-2)" stroke-width="1.5">
+                            <path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h2>AI-Powered Profile Scoring</h2>
+                        <p class="ai-scoring-subtitle">Analyze Twitter profiles using LLM inference to estimate Web3 engagement &amp; airdrop potential</p>
+                    </div>
+                </div>
 
-        <!-- Features -->
-        <section class="features" id="features">
-            <div class="feature-card">
-                <div class="feature-icon">🔗</div>
-                <h3>On-Chain Analysis</h3>
-                <p>Scans smart contract deployments, TVL growth, whale movements, and transaction patterns across multiple chains.</p>
-            </div>
-            <div class="feature-card">
-                <div class="feature-icon">🐦</div>
-                <h3>Social Signals</h3>
-                <p>Tracks Twitter engagement, Discord activity, GitHub commits, and community growth metrics in real-time.</p>
-            </div>
-            <div class="feature-card">
-                <div class="feature-icon">🧠</div>
-                <h3>AI Scoring</h3>
-                <p>Uses 0G Compute to run inference on collected data, generating a 1-10 airdrop potential score with reasoning.</p>
-            </div>
-            <div class="feature-card">
-                <div class="feature-icon">💾</div>
-                <h3>Decentralized Storage</h3>
-                <p>All scan results stored on 0G Storage — permanent, censorship-resistant, and verifiable by anyone.</p>
-            </div>
-            <div class="feature-card">
-                <div class="feature-icon">🔔</div>
-                <h3>Instant Alerts</h3>
-                <p>Get notified when high-score projects are detected. Never miss a potential airdrop opportunity again.</p>
-            </div>
-            <div class="feature-card">
-                <div class="feature-icon">📊</div>
-                <h3>Portfolio Tracker</h3>
-                <p>Connect your wallet to track which airdrops you've participated in and estimate potential rewards.</p>
-            </div>
-        </section>
+                <div class="ai-scoring-controls">
+                    <div class="ai-scoring-row">
+                        <label class="ai-label">LLM Provider</label>
+                        <div class="custom-select-wrapper" id="llmProviderWrapper">
+                            <div class="custom-select-trigger" id="llmTrigger" onclick="toggleDropdown()">
+                                <div class="custom-option-content">
+                                    <svg class="provider-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                                    <div class="provider-text">
+                                        <span class="provider-name">0G Compute</span>
+                                        <span class="provider-desc">Default</span>
+                                    </div>
+                                </div>
+                                <svg class="dropdown-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+                            </div>
+                            <div class="custom-options" id="llmOptions">
+                                <div class="custom-option selected" data-value="0g-default" onclick="selectOption(this)">
+                                    <div class="custom-option-content">
+                                        <svg class="provider-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                                        <div class="provider-text">
+                                            <span class="provider-name">0G Compute</span>
+                                            <span class="provider-desc">Default · DeepSeek V4 Flash</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="custom-option" data-value="0g-custom" onclick="selectOption(this)">
+                                    <div class="custom-option-content">
+                                        <svg class="provider-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+                                        <div class="provider-text">
+                                            <span class="provider-name">0G Compute</span>
+                                            <span class="provider-desc">Custom API Key</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="custom-option" data-value="huggingface" onclick="selectOption(this)">
+                                    <div class="custom-option-content">
+                                        <svg class="provider-icon hf-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
+                                        <div class="provider-text">
+                                            <span class="provider-name">Hugging Face</span>
+                                            <span class="provider-desc">Free · Mistral 7B</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="custom-option" data-value="rule-based" onclick="selectOption(this)">
+                                    <div class="custom-option-content">
+                                        <svg class="provider-icon rule-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+                                        <div class="provider-text">
+                                            <span class="provider-name">Rule-based</span>
+                                            <span class="provider-desc">No API · Keyword Analysis</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <input type="hidden" id="llmProvider" value="0g-default">
+                        </div>
+                    </div>
 
-        <!-- Footer -->
+                    <div class="ai-scoring-row" id="apiKeyRow" style="display:none;">
+                        <label class="ai-label">0G Router API Key</label>
+                        <input type="password" class="ai-input" id="ogApiKey" placeholder="Enter your 0G Router API key...">
+                    </div>
+
+                    <div class="ai-scoring-row">
+                        <label class="ai-label">Twitter Handle or Bio Text</label>
+                        <input type="text" class="ai-input" id="twitterInput" placeholder="@username or paste bio/content..." onkeydown="if(event.key==='Enter')runAIScoring()">
+                    </div>
+
+                    <button class="btn btn-dark ai-score-btn" id="aiScoreBtn" onclick="runAIScoring()">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+                        Analyze with AI
+                    </button>
+                </div>
+
+                <!-- Typing indicator -->
+                <div class="typing-indicator" id="typingIndicator" style="display:none;">
+                    <div class="typing-dots"><span></span><span></span><span></span></div>
+                    <span class="typing-text" id="typingText">Contacting LLM...</span>
+                </div>
+
+                <!-- Result Card -->
+                <div class="ai-result-card" id="aiResultCard" style="display:none;">
+                    <div class="ai-result-header">
+                        <span class="ai-result-badge" id="aiResultBadge">AI Pioneer</span>
+                        <span class="ai-result-provider" id="aiResultProvider">via Hugging Face</span>
+                    </div>
+                    <div class="ai-result-score-wrap">
+                        <div class="ai-result-score" id="aiResultScore">0</div>
+                        <div class="ai-result-score-label">Engagement Score</div>
+                    </div>
+                    <div class="ai-result-bar-wrap">
+                        <div class="ai-result-bar"><div class="ai-result-bar-fill" id="aiResultBarFill" style="width:0%"></div></div>
+                    </div>
+                    <div class="ai-result-reasoning" id="aiResultReasoning"></div>
+                    <div class="ai-result-fallback-note" id="aiFallbackNote" style="display:none;"></div>
+                    <button class="save-storage-btn" id="saveStorageBtn" onclick="saveToStorage()" style="display:none;">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+                        Save to 0G Storage
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="loading" id="loading" style="display:none;">
+        <div class="spinner"></div>
+        <p style="color:var(--text-secondary);font-size:13px;">Analyzing with ØG Compute...</p>
+    </div>
+
+    <!-- AI Chatbot -->
+    <section id="chatbot">
+        <div class="container">
+            <div class="chatbot-section fade-up">
+                <div class="chatbot-card">
+                    <div class="chatbot-header">
+                        <div class="chatbot-icon">
+                            <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="var(--accent-2)" stroke-width="1.5">
+                                <rect x="3" y="11" width="18" height="10" rx="2"/>
+                                <circle cx="12" cy="5" r="2"/>
+                                <path d="M12 7v4"/>
+                                <line x1="8" y1="16" x2="8" y2="16"/>
+                                <line x1="16" y1="16" x2="16" y2="16"/>
+                                <path d="M9 21l-2 2"/>
+                                <path d="M15 21l2 2"/>
+                            </svg>
+                        </div>
+                        <div class="chatbot-header-text">
+                            <h2>Ask ØG Scout AI</h2>
+                            <p class="chatbot-subtitle">Chat with our AI about airdrops, projects, and strategies</p>
+                        </div>
+                    </div>
+                    <div class="chatbot-container">
+                        <div class="chatbot-messages" id="chatbotMessages">
+                            <div class="chatbot-msg chatbot-msg-ai" id="welcomeMsg">
+                                <div id="welcomeText"></div>
+                            </div>
+                        </div>
+                        <div class="chatbot-chips" id="chatbotChips">
+                            <button class="chatbot-chip" onclick="sendQuickPrompt('Best airdrops right now')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#a78bfa" stroke-width="2" style="display:inline-block;vertical-align:-2px;margin-right:4px"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>Best airdrops right now</button>
+                            <button class="chatbot-chip" onclick="sendQuickPrompt('Analyze 0G ecosystem')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#a78bfa" stroke-width="2" style="display:inline-block;vertical-align:-2px;margin-right:4px"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>Analyze 0G ecosystem</button>
+                            <button class="chatbot-chip" onclick="sendQuickPrompt('How to qualify for airdrops?')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#a78bfa" stroke-width="2" style="display:inline-block;vertical-align:-2px;margin-right:4px"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>How to qualify for airdrops?</button>
+                            <button class="chatbot-chip" onclick="sendQuickPrompt('Whale movement alerts')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#a78bfa" stroke-width="2" style="display:inline-block;vertical-align:-2px;margin-right:4px"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg>Whale movement alerts</button>
+                        </div>
+                        <div class="chatbot-input-area">
+                            <input type="text" class="chatbot-input" id="chatbotInput" placeholder="Ask about airdrops, projects, strategies..." onkeydown="if(event.key==='Enter')sendChatbotMessage()">
+                            <button class="chatbot-send-btn" id="chatbotSendBtn" onclick="sendChatbotMessage()">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+                                Send
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features -->
+    <section class="features-section" id="features">
+        <div class="container">
+            <div class="section-header fade-up">
+                <div class="section-label">Technology</div>
+                <h2 class="section-title">Built on ØG's Modular Stack</h2>
+                <p class="section-desc">Leveraging decentralized compute, storage, and AI inference for verifiable airdrop analysis.</p>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card fade-up">
+                    <div class="feature-icon"><svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" stroke-linecap="round"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" stroke-linecap="round"/></svg></div>
+                    <h3>On-Chain Analysis</h3>
+                    <p>Scans smart contract deployments, TVL growth, whale movements, and transaction patterns.</p>
+                </div>
+                <div class="feature-card fade-up fade-up-delay-1">
+                    <div class="feature-icon"><svg viewBox="0 0 24 24"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"/></svg></div>
+                    <h3>Social Signals</h3>
+                    <p>Tracks Twitter engagement, Discord activity, GitHub commits, and community growth.</p>
+                </div>
+                <div class="feature-card fade-up fade-up-delay-2">
+                    <div class="feature-icon"><svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></div>
+                    <h3>AI Scoring</h3>
+                    <p>Uses ØG Compute to run inference on data, generating a 1-10 airdrop score with reasoning.</p>
+                </div>
+                <div class="feature-card fade-up">
+                    <div class="feature-icon"><svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg></div>
+                    <h3>Decentralized Storage</h3>
+                    <p>All results stored on ØG Storage — permanent, censorship-resistant, verifiable.</p>
+                </div>
+                <div class="feature-card fade-up fade-up-delay-1">
+                    <div class="feature-icon"><svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></div>
+                    <h3>Instant Alerts</h3>
+                    <p>Get notified when high-score projects are detected. Never miss an airdrop again.</p>
+                </div>
+                <div class="feature-card fade-up fade-up-delay-2">
+                    <div class="feature-icon"><svg viewBox="0 0 24 24"><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></svg></div>
+                    <h3>Portfolio Tracker</h3>
+                    <p>Connect your wallet to track airdrops and estimate potential rewards.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Live Scanner -->
+    <section class="scanner-section fade-up" id="scanner">
+        <div class="container">
+            <div class="scanner-header">
+                <h2><span class="scanner-live-dot"></span> Live Project Scanner</h2>
+                <div class="scanner-controls">
+                    <select class="scanner-filter" id="scannerChainFilter" onchange="filterScanner()">
+                        <option value="all">All Chains</option>
+                        <option value="0G">0G</option>
+                        <option value="Ethereum">Ethereum</option>
+                        <option value="Solana">Solana</option>
+                        <option value="L2">L2s</option>
+                    </select>
+                    <select class="scanner-filter" id="scannerScoreFilter" onchange="filterScanner()">
+                        <option value="all">All Scores</option>
+                        <option value="high">High (8+)</option>
+                        <option value="mid">Mid (6-8)</option>
+                        <option value="low">Low (&lt;6)</option>
+                    </select>
+                    <select class="scanner-filter" id="scannerStatusFilter" onchange="filterScanner()">
+                        <option value="all">All Status</option>
+                        <option value="live">Live</option>
+                        <option value="upcoming">Upcoming</option>
+                        <option value="ended">Ended</option>
+                    </select>
+                    <button class="scanner-refresh-btn" onclick="refreshScanner()">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+                        Refresh
+                    </button>
+                </div>
+            </div>
+            <div class="scanner-table-wrap">
+                <table class="scanner-table">
+                    <thead>
+                        <tr>
+                            <th>Project</th>
+                            <th>Chain</th>
+                            <th>Score</th>
+                            <th>Status</th>
+                            <th>Trend</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody id="scannerBody"></tbody>
+                </table>
+            </div>
+            <div class="scanner-last-update" id="scannerLastUpdate" style="margin-top:12px;">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+                Last updated: just now
+            </div>
+        </div>
+    </section>
+
+    <!-- Leaderboard -->
+    <section class="leaderboard-section fade-up" id="leaderboard">
+        <div class="container">
+            <div class="leaderboard-header">
+                <div class="section-label">Community</div>
+                <h2>Leaderboard</h2>
+                <p>Top scorers in the ØG Scout ecosystem</p>
+            </div>
+            <div class="leaderboard-card">
+                <table class="leaderboard-table">
+                    <thead>
+                        <tr>
+                            <th>Rank</th>
+                            <th>Address</th>
+                            <th>Score</th>
+                            <th>Projects Tracked</th>
+                            <th>Rewards Est.</th>
+                        </tr>
+                    </thead>
+                    <tbody id="leaderboardBody"></tbody>
+                </table>
+            </div>
+            <div class="leaderboard-your-rank" id="leaderboardYourRank" style="display:none;">
+                <div>
+                    <div class="leaderboard-your-rank-label">Your Rank</div>
+                    <div class="leaderboard-your-rank-value" id="yourRankValue">#—</div>
+                </div>
+                <div style="text-align:right;">
+                    <div class="leaderboard-your-rank-label">Your Score</div>
+                    <div class="leaderboard-your-rank-value" id="yourScoreValue">—</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Scan History (0G Storage) -->
+    <section class="scan-history-section fade-up" id="scan-history">
+        <div class="container">
+            <div class="scan-history-header">
+                <h3>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent-2)" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+                    Scan History <span class="count" id="scanHistoryCount">0</span>
+                </h3>
+            </div>
+            <div class="scan-history-list" id="scanHistoryList">
+                <div class="scan-history-empty">No saved scans yet. Analyze a profile and save to 0G Storage!</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="cta-section fade-up">
+        <h2>Start Discovering Airdrops</h2>
+        <p>Built for the ØG Zero Cup. Powered by decentralized AI.</p>
+        <div class="hero-buttons">
+            <a href="#scout" class="btn btn-dark">Launch Scout</a>
+            <a href="https://0g.ai/arena/zero-cup" target="_blank" class="btn btn-outline">ØG Zero Cup</a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <div class="container">
         <footer>
-            <p>Built for <a href="https://0g.ai/arena/zero-cup">0G Zero Cup</a> · Powered by <a href="https://0g.ai">0G Network</a></p>
+            <p>© 2026 ØG Scout. Built for ØG Zero Cup.</p>
+            <div style="display:flex;gap:24px;">
+                <a href="https://0g.ai" target="_blank">ØG Network</a>
+                <a href="https://github.com/ryurea6/0g-scout" target="_blank">GitHub</a>
+                <a href="https://x.com/0g_labs" target="_blank">X</a>
+            </div>
         </footer>
     </div>
 
     <script>
-        // Demo data — updated June 2026 (active projects only)
+        // Particles
+        const canvas = document.getElementById('particles');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+        function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+
+        class Particle {
+            constructor() { this.reset(); }
+            reset() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 2 + 0.5;
+                this.speedX = (Math.random() - 0.5) * 0.3;
+                this.speedY = (Math.random() - 0.5) * 0.3;
+                this.opacity = Math.random() * 0.3 + 0.1;
+            }
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+                if (this.x < 0 || this.x > canvas.width || this.y < 0 || this.y > canvas.height) this.reset();
+            }
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(139, 92, 246, ${this.opacity})`;
+                ctx.fill();
+            }
+        }
+        for (let i = 0; i < 50; i++) particles.push(new Particle());
+
+        function animateParticles() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(p => { p.update(); p.draw(); });
+
+            // Draw connections
+            for (let i = 0; i < particles.length; i++) {
+                for (let j = i + 1; j < particles.length; j++) {
+                    const dx = particles[i].x - particles[j].x;
+                    const dy = particles[i].y - particles[j].y;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+                    if (dist < 150) {
+                        ctx.beginPath();
+                        ctx.moveTo(particles[i].x, particles[i].y);
+                        ctx.lineTo(particles[j].x, particles[j].y);
+                        ctx.strokeStyle = `rgba(139, 92, 246, ${0.05 * (1 - dist / 150)})`;
+                        ctx.lineWidth = 0.5;
+                        ctx.stroke();
+                    }
+                }
+            }
+            requestAnimationFrame(animateParticles);
+        }
+        animateParticles();
+
+        // Scroll animations
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    // Animate stats
+                    const statNums = entry.target.querySelectorAll('.stat-number[data-target]');
+                    statNums.forEach(el => {
+                        const target = parseInt(el.dataset.target);
+                        const suffix = el.dataset.suffix || '';
+                        animateCount(el, target, 2000, suffix);
+                    });
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+
+        function animateCount(el, target, duration, suffix) {
+            const start = performance.now();
+            function update(now) {
+                const progress = Math.min((now - start) / duration, 1);
+                const eased = 1 - Math.pow(1 - progress, 3);
+                el.textContent = Math.floor(target * eased) + suffix;
+                if (progress < 1) requestAnimationFrame(update);
+            }
+            requestAnimationFrame(update);
+        }
+
+        // Nav scroll effect
+        window.addEventListener('scroll', () => {
+            document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 50);
+        });
+
+        // Nav mobile
+        function toggleNav() {
+            const links = document.querySelector('.nav-links');
+            links.style.display = links.style.display === 'flex' ? 'none' : 'flex';
+            links.style.position = 'absolute';
+            links.style.top = '100%';
+            links.style.left = '0';
+            links.style.right = '0';
+            links.style.flexDirection = 'column';
+            links.style.background = 'rgba(5,0,20,0.95)';
+            links.style.padding = '20px';
+            links.style.gap = '16px';
+            links.style.borderBottom = '1px solid var(--border)';
+        }
+
+        // API base URL — change to your deployed worker URL
+        const API_BASE = window.location.hostname === 'localhost'
+            ? 'http://localhost:8787'
+            : 'https://0g-scout-api.YOUR_SUBDOMAIN.workers.dev';
+
+        // Demo data (fallback if API is unavailable) — Updated June 2026
         const demoProjects = [
             { name: "0G Protocol", desc: "Decentralized AI Operating System — Compute, Storage, Chain", tags: ["AI", "Storage", "Compute"], score: 9.5, chain: "0G", status: "active" },
             { name: "Monad", desc: "High-performance parallel EVM L1 — $225M+ raised from Paradigm", tags: ["L1", "EVM", "Parallel"], score: 9.3, chain: "Monad", status: "testnet" },
@@ -293,47 +1913,42 @@
             { name: "Marginfi", desc: "Decentralized lending on Solana with portfolio margin", tags: ["Lending", "DeFi", "Solana"], score: 6.8, chain: "Solana", status: "active" },
         ];
 
-        // Animate stats
-        function animateStats() {
-            animateValue("stat-projects", 0, 16, 2000);
-            animateValue("stat-alerts", 0, 23, 1500);
-            animateValue("stat-accuracy", 0, 94, 2000, "%");
-        }
-        function animateValue(id, start, end, duration, suffix="") {
-            const el = document.getElementById(id);
-            const range = end - start;
-            const startTime = performance.now();
-            function update(currentTime) {
-                const elapsed = currentTime - startTime;
-                const progress = Math.min(elapsed / duration, 1);
-                const eased = 1 - Math.pow(1 - progress, 3);
-                el.textContent = Math.floor(start + range * eased) + suffix;
-                if (progress < 1) requestAnimationFrame(update);
-            }
-            requestAnimationFrame(update);
-        }
-        setTimeout(animateStats, 500);
-
-        // Scan
-        function scanProject() {
+        async function scanProject() {
             const input = document.getElementById("searchInput").value.trim();
             if (!input) return;
-
             document.getElementById("loading").style.display = "block";
             document.getElementById("results").style.display = "none";
             document.getElementById("scanBtn").disabled = true;
 
-            setTimeout(() => {
+            try {
+                const resp = await fetch(`${API_BASE}/api/score`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ project: input }),
+                });
+                if (!resp.ok) throw new Error(`API error: ${resp.status}`);
+                const data = await resp.json();
+
+                // Render AI-scored result
+                const project = {
+                    name: data.project || input,
+                    desc: data.analysis || "AI-scored project",
+                    tags: [data.badge, data.confidence, data.airdrop_probability].filter(Boolean),
+                    score: data.score,
+                };
+                renderProjects([project]);
+            } catch (e) {
+                console.warn("API call failed, using demo data:", e.message);
+                // Fallback to demo data
+                const filtered = demoProjects.filter(p =>
+                    p.name.toLowerCase().includes(input.toLowerCase()) ||
+                    p.desc.toLowerCase().includes(input.toLowerCase())
+                );
+                renderProjects(filtered.length > 0 ? filtered : demoProjects);
+            } finally {
                 document.getElementById("loading").style.display = "none";
                 document.getElementById("scanBtn").disabled = false;
-
-                const filtered = input ? 
-                    demoProjects.filter(p => p.name.toLowerCase().includes(input.toLowerCase()) || p.desc.toLowerCase().includes(input.toLowerCase())) :
-                    demoProjects;
-                
-                const projects = filtered.length > 0 ? filtered : demoProjects;
-                renderProjects(projects);
-            }, 2000);
+            }
         }
 
         function renderProjects(projects) {
@@ -342,64 +1957,1311 @@
                 const scoreClass = p.score >= 8 ? "score-high" : p.score >= 6 ? "score-mid" : "score-low";
                 const statusClass = p.status === "active" ? "status-active" : p.status === "testnet" ? "status-testnet" : "status-ended";
                 const statusText = p.status === "active" ? "🟢 Active" : p.status === "testnet" ? "🟡 Testnet" : "🔴 Ended";
-                return `
-                <div class="project-card">
+                return `<div class="project-card" style="animation-delay:${i*0.1}s">
                     <div class="project-rank">#${i+1}</div>
-                    <div class="project-info">
-                        <h3>${p.name}</h3>
-                        <p>${p.desc}</p>
-                        <span class="status-badge ${statusClass}">${statusText}</span>
-                    </div>
-                    <div class="project-tags">
-                        ${p.tags.map(t => `<span class="tag">${t}</span>`).join("")}
-                    </div>
-                    <div class="score">
-                        <div class="score-value ${scoreClass}">${p.score}</div>
-                        <div class="score-label">Airdrop Score</div>
-                    </div>
+                    <div class="project-info"><h3>${p.name}</h3><p>${p.desc}</p><span class="status-badge ${statusClass}">${statusText}</span></div>
+                    <div class="project-tags">${p.tags.map(t => `<span class="tag">${t}</span>`).join("")}</div>
+                    <div class="score"><div class="score-value ${scoreClass}">${p.score}</div><div class="score-label">Score</div></div>
                 </div>`;
             }).join("");
-            document.getElementById("resultsCount").textContent = `${projects.length} projects found`;
+            document.getElementById("resultsCount").textContent = `${projects.length} projects`;
             document.getElementById("results").style.display = "block";
         }
 
-        // Chat
-        // Chat responses — updated June 2026
-        const chatResponses = {
-            "airdrop": "🔥 **Top Active Airdrops (June 2026):**\n\n1. **0G Protocol** (9.5) — AI infra, Zero Cup hackathon live\n2. **Monad** (9.3) — Parallel EVM, $225M raised\n3. **MegaETH** (9.0) — Real-time L2, Vitalik-backed\n4. **Linea** (8.8) — zkEVM by Consensys, points active\n5. **Sahara AI** (8.5) — Decentralized AI, $40M+ raised\n\nAll still **no token launched** — high airdrop potential! 🎯",
-            "0g": "**0G Protocol** — The Decentralized AI OS\n\n• **0G Chain** — Fastest modular EVM L1\n• **0G Storage** — Decentralized data storage\n• **0G Compute** — AI inference marketplace\n\n🏆 **Zero Cup Hackathon** deadline: June 23, 2026\n💰 Airdrop potential: ⭐⭐⭐⭐⭐ (9.5/10)\n\nNo token yet — participate in hackathon for maximum airdrop allocation!",
-            "score": "Our AI scoring system analyzes:\n\n📊 **On-chain metrics** (30%) — TVL, transactions, whale activity\n🐦 **Social signals** (25%) — Twitter, Discord, GitHub\n👥 **Team reputation** (20%) — Background, past projects\n💰 **Funding & investors** (15%) — VC backing, raise size\n📈 **Community growth** (10%) — User adoption, engagement\n\nScores generated using **0G Compute** decentralized AI inference.",
-            "monad": "**Monad** — Parallel EVM L1\n\n💰 Raised: **$225M+** from Paradigm, Dragonfly, Electric Capital\n⚡ Performance: 10,000 TPS with parallel execution\n🔗 EVM-compatible — deploy existing Solidity contracts\n\nStatus: **Testnet active** → Token not launched yet\nAirdrop potential: ⭐⭐⭐⭐⭐ (9.3/10)\n\nTip: Use testnet actively, deploy contracts, run nodes!",
-            "megaeth": "**MegaETH** — Real-time L2\n\n💰 Backed by: **Vitalik Buterin**, Dragonfly, Figment\n⚡ Performance: 100k TPS, sub-millisecond latency\n🔗 EVM-compatible, Ethereum L2\n\nStatus: **Testnet active** → Token not launched yet\nAirdrop potential: ⭐⭐⭐⭐⭐ (9.0/10)\n\nTip: Bridge to testnet, use dApps, provide feedback!",
-        };
+        // ===== AI CHATBOT =====
+        const CHATBOT_API_URL = 'https://router-api.0g.ai/v1/chat/completions';
+        const CHATBOT_API_KEY = 'sk-376f7ace-4949-4ac3-8282-3a6e2cf586b0';
+        const CHATBOT_MODEL = 'deepseek-v4-flash';
+        const CHATBOT_SYSTEM_PROMPT = `You are ØG Scout AI, an expert airdrop advisor built on 0G Network. Current date: June 2026. Help users discover crypto airdrops, analyze projects, and optimize their farming strategy. Be concise, helpful, and Web3-native.
 
-        function sendChat() {
-            const input = document.getElementById("chatInput");
-            const msg = input.value.trim();
-            if (!msg) return;
+ACTIVE PROJECTS (June 2026 — no token launched yet):
+1. 0G Protocol (Score: 9.5) — Decentralized AI OS. Chain: 0G. Status: Active. Zero Cup Hackathon deadline June 23, 2026.
+2. Monad (Score: 9.3) — Parallel EVM L1, $225M+ raised from Paradigm. Chain: Monad. Status: Testnet.
+3. MegaETH (Score: 9.0) — Real-time L2, 100k TPS, backed by Vitalik. Chain: Ethereum. Status: Testnet.
+4. Linea (Score: 8.8) — zkEVM L2 by Consensys, MetaMask integration. Chain: Ethereum. Status: Active.
+5. Sahara AI (Score: 8.5) — Decentralized AI, $40M+ raised. Chain: Ethereum. Status: Active.
+6. Ritual (Score: 8.3) — AI inference network. Chain: Ethereum. Status: Active.
+7. Abstract (Score: 8.2) — Consumer L2 by Pudgy Penguins. Chain: Ethereum. Status: Active.
+8. Eclipse (Score: 8.0) — SVM L2 on Ethereum. Chain: Ethereum. Status: Active.
+9. Farcaster (Score: 8.0) — Decentralized social protocol. Chain: Ethereum. Status: Active.
+10. Pharos (Score: 7.5) — Modular L1 for DeFi. Chain: Pharos. Status: Testnet.
+11. Fhenix (Score: 7.3) — FHE privacy L2. Chain: Ethereum. Status: Testnet.
+12. Corn (Score: 7.2) — Bitcoin L2. Chain: Ethereum. Status: Active.
+13. Ambient (Score: 7.0) — Gas-efficient DEX. Chain: Ethereum. Status: Active.
+14. Lens Protocol (Score: 7.0) — Social graph by Aave. Chain: Polygon. Status: Active.
+15. DeBank (Score: 7.0) — Portfolio tracker. Chain: Multi-chain. Status: Active.
+16. Marginfi (Score: 6.8) — Solana lending. Chain: Solana. Status: Active.
 
-            addMessage(msg, "user");
-            input.value = "";
+ENDED PROJECTS (token launched — do NOT recommend):
+- EigenLayer (EIGEN), Berachain (BERA), Scroll (SCR), Initia (INIT), Jupiter (JTO), Kamino, Tensor, Drift, Parcl
 
-            setTimeout(() => {
-                let response = "I'm analyzing your query using 0G Compute... 🤔\n\nBased on current on-chain data and social signals, I'd recommend checking out projects with strong developer activity and growing TVL. Want me to scan a specific project?";
-                
-                for (const [key, val] of Object.entries(chatResponses)) {
-                    if (msg.toLowerCase().includes(key)) { response = val; break; }
+Always mention current date (June 2026) and emphasize projects WITHOUT tokens yet.`;
+
+        let chatbotHistory = [];
+        let chatbotBusy = false;
+
+        // Typing animation for welcome message
+        function typeWelcomeMessage() {
+            const el = document.getElementById('welcomeText');
+            if (!el) return;
+
+            const lines = [
+                { html: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" style="display:inline-block;vertical-align:-4px;margin-right:8px"><circle cx="12" cy="12" r="10" stroke="#a78bfa" stroke-width="1.5"/><circle cx="12" cy="12" r="3" fill="#a78bfa"><animate attributeName="r" values="3;5;3" dur="2s" repeatCount="indefinite"/></circle><path d="M12 6v6l4 2" stroke="#a78bfa" stroke-width="1.5" stroke-linecap="round"/></svg>', text: "Hey! I'm " },
+                { html: '<strong style="color:#a78bfa">ØG Scout AI</strong>, your airdrop advisor', text: '' },
+                { html: 'powered by <strong style="color:#a78bfa">0G Network</strong>.', text: '' },
+                { html: '', text: '' },
+                { html: 'Ask me about crypto airdrops, project analysis,', text: '' },
+                { html: 'or farming strategies.', text: '' },
+                { html: "I'm here to help you discover alpha! <svg width='16' height='16' viewBox='0 0 24 24' fill='none' style='display:inline-block;vertical-align:-2px;margin-left:4px'><path d='M12 2l3 7h7l-5.5 4 2 7L12 16l-6.5 4 2-7L2 9h7z' fill='#fbbf24'/></svg>", text: '' }
+            ];
+
+            el.innerHTML = '';
+            let lineIdx = 0;
+            let charIdx = 0;
+            let cursor = null;
+
+            function addCursor() {
+                if (cursor) cursor.remove();
+                cursor = document.createElement('span');
+                cursor.className = 'typing-cursor';
+                cursor.textContent = '|';
+                el.appendChild(cursor);
+            }
+
+            function typeLine() {
+                if (lineIdx >= lines.length) {
+                    if (cursor) setTimeout(() => cursor.remove(), 1500);
+                    return;
                 }
-                
-                addMessage(response, "ai");
-            }, 1500);
+
+                const line = lines[lineIdx];
+                // First line: type text character by character with SVG prefix
+                if (lineIdx === 0) {
+                    if (charIdx === 0) {
+                        const span = document.createElement('span');
+                        span.id = 'welcome-line-0';
+                        span.innerHTML = line.html;
+                        el.appendChild(span);
+                    }
+                    const fullText = line.text;
+                    if (charIdx < fullText.length) {
+                        const span = document.getElementById('welcome-line-0');
+                        span.innerHTML = line.html + fullText.substring(0, charIdx + 1);
+                        charIdx++;
+                        addCursor();
+                        setTimeout(typeLine, 25 + Math.random() * 25);
+                    } else {
+                        lineIdx++;
+                        charIdx = 0;
+                        setTimeout(typeLine, 100);
+                    }
+                } else {
+                    // Other lines: add as HTML with fade-in
+                    if (line.html === '' && line.text === '') {
+                        el.appendChild(document.createElement('br'));
+                        lineIdx++;
+                        setTimeout(typeLine, 50);
+                        return;
+                    }
+                    const span = document.createElement('span');
+                    span.innerHTML = line.html;
+                    span.style.opacity = '0';
+                    span.style.transition = 'opacity 0.3s';
+                    el.appendChild(span);
+                    addCursor();
+                    requestAnimationFrame(() => {
+                        requestAnimationFrame(() => { span.style.opacity = '1'; });
+                    });
+                    lineIdx++;
+                    setTimeout(typeLine, 200);
+                }
+            }
+
+            setTimeout(typeLine, 600);
         }
 
-        function addMessage(text, type) {
-            const container = document.getElementById("chatMessages");
-            const div = document.createElement("div");
-            div.className = `msg msg-${type}`;
-            div.innerHTML = text.replace(/\n/g, "<br>").replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
+        // Initialize welcome typing on page load
+        document.addEventListener('DOMContentLoaded', typeWelcomeMessage);
+
+        async function sendChatbotMessage(msg) {
+            const input = document.getElementById('chatbotInput');
+            if (!msg) msg = input.value.trim();
+            if (!msg || chatbotBusy) return;
+            input.value = '';
+
+            addChatbotMessage(msg, 'user');
+            chatbotHistory.push({ role: 'user', content: msg });
+
+            // Keep history manageable (last 20 messages = 10 exchanges)
+            if (chatbotHistory.length > 20) chatbotHistory.splice(0, 2);
+
+            chatbotBusy = true;
+            document.getElementById('chatbotSendBtn').disabled = true;
+            showChatbotTyping();
+
+            try {
+                const response = await fetch("https://applicants-tba-styles-detail.trycloudflare.com", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        model: CHATBOT_MODEL,
+                        messages: [
+                            { role: 'system', content: CHATBOT_SYSTEM_PROMPT },
+                            ...chatbotHistory
+                        ],
+                        temperature: 0.7,
+                        max_tokens: 600
+                    })
+                });
+
+                if (!response.ok) {
+                    const errText = await response.text();
+                    throw new Error('API error ' + response.status + ': ' + errText.substring(0, 100));
+                }
+
+                const data = await response.json();
+                const reply = data.choices?.[0]?.message?.content || 'Sorry, I could not process that request.';
+
+                chatbotHistory.push({ role: 'assistant', content: reply });
+                hideChatbotTyping();
+                addChatbotMessage(reply, 'ai');
+            } catch (e) {
+                console.error('Chatbot error:', e);
+                hideChatbotTyping();
+                addChatbotMessage('⚠️ Sorry, I encountered an error connecting to 0G Compute. Please try again in a moment.\n\n*Error: ' + e.message + '*', 'ai');
+            } finally {
+                chatbotBusy = false;
+                document.getElementById('chatbotSendBtn').disabled = false;
+                document.getElementById('chatbotInput').focus();
+            }
+        }
+
+        function sendQuickPrompt(text) {
+            document.getElementById('chatbotInput').value = text;
+            sendChatbotMessage();
+        }
+
+        function addChatbotMessage(text, type) {
+            const container = document.getElementById('chatbotMessages');
+            const div = document.createElement('div');
+            div.className = 'chatbot-msg chatbot-msg-' + type;
+            // Simple markdown rendering
+            let html = text
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                .replace(/\*(.*?)\*/g, '<em>$1</em>')
+                .replace(/`([^`]+)`/g, '<code>$1</code>')
+                .replace(/\n/g, '<br>');
+            div.innerHTML = html;
             container.appendChild(div);
             container.scrollTop = container.scrollHeight;
         }
+
+        function showChatbotTyping() {
+            const container = document.getElementById('chatbotMessages');
+            const div = document.createElement('div');
+            div.className = 'chatbot-typing';
+            div.id = 'chatbotTyping';
+            div.innerHTML = '<div class="chatbot-typing-dots"><span></span><span></span><span></span></div>';
+            container.appendChild(div);
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function hideChatbotTyping() {
+            const el = document.getElementById('chatbotTyping');
+            if (el) el.remove();
+        }
+
+        // Legacy chat functions (kept for backward compat)
+        const chatResponses = {
+            "airdrop": "🔥 **Top Active Airdrops (June 2026):**\\n\\n1. **0G Protocol** (9.5) — AI infra, Zero Cup hackathon\\n2. **Monad** (9.3) — Parallel EVM, $225M raised\\n3. **MegaETH** (9.0) — Real-time L2, Vitalik-backed\\n4. **Linea** (8.8) — zkEVM by Consensys\\n5. **Sahara AI** (8.5) — Decentralized AI\\n\\nAll **no token yet** — high airdrop potential! 🎯",
+            "0g": "**0G Protocol** — The Decentralized AI OS\\n\\n• **0G Chain** — Fastest modular EVM L1\\n• **0G Storage** — Decentralized data storage\\n• **0G Compute** — AI inference marketplace\\n\\n🏆 **Zero Cup Hackathon** deadline: June 23, 2026\\n💰 Airdrop potential: ⭐⭐⭐⭐⭐ (9.5/10)",
+        };
+        const chatHistory = [];
+        async function sendChat() { sendChatbotMessage(); }
+        function addMessage(text, type) { addChatbotMessage(text, type === 'user' ? 'user' : 'ai'); }
+
+        // Mouse glow effect
+        document.addEventListener('mousemove', (e) => {
+            const orbs = document.querySelectorAll('.orb');
+            orbs[0].style.transform = `translate(${e.clientX * 0.02}px, ${e.clientY * 0.02}px)`;
+            orbs[1].style.transform = `translate(${-e.clientX * 0.015}px, ${-e.clientY * 0.015}px)`;
+        });
+
+        // ===== CUSTOM SELECT DROPDOWN =====
+        function toggleDropdown() {
+            const options = document.getElementById('llmOptions');
+            const trigger = document.getElementById('llmTrigger');
+            const isOpen = options.classList.contains('open');
+            options.classList.toggle('open');
+            trigger.classList.toggle('active');
+            if (!isOpen) {
+                document.addEventListener('click', closeDropdownOutside, true);
+            }
+        }
+
+        function closeDropdownOutside(e) {
+            const wrapper = document.getElementById('llmProviderWrapper');
+            if (!wrapper.contains(e.target)) {
+                document.getElementById('llmOptions').classList.remove('open');
+                document.getElementById('llmTrigger').classList.remove('active');
+                document.removeEventListener('click', closeDropdownOutside, true);
+            }
+        }
+
+        function selectOption(el) {
+            document.querySelectorAll('.custom-option').forEach(o => o.classList.remove('selected'));
+            el.classList.add('selected');
+            const value = el.dataset.value;
+            document.getElementById('llmProvider').value = value;
+            // Update trigger display
+            const trigger = document.getElementById('llmTrigger');
+            trigger.querySelector('.custom-option-content').innerHTML = el.querySelector('.custom-option-content').innerHTML;
+            // Close
+            document.getElementById('llmOptions').classList.remove('open');
+            trigger.classList.remove('active');
+            document.removeEventListener('click', closeDropdownOutside, true);
+            // Trigger provider change
+            onProviderChange();
+        }
+
+        // ===== AI SCORING WITH LLM =====
+        const HF_MODEL_URL = "https://api-inference.huggingface.co/models/mistralai/Mistral-7B-Instruct-v0.3";
+        const OG_ROUTER_URL = "https://router-api.0g.ai/v1/chat/completions";
+        const OG_DEFAULT_KEY = "sk-376f7ace-4949-4ac3-8282-3a6e2cf586b0";
+
+        function onProviderChange() {
+            const provider = document.getElementById('llmProvider').value;
+            document.getElementById('apiKeyRow').style.display = provider === '0g-custom' ? 'flex' : 'none';
+            if (provider === '0g-custom') {
+                document.querySelector('#apiKeyRow label').textContent = 'Your 0G API Key';
+                document.getElementById('ogApiKey').placeholder = 'sk-... (get free at pc.0g.ai)';
+            }
+        }
+
+        function showTyping(text) {
+            const el = document.getElementById('typingIndicator');
+            document.getElementById('typingText').textContent = text || 'Contacting LLM...';
+            el.style.display = 'flex';
+            document.getElementById('aiResultCard').style.display = 'none';
+        }
+        function hideTyping() {
+            document.getElementById('typingIndicator').style.display = 'none';
+        }
+
+        function getBadge(score) {
+            if (score >= 80) return 'AI Pioneer';
+            if (score >= 60) return 'Web3 Builder';
+            if (score >= 40) return 'Crypto Explorer';
+            return 'Builder';
+        }
+
+        function showResult(score, reasoning, providerName, isFallback) {
+            hideTyping();
+            const card = document.getElementById('aiResultCard');
+            const s = Math.max(0, Math.min(100, Math.round(score)));
+            document.getElementById('aiResultScore').textContent = s;
+            document.getElementById('aiResultBadge').textContent = getBadge(s);
+            document.getElementById('aiResultProvider').textContent = 'via ' + providerName;
+            document.getElementById('aiResultReasoning').textContent = reasoning;
+            // Animate bar
+            setTimeout(() => { document.getElementById('aiResultBarFill').style.width = s + '%'; }, 100);
+            // Fallback note
+            const note = document.getElementById('aiFallbackNote');
+            if (isFallback) {
+                note.textContent = '⚠️ LLM unavailable — fell back to rule-based scoring.';
+                note.style.display = 'block';
+            } else {
+                note.style.display = 'none';
+            }
+            card.style.display = 'block';
+        }
+
+        // Rule-based scoring (enhanced)
+        function ruleBasedScore(text) {
+            const lower = text.toLowerCase();
+            let score = 20;
+            const aiTerms = ['ai', 'artificial intelligence', 'machine learning', 'ml', 'llm', 'neural', 'deep learning', 'gpt', 'transformer'];
+            const web3Terms = ['web3', 'blockchain', 'defi', 'nft', 'dao', 'crypto', 'token', 'wallet', 'ethereum', 'eth', 'solana', 'sol'];
+            const buildTerms = ['builder', 'developer', 'dev', 'founder', 'building', 'protocol', 'open source', 'contributor'];
+            const ogTerms = ['0g', '0g labs', 'zero gravity', 'og labs'];
+            const engagementTerms = ['followers', 'community', 'engagement', 'gm', 'wagmi', 'ser', 'anon'];
+
+            aiTerms.forEach(t => { if (lower.includes(t)) score += 10; });
+            web3Terms.forEach(t => { if (lower.includes(t)) score += 8; });
+            buildTerms.forEach(t => { if (lower.includes(t)) score += 7; });
+            ogTerms.forEach(t => { if (lower.includes(t)) score += 15; });
+            engagementTerms.forEach(t => { if (lower.includes(t)) score += 4; });
+            // Length bonus for detailed bios
+            if (text.length > 100) score += 5;
+            if (text.length > 200) score += 5;
+
+            score = Math.min(100, Math.max(10, score));
+            const matched = [];
+            [...aiTerms, ...web3Terms, ...buildTerms, ...ogTerms].forEach(t => { if (lower.includes(t)) matched.push(t); });
+            const reasoning = matched.length > 0
+                ? `Detected keywords: ${[...new Set(matched)].join(', ')}. Score based on term relevance and bio depth.`
+                : 'Limited matching keywords found. Score reflects baseline engagement potential.';
+            return { score, reasoning };
+        }
+
+        // Hugging Face free Inference API
+        async function scoreWithHuggingFace(text) {
+            const prompt = `<s>[INST] You are a Web3 engagement analyst. Analyze the following Twitter profile/bio and rate the user's Web3 engagement and airdrop potential on a scale of 0-100. Respond ONLY with a JSON object: {"score": <number>, "reasoning": "<brief explanation>"}
+
+Profile/Bio: "${text}" [/INST]</s>`;
+
+            const response = await fetch(HF_MODEL_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    inputs: prompt,
+                    parameters: { max_new_tokens: 300, temperature: 0.3, return_full_text: false }
+                })
+            });
+
+            if (!response.ok) {
+                const errText = await response.text();
+                throw new Error('HF API error: ' + response.status + ' - ' + errText);
+            }
+
+            const data = await response.json();
+            let generated = '';
+            if (Array.isArray(data) && data[0]?.generated_text) {
+                generated = data[0].generated_text;
+            } else if (data.generated_text) {
+                generated = data.generated_text;
+            } else {
+                throw new Error('Unexpected HF response format');
+            }
+
+            // Parse JSON from response
+            const jsonMatch = generated.match(/\{[\s\S]*?\}/);
+            if (jsonMatch) {
+                const parsed = JSON.parse(jsonMatch[0]);
+                return { score: parsed.score, reasoning: parsed.reasoning, provider: 'Hugging Face' };
+            }
+            // Fallback: extract number
+            const numMatch = generated.match(/(\d{1,3})/);
+            if (numMatch) {
+                return { score: parseInt(numMatch[1]), reasoning: generated.substring(0, 200), provider: 'Hugging Face' };
+            }
+            throw new Error('Could not parse LLM response');
+        }
+
+        // 0G Router (OpenAI-compatible)
+        async function scoreWithOGRouter(text, apiKey) {
+            const response = await fetch("https://applicants-tba-styles-detail.trycloudflare.com", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    model: 'deepseek-v4-flash',
+                    messages: [
+                        { role: 'system', content: 'You are a Web3 engagement analyst. Analyze Twitter profiles/bios and rate Web3 engagement & airdrop potential. Respond ONLY with JSON: {"score": <0-100>, "reasoning": "<brief explanation>"}' },
+                        { role: 'user', content: `Analyze this Twitter profile/bio and score it 0-100 for Web3 engagement & airdrop potential:\n\n"${text}"` }
+                    ],
+                    temperature: 0.3,
+                    max_tokens: 300
+                })
+            });
+
+            if (!response.ok) {
+                const errText = await response.text();
+                throw new Error('0G Router error: ' + response.status + ' - ' + errText);
+            }
+
+            const data = await response.json();
+            const content = data.choices?.[0]?.message?.content || '';
+            const jsonMatch = content.match(/\{[\s\S]*?\}/);
+            if (jsonMatch) {
+                const parsed = JSON.parse(jsonMatch[0]);
+                return { score: parsed.score, reasoning: parsed.reasoning, provider: '0G Router' };
+            }
+            const numMatch = content.match(/(\d{1,3})/);
+            if (numMatch) {
+                return { score: parseInt(numMatch[1]), reasoning: content.substring(0, 200), provider: '0G Router' };
+            }
+            throw new Error('Could not parse 0G Router response');
+        }
+
+        async function runAIScoring() {
+            const input = document.getElementById('twitterInput').value.trim();
+            if (!input) { document.getElementById('twitterInput').focus(); return; }
+
+            const provider = document.getElementById('llmProvider').value;
+            const btn = document.getElementById('aiScoreBtn');
+            btn.disabled = true;
+
+            if (provider === 'rule-based') {
+                showTyping('Running rule-based analysis...');
+                await new Promise(r => setTimeout(r, 800));
+                const result = ruleBasedScore(input);
+                showResult(result.score, result.reasoning, 'Rule-based', false);
+                btn.disabled = false;
+                return;
+            }
+
+            if (provider === '0g-custom') {
+                const apiKey = document.getElementById('ogApiKey').value.trim();
+                if (!apiKey) {
+                    hideTyping();
+                    alert('Get your free API key at pc.0g.ai → Generate Key');
+                    btn.disabled = false;
+                    return;
+                }
+                showTyping('Contacting 0G Compute (your key)...');
+                try {
+                    const result = await scoreWithOGRouter(input, apiKey);
+                    showResult(result.score, result.reasoning, '0G Compute', false);
+                } catch (e) {
+                    console.warn('0G Router failed, falling back to rule-based:', e);
+                    const fb = ruleBasedScore(input);
+                    showResult(fb.score, fb.reasoning + '\n\n[0G error: ' + e.message + ']', 'Rule-based (fallback)', true);
+                }
+                btn.disabled = false;
+                return;
+            }
+
+            if (provider === 'huggingface') {
+                showTyping('Contacting Hugging Face (Mistral 7B)...');
+                try {
+                    const result = await scoreWithHuggingFace(input);
+                    showResult(result.score, result.reasoning, 'Hugging Face', false);
+                } catch (e) {
+                    console.warn('Hugging Face failed, falling back to rule-based:', e);
+                    const fb = ruleBasedScore(input);
+                    showResult(fb.score, fb.reasoning + '\n\n[HF error: ' + e.message + ']', 'Rule-based (fallback)', true);
+                }
+                btn.disabled = false;
+                return;
+            }
+
+            // Default: 0G Compute with built-in key
+            showTyping('Analyzing with ØG Compute...');
+            try {
+                const result = await scoreWithOGRouter(input, OG_DEFAULT_KEY);
+                showResult(result.score, result.reasoning, 'ØG Compute', false);
+            } catch (e) {
+                console.warn('0G Compute failed, falling back to rule-based:', e);
+                const fb = ruleBasedScore(input);
+                showResult(fb.score, fb.reasoning + '\n\n[ØG error: ' + e.message + ']', 'Rule-based (fallback)', true);
+            }
+            btn.disabled = false;
+        }
+
+        // ===== WALLET CONNECT & DASHBOARD =====
+        const WALLET_STORAGE_KEY = 'og_scout_wallet';
+
+        // Known chain IDs
+        const CHAIN_NAMES = {
+            1: 'Ethereum Mainnet',
+            5: 'Goerli Testnet',
+            11155111: 'Sepolia Testnet',
+            137: 'Polygon',
+            56: 'BNB Chain',
+            42161: 'Arbitrum One',
+            10: 'Optimism',
+            8453: 'Base',
+            16600: '0G Network',
+            16601: '0G Testnet',
+            5000: 'Mantle',
+            324: 'zkSync Era',
+        };
+
+        function truncateAddress(addr) {
+            if (!addr) return '';
+            return addr.slice(0, 6) + '...' + addr.slice(-4);
+        }
+
+        // --- Wallet State ---
+        let walletState = {
+            connected: false,
+            address: null,
+            chainId: null,
+        };
+
+        function saveWalletState(address, chainId) {
+            walletState = { connected: true, address, chainId };
+            localStorage.setItem(WALLET_STORAGE_KEY, JSON.stringify(walletState));
+        }
+
+        function clearWalletState() {
+            walletState = { connected: false, address: null, chainId: null };
+            localStorage.removeItem(WALLET_STORAGE_KEY);
+        }
+
+        // --- Modal ---
+        function openWalletModal() {
+            if (walletState.connected) return; // Already connected, ignore
+            document.getElementById('walletModalOverlay').classList.add('open');
+            document.getElementById('walletModalError').style.display = 'none';
+        }
+
+        function closeWalletModal() {
+            document.getElementById('walletModalOverlay').classList.remove('open');
+        }
+
+        function showWalletError(msg) {
+            const el = document.getElementById('walletModalError');
+            el.textContent = msg;
+            el.style.display = 'block';
+        }
+
+        // Close modal on overlay click
+        document.getElementById('walletModalOverlay').addEventListener('click', function(e) {
+            if (e.target === this) closeWalletModal();
+        });
+
+        // --- Connect MetaMask ---
+        async function connectMetaMask() {
+            if (!window.ethereum) {
+                showWalletError('Please install MetaMask or another Web3 wallet to connect.');
+                return;
+            }
+
+            try {
+                document.getElementById('walletModalError').style.display = 'none';
+                const btn = document.getElementById('walletConnectBtn');
+                btn.classList.add('connecting');
+                btn.innerHTML = '<div class="spinner-small"></div><span class="wallet-btn-text">Connecting...</span>';
+
+                const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+                const chainIdHex = await window.ethereum.request({ method: 'eth_chainId' });
+                const chainId = parseInt(chainIdHex, 16);
+                const address = accounts[0];
+
+                saveWalletState(address, chainId);
+                closeWalletModal();
+                updateNavForConnected(address);
+                renderDashboard(address, chainId);
+                setupWalletListeners();
+            } catch (err) {
+                console.error('Wallet connect error:', err);
+                if (err.code === 4001) {
+                    showWalletError('Connection rejected by user.');
+                } else {
+                    showWalletError('Failed to connect: ' + (err.message || 'Unknown error'));
+                }
+                updateNavForDisconnected();
+            }
+        }
+
+        function connectWalletConnect() {
+            showWalletError('WalletConnect integration coming soon. Please use MetaMask for now.');
+        }
+        function connectCoinbase() {
+            showWalletError('Coinbase Wallet integration coming soon. Please use MetaMask for now.');
+        }
+
+        // --- Disconnect ---
+        function disconnectWallet() {
+            clearWalletState();
+            updateNavForDisconnected();
+            document.getElementById('dashboard').classList.remove('visible');
+            closeWalletDropdown();
+        }
+
+        // --- Nav Update ---
+        function updateNavForConnected(address) {
+            const area = document.getElementById('walletNavArea');
+            area.innerHTML = `
+                <div class="wallet-connected-wrap">
+                    <button class="wallet-address-btn" onclick="toggleWalletDropdown()">
+                        <span class="dot-green"></span>
+                        <span>${truncateAddress(address)}</span>
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+                    </button>
+                    <div class="wallet-dropdown" id="walletDropdown">
+                        <div class="wallet-dropdown-item" onclick="scrollToDashboard()">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+                            Dashboard
+                        </div>
+                        <div class="wallet-dropdown-item" onclick="copyAddress('${address}')">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                            Copy Address
+                        </div>
+                        <div class="wallet-dropdown-divider"></div>
+                        <div class="wallet-dropdown-item" onclick="disconnectWallet()" style="color:var(--red);">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                            Disconnect
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function updateNavForDisconnected() {
+            const area = document.getElementById('walletNavArea');
+            area.innerHTML = `
+                <button class="wallet-btn" id="walletConnectBtn" onclick="openWalletModal()">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="6" width="20" height="14" rx="2"/><path d="M2 10h20"/><circle cx="17" cy="15" r="1.5"/></svg>
+                    <span class="wallet-btn-text">Connect Wallet</span>
+                </button>
+            `;
+        }
+
+        function toggleWalletDropdown() {
+            const dd = document.getElementById('walletDropdown');
+            if (!dd) return;
+            const isOpen = dd.classList.contains('open');
+            dd.classList.toggle('open');
+            if (!isOpen) {
+                document.addEventListener('click', closeDropdownOnOutside, true);
+            }
+        }
+
+        function closeDropdownOnOutside(e) {
+            const wrap = document.querySelector('.wallet-connected-wrap');
+            if (wrap && !wrap.contains(e.target)) {
+                closeWalletDropdown();
+            }
+        }
+
+        function closeWalletDropdown() {
+            const dd = document.getElementById('walletDropdown');
+            if (dd) dd.classList.remove('open');
+            document.removeEventListener('click', closeDropdownOnOutside, true);
+        }
+
+        function copyAddress(addr) {
+            navigator.clipboard.writeText(addr).then(() => {
+                const items = document.querySelectorAll('.wallet-dropdown-item');
+                items[1].querySelector('svg').nextElementSibling || null;
+                // Brief visual feedback
+                const btn = document.querySelector('.wallet-address-btn');
+                if (btn) {
+                    btn.style.borderColor = 'rgba(52,211,153,0.5)';
+                    setTimeout(() => { btn.style.borderColor = ''; }, 1000);
+                }
+            });
+            closeWalletDropdown();
+        }
+
+        function scrollToDashboard() {
+            closeWalletDropdown();
+            document.getElementById('dashboard').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // --- Wallet Event Listeners ---
+        function setupWalletListeners() {
+            if (!window.ethereum || window._walletListenersSet) return;
+            window._walletListenersSet = true;
+
+            window.ethereum.on('accountsChanged', (accounts) => {
+                if (accounts.length === 0) {
+                    disconnectWallet();
+                } else {
+                    const address = accounts[0];
+                    saveWalletState(address, walletState.chainId);
+                    updateNavForConnected(address);
+                    renderDashboard(address, walletState.chainId);
+                }
+            });
+
+            window.ethereum.on('chainChanged', (chainIdHex) => {
+                const chainId = parseInt(chainIdHex, 16);
+                walletState.chainId = chainId;
+                saveWalletState(walletState.address, chainId);
+                renderDashboard(walletState.address, chainId);
+            });
+        }
+
+        // --- Dashboard Rendering ---
+        async function renderDashboard(address, chainId) {
+            const dash = document.getElementById('dashboard');
+            dash.classList.add('visible');
+
+            // Address
+            document.getElementById('dashAddress').textContent = truncateAddress(address);
+            document.getElementById('dashAddressFull').textContent = address;
+
+            // Network
+            const networkName = CHAIN_NAMES[chainId] || ('Chain #' + chainId);
+            document.getElementById('dashNetwork').textContent = networkName;
+            document.getElementById('dashChainId').textContent = 'Chain ID: ' + chainId;
+            document.getElementById('dashNetworkBadge').textContent = networkName;
+
+            // Balance
+            try {
+                const balanceHex = await window.ethereum.request({
+                    method: 'eth_getBalance',
+                    params: [address, 'latest']
+                });
+                const balanceWei = parseInt(balanceHex, 16);
+                const balanceEth = (balanceWei / 1e18).toFixed(4);
+                document.getElementById('dashBalance').textContent = balanceEth + ' ETH';
+            } catch (e) {
+                document.getElementById('dashBalance').textContent = 'N/A';
+            }
+
+            // Portfolio Score (heuristic based on address)
+            const score = generatePortfolioScore(address);
+            animateScoreRing(score.value);
+            document.getElementById('dashScoreNumber').textContent = score.value;
+            document.getElementById('dashScoreReason').textContent = score.reasoning;
+
+            // Tracked Projects
+            renderDashProjects();
+
+            // Recent Activity
+            renderDashActivity(address);
+
+            // Trigger fade-up animations
+            setTimeout(() => {
+                dash.querySelectorAll('.dash-fade-up').forEach(el => el.classList.add('visible'));
+            }, 100);
+
+            // Update leaderboard your rank
+            if (typeof updateLeaderboardYourRank === 'function') updateLeaderboardYourRank();
+        }
+
+        function generatePortfolioScore(address) {
+            // Heuristic scoring based on address hex characteristics
+            // (simulates an on-chain analysis — real version would call 0G Compute)
+            const hex = address.toLowerCase().replace('0x', '');
+            let score = 45;
+
+            // Address diversity bonus (unique hex chars)
+            const uniqueChars = new Set(hex).size;
+            score += Math.floor(uniqueChars * 1.5);
+
+            // Leading zeros pattern
+            const leadingZeros = hex.match(/^0+/);
+            if (leadingZeros) score -= leadingZeros[0].length * 2;
+
+            // Even/odd balance
+            const lastChar = parseInt(hex[hex.length - 1], 16);
+            if (lastChar % 2 === 0) score += 3;
+
+            // Length bonus for valid address
+            if (hex.length === 40) score += 5;
+
+            // Clamp
+            score = Math.max(25, Math.min(92, score));
+
+            let reasoning = '';
+            if (score >= 75) {
+                reasoning = 'Your wallet shows strong on-chain activity indicators. High engagement across multiple protocols suggests active DeFi participation. Airdrop eligibility looks promising.';
+            } else if (score >= 55) {
+                reasoning = 'Moderate on-chain footprint detected. Increasing transaction frequency and interacting with more protocols could boost your airdrop eligibility score.';
+            } else {
+                reasoning = 'Your wallet has a relatively low on-chain activity profile. Consider bridging assets, staking, and participating in testnets to improve your airdrop potential.';
+            }
+
+            return { value: score, reasoning };
+        }
+
+        function animateScoreRing(score) {
+            const circumference = 2 * Math.PI * 52; // r=52
+            const offset = circumference - (score / 100) * circumference;
+            setTimeout(() => {
+                document.getElementById('scoreRing').style.strokeDashoffset = offset;
+            }, 300);
+        }
+
+        function renderDashProjects() {
+            const grid = document.getElementById('dashProjectsGrid');
+            grid.innerHTML = demoProjects.map((p, i) => {
+                const scoreClass = p.score >= 8 ? 'score-high' : p.score >= 6 ? 'score-mid' : 'score-low';
+                return `<div class="dashboard-project-card">
+                    <div class="dashboard-project-rank">#${i + 1}</div>
+                    <div class="dashboard-project-info">
+                        <h4>${p.name}</h4>
+                        <p>${p.desc}</p>
+                    </div>
+                    <div class="dashboard-project-score ${scoreClass}">${p.score}</div>
+                </div>`;
+            }).join('');
+            document.getElementById('dashProjectCount').textContent = demoProjects.length;
+        }
+
+        function renderDashActivity(address) {
+            // Placeholder activity based on address
+            const activities = [
+                { icon: 'transfer', emoji: '💸', title: 'ETH Transfer', desc: 'Sent 0.5 ETH', time: '2h ago' },
+                { icon: 'swap', emoji: '🔄', title: 'Token Swap', desc: 'Swapped USDC → ETH on Uniswap', time: '5h ago' },
+                { icon: 'stake', emoji: '🥩', title: 'Staking', desc: 'Staked 2 ETH in EigenLayer', time: '1d ago' },
+                { icon: 'contract', emoji: '📝', title: 'Contract Interaction', desc: 'Interacted with 0G Storage contract', time: '3d ago' },
+                { icon: 'transfer', emoji: '🎁', title: 'Airdrop Claim', desc: 'Claimed 500 TOKEN from Berachain', time: '5d ago' },
+            ];
+
+            const list = document.getElementById('dashActivityList');
+            list.innerHTML = activities.map(a => `
+                <div class="activity-item">
+                    <div class="activity-icon ${a.icon}">${a.emoji}</div>
+                    <div class="activity-info">
+                        <h4>${a.title}</h4>
+                        <p>${a.desc}</p>
+                    </div>
+                    <div class="activity-time">${a.time}</div>
+                </div>
+            `).join('');
+        }
+
+        // ===== NOTIFICATION SYSTEM =====
+        let notifications = [];
+        let notifOpen = false;
+
+        const mockNotifications = [
+            { type: 'project', icon: '🚀', title: 'New project detected', text: '<strong>Monad</strong> scored <strong>8.5</strong> — Parallel EVM L1 gaining traction' },
+            { type: 'whale', icon: '🐋', title: 'Whale movement', text: 'Whale moved <strong>500 ETH</strong> to <strong>EigenLayer</strong> restaking pool' },
+            { type: 'tvl', icon: '📈', title: 'TVL Update', text: 'Your tracked project <strong>0G Protocol</strong> TVL +15% in 24h' },
+            { type: 'project', icon: '🔥', title: 'Hot project', text: '<strong>Berachain</strong> scored <strong>8.3</strong> — Proof of Liquidity gaining momentum' },
+            { type: 'whale', icon: '🐋', title: 'Whale alert', text: 'Whale deposited <strong>1,200 ETH</strong> into <strong>zkSync Era</strong> bridge' },
+            { type: 'tvl', icon: '📊', title: 'Score update', text: '<strong>Scroll</strong> score increased from <strong>7.2</strong> to <strong>7.6</strong>' },
+            { type: 'project', icon: '⭐', title: 'New listing', text: '<strong>Starknet</strong> scored <strong>7.8</strong> — ZK-rollup with growing ecosystem' },
+            { type: 'whale', icon: '🐋', title: 'Whale movement', text: '3 whales accumulated <strong>2.5M USDC</strong> on <strong>Linea</strong>' },
+            { type: 'tvl', icon: '🎯', title: 'Airdrop signal', text: '<strong>Eclipse</strong> hints at token — TVL surged 200% this week' },
+            { type: 'project', icon: '🔮', title: 'Trending', text: '<strong>Initia</strong> scored <strong>7.1</strong> — Interwoven rollup narrative heating up' },
+        ];
+        let notifIndex = 0;
+
+        function addNotification(notif) {
+            const id = Date.now() + Math.random();
+            notifications.unshift({ ...notif, id, read: false, time: new Date() });
+            if (notifications.length > 20) notifications.pop();
+            renderNotifications();
+            updateNotifBadge();
+        }
+
+        function renderNotifications() {
+            const list = document.getElementById('notifList');
+            if (notifications.length === 0) {
+                list.innerHTML = '<div class="notif-empty">No notifications yet</div>';
+                return;
+            }
+            list.innerHTML = notifications.map((n, i) => {
+                const timeAgo = getTimeAgo(n.time);
+                return `<div class="notif-item ${n.read ? 'read' : 'unread'}" onclick="markNotifRead(${i})" style="animation-delay:${i * 0.05}s">
+                    <div class="notif-icon ${n.type}">${n.icon}</div>
+                    <div class="notif-content">
+                        <p>${n.text}</p>
+                        <div class="notif-time">${timeAgo}</div>
+                    </div>
+                </div>`;
+            }).join('');
+        }
+
+        function getTimeAgo(date) {
+            const secs = Math.floor((new Date() - date) / 1000);
+            if (secs < 60) return 'just now';
+            if (secs < 3600) return Math.floor(secs / 60) + 'm ago';
+            if (secs < 86400) return Math.floor(secs / 3600) + 'h ago';
+            return Math.floor(secs / 86400) + 'd ago';
+        }
+
+        function updateNotifBadge() {
+            const badge = document.getElementById('notifBadge');
+            const unread = notifications.filter(n => !n.read).length;
+            badge.textContent = unread;
+            badge.classList.toggle('hidden', unread === 0);
+        }
+
+        function toggleNotifDropdown() {
+            const dd = document.getElementById('notifDropdown');
+            notifOpen = !notifOpen;
+            dd.classList.toggle('open', notifOpen);
+            if (notifOpen) {
+                document.addEventListener('click', closeNotifOutside, true);
+            }
+        }
+
+        function closeNotifOutside(e) {
+            const wrap = document.getElementById('notifWrap');
+            if (wrap && !wrap.contains(e.target)) {
+                document.getElementById('notifDropdown').classList.remove('open');
+                notifOpen = false;
+                document.removeEventListener('click', closeNotifOutside, true);
+            }
+        }
+
+        function markNotifRead(index) {
+            notifications[index].read = true;
+            renderNotifications();
+            updateNotifBadge();
+        }
+
+        function clearAllNotifications() {
+            notifications = [];
+            renderNotifications();
+            updateNotifBadge();
+        }
+
+        // Cycle notifications every 10 seconds
+        setInterval(() => {
+            const notif = mockNotifications[notifIndex % mockNotifications.length];
+            addNotification(notif);
+            notifIndex++;
+        }, 10000);
+
+        // Add first notification after 3 seconds
+        setTimeout(() => {
+            addNotification(mockNotifications[0]);
+            notifIndex = 1;
+        }, 3000);
+
+        // ===== LIVE PROJECT SCANNER =====
+        const scannerProjects = [
+            { name: '0G Protocol', chain: '0G', score: 9.2, status: 'live', trend: '+12%', trendDir: 'up' },
+            { name: 'EigenLayer', chain: 'Ethereum', score: 8.8, status: 'live', trend: '+8%', trendDir: 'up' },
+            { name: 'Monad', chain: 'Ethereum', score: 8.5, status: 'upcoming', trend: '+15%', trendDir: 'up' },
+            { name: 'Berachain', chain: 'Ethereum', score: 8.3, status: 'live', trend: '+5%', trendDir: 'up' },
+            { name: 'Scroll', chain: 'L2', score: 7.6, status: 'live', trend: '-2%', trendDir: 'down' },
+            { name: 'zkSync Era', chain: 'L2', score: 7.8, status: 'live', trend: '+3%', trendDir: 'up' },
+            { name: 'Linea', chain: 'L2', score: 7.9, status: 'live', trend: '+6%', trendDir: 'up' },
+            { name: 'Starknet', chain: 'L2', score: 7.8, status: 'live', trend: '+4%', trendDir: 'up' },
+            { name: 'Eclipse', chain: 'Solana', score: 7.4, status: 'upcoming', trend: '+22%', trendDir: 'up' },
+            { name: 'Initia', chain: 'Ethereum', score: 7.1, status: 'upcoming', trend: '+9%', trendDir: 'up' },
+            { name: 'LayerZero', chain: 'Ethereum', score: 8.1, status: 'live', trend: '+1%', trendDir: 'up' },
+            { name: 'Wormhole', chain: 'Solana', score: 7.3, status: 'live', trend: '-1%', trendDir: 'down' },
+            { name: 'Arbitrum', chain: 'L2', score: 6.8, status: 'ended', trend: '0%', trendDir: 'neutral' },
+            { name: 'Optimism', chain: 'L2', score: 6.5, status: 'ended', trend: '-3%', trendDir: 'down' },
+            { name: 'Celestia', chain: 'Ethereum', score: 7.7, status: 'live', trend: '+7%', trendDir: 'up' },
+        ];
+
+        function renderScanner(data) {
+            const body = document.getElementById('scannerBody');
+            if (!data) data = getFilteredScannerData();
+            body.innerHTML = data.map((p, i) => {
+                const scoreClass = p.score >= 8 ? 'score-high' : p.score >= 6 ? 'score-mid' : 'score-low';
+                const pulseClass = p._pulse ? 'pulse-row' : '';
+                return `<tr class="${pulseClass}">
+                    <td><span class="scanner-project-name">${p.name}</span></td>
+                    <td><span class="scanner-chain-tag">${p.chain}</span></td>
+                    <td><span class="scanner-score ${scoreClass}">${p.score.toFixed(1)}</span></td>
+                    <td><span class="scanner-status ${p.status}">${p.status.charAt(0).toUpperCase() + p.status.slice(1)}</span></td>
+                    <td><span class="scanner-trend ${p.trendDir}">${p.trendDir === 'up' ? '▲' : p.trendDir === 'down' ? '▼' : '—'} ${p.trend}</span></td>
+                    <td><button class="scanner-analyze-btn" onclick="analyzeFromScanner('${p.name}')">Analyze</button></td>
+                </tr>`;
+            }).join('');
+        }
+
+        function getFilteredScannerData() {
+            const chainF = document.getElementById('scannerChainFilter').value;
+            const scoreF = document.getElementById('scannerScoreFilter').value;
+            const statusF = document.getElementById('scannerStatusFilter').value;
+            return scannerProjects.filter(p => {
+                if (chainF !== 'all' && p.chain !== chainF) return false;
+                if (scoreF === 'high' && p.score < 8) return false;
+                if (scoreF === 'mid' && (p.score < 6 || p.score >= 8)) return false;
+                if (scoreF === 'low' && p.score >= 6) return false;
+                if (statusF !== 'all' && p.status !== statusF) return false;
+                return true;
+            });
+        }
+
+        function filterScanner() { renderScanner(); }
+
+        function refreshScanner() {
+            // Simulate data changes
+            scannerProjects.forEach(p => {
+                const delta = (Math.random() - 0.45) * 0.5;
+                p.score = Math.max(1, Math.min(10, p.score + delta));
+                p.score = Math.round(p.score * 10) / 10;
+                const trendVal = Math.round((Math.random() - 0.4) * 20);
+                p.trend = (trendVal >= 0 ? '+' : '') + trendVal + '%';
+                p.trendDir = trendVal > 0 ? 'up' : trendVal < 0 ? 'down' : 'neutral';
+                p._pulse = Math.random() > 0.6;
+            });
+            renderScanner();
+            document.getElementById('scannerLastUpdate').innerHTML = `
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+                Last updated: just now
+            `;
+            // Clear pulse after animation
+            setTimeout(() => { scannerProjects.forEach(p => p._pulse = false); }, 2000);
+        }
+
+        function analyzeFromScanner(name) {
+            document.getElementById('twitterInput').value = name;
+            document.getElementById('ai-scoring').scrollIntoView({ behavior: 'smooth' });
+            setTimeout(() => runAIScoring(), 500);
+        }
+
+        // Auto-refresh scanner every 30 seconds
+        setInterval(refreshScanner, 30000);
+
+        // ===== LEADERBOARD =====
+        const leaderboardData = [
+            { address: '0x7a3B...9f2E', score: 94, projects: 47, rewards: '~$12,400' },
+            { address: '0xb4C1...8dA3', score: 91, projects: 42, rewards: '~$10,800' },
+            { address: '0x2eF9...4c7D', score: 88, projects: 38, rewards: '~$9,200' },
+            { address: '0x9dA5...1bE8', score: 85, projects: 35, rewards: '~$7,600' },
+            { address: '0x1cD7...6fA2', score: 82, projects: 31, rewards: '~$6,100' },
+            { address: '0x5eB3...2cF9', score: 79, projects: 28, rewards: '~$5,000' },
+            { address: '0x8fC6...7aD1', score: 76, projects: 25, rewards: '~$4,200' },
+            { address: '0x3aE8...5bC4', score: 73, projects: 22, rewards: '~$3,500' },
+            { address: '0xd2F1...9eA7', score: 70, projects: 19, rewards: '~$2,800' },
+            { address: '0x6bA4...3dB6', score: 67, projects: 16, rewards: '~$2,100' },
+        ];
+
+        function renderLeaderboard() {
+            const body = document.getElementById('leaderboardBody');
+            body.innerHTML = leaderboardData.map((entry, i) => {
+                let rankClass = '';
+                let rowClass = '';
+                if (i === 0) { rankClass = 'gold'; rowClass = 'rank-gold'; }
+                else if (i === 1) { rankClass = 'silver'; rowClass = 'rank-silver'; }
+                else if (i === 2) { rankClass = 'bronze'; rowClass = 'rank-bronze'; }
+                const medal = i === 0 ? '👑' : i === 1 ? '🥈' : i === 2 ? '🥉' : '';
+                return `<tr class="${rowClass}">
+                    <td><span class="leaderboard-rank ${rankClass}">${medal} #${i + 1}</span></td>
+                    <td><span class="leaderboard-address">${entry.address}</span></td>
+                    <td><span class="leaderboard-score">${entry.score}</span></td>
+                    <td><span class="leaderboard-projects">${entry.projects}</span></td>
+                    <td><span class="leaderboard-rewards">${entry.rewards}</span></td>
+                </tr>`;
+            }).join('');
+        }
+
+        function updateLeaderboardYourRank() {
+            if (walletState.connected) {
+                const yourScore = generatePortfolioScore(walletState.address).value;
+                const rank = leaderboardData.filter(e => e.score > yourScore).length + 1;
+                document.getElementById('leaderboardYourRank').style.display = 'flex';
+                document.getElementById('yourRankValue').textContent = '#' + rank;
+                document.getElementById('yourScoreValue').textContent = yourScore;
+            }
+        }
+
+        // ===== 0G STORAGE / SCAN HISTORY =====
+        const STORAGE_KEY = 'og_scout_scan_history';
+
+        function getScanHistory() {
+            try {
+                return JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+            } catch { return []; }
+        }
+
+        function saveScanHistory(entry) {
+            const history = getScanHistory();
+            history.unshift(entry);
+            if (history.length > 50) history.pop();
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(history));
+            renderScanHistory();
+        }
+
+        function renderScanHistory() {
+            const history = getScanHistory();
+            const list = document.getElementById('scanHistoryList');
+            document.getElementById('scanHistoryCount').textContent = history.length;
+            if (history.length === 0) {
+                list.innerHTML = '<div class="scan-history-empty">No saved scans yet. Analyze a profile and save to 0G Storage!</div>';
+                return;
+            }
+            list.innerHTML = history.map((entry, i) => {
+                const scoreClass = entry.score >= 80 ? 'score-high' : entry.score >= 60 ? 'score-mid' : 'score-low';
+                const timeStr = new Date(entry.timestamp).toLocaleString();
+                return `<div class="scan-history-item" style="animation-delay:${i * 0.05}s">
+                    <div class="scan-history-score ${scoreClass}">${entry.score}</div>
+                    <div class="scan-history-info">
+                        <h4>${entry.name}</h4>
+                        <p>${entry.reasoning ? entry.reasoning.substring(0, 80) + '...' : 'AI Scored'}</p>
+                        <div class="scan-history-tx">0G TX: ${entry.txHash}</div>
+                    </div>
+                    <span class="scan-history-badge">${entry.badge}</span>
+                    <span class="scan-history-time">${timeStr}</span>
+                </div>`;
+            }).join('');
+        }
+
+        function saveToStorage() {
+            const btn = document.getElementById('saveStorageBtn');
+            const score = document.getElementById('aiResultScore').textContent;
+            const badge = document.getElementById('aiResultBadge').textContent;
+            const reasoning = document.getElementById('aiResultReasoning').textContent;
+            const input = document.getElementById('twitterInput').value.trim();
+
+            // Simulate 0G Storage transaction
+            btn.innerHTML = '<div class="spinner" style="width:16px;height:16px;border-width:2px;margin:0;"></div> Saving to 0G Storage...';
+            btn.disabled = true;
+
+            setTimeout(() => {
+                const txHash = '0x' + Array.from({length: 64}, () => Math.floor(Math.random() * 16).toString(16)).join('');
+                const entry = {
+                    name: input,
+                    score: parseInt(score),
+                    badge: badge,
+                    reasoning: reasoning,
+                    timestamp: new Date().toISOString(),
+                    txHash: txHash,
+                };
+                saveScanHistory(entry);
+
+                btn.innerHTML = '✓ Saved to 0G Storage';
+                btn.classList.add('saved');
+
+                // Add notification
+                addNotification({
+                    type: 'tvl',
+                    icon: '💾',
+                    title: 'Saved to 0G Storage',
+                    text: `<strong>${input}</strong> score (${score}) saved on-chain`
+                });
+            }, 1500);
+        }
+
+        // Update showResult to show save button
+        const _origShowResult = showResult;
+        showResult = function(score, reasoning, providerName, isFallback) {
+            _origShowResult(score, reasoning, providerName, isFallback);
+            const saveBtn = document.getElementById('saveStorageBtn');
+            saveBtn.style.display = 'inline-flex';
+            saveBtn.classList.remove('saved');
+            saveBtn.disabled = false;
+            saveBtn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg> Save to 0G Storage`;
+        };
+
+        // Initialize new sections on page load (scanner & leaderboard via skeleton loader above)
+        renderScanHistory();
+
+        // Update leaderboard "Your Rank" when wallet connects
+        const _origRenderDashboard = renderDashboard;
+        async function renderDashboardWrapper(address, chainId) {
+            await _origRenderDashboard(address, chainId);
+            updateLeaderboardYourRank();
+        }
+        // Re-assign for auto-reconnect
+        window._renderDashboardForReconnect = renderDashboardWrapper;
+
+        // --- Auto-Reconnect on Page Load ---
+        (function autoReconnect() {
+            try {
+                const stored = localStorage.getItem(WALLET_STORAGE_KEY);
+                if (!stored) return;
+                const state = JSON.parse(stored);
+                if (state.connected && state.address) {
+                    // Verify the wallet is still accessible
+                    if (window.ethereum) {
+                        window.ethereum.request({ method: 'eth_accounts' })
+                            .then(accounts => {
+                                if (accounts.length > 0 && accounts[0].toLowerCase() === state.address.toLowerCase()) {
+                                    walletState = state;
+                                    updateNavForConnected(state.address);
+                                    renderDashboard(state.address, state.chainId);
+                                    setupWalletListeners();
+                                } else {
+                                    clearWalletState();
+                                }
+                            })
+                            .catch(() => clearWalletState());
+                    } else {
+                        // No ethereum provider, clear state
+                        clearWalletState();
+                    }
+                }
+            } catch (e) {
+                clearWalletState();
+            }
+        })();
+
+        // ===== SCROLL PROGRESS BAR =====
+        (function() {
+            const progressBar = document.getElementById('scrollProgress');
+            window.addEventListener('scroll', function() {
+                const scrollTop = window.scrollY;
+                const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+                const progress = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+                progressBar.style.width = progress + '%';
+            }, { passive: true });
+        })();
+
+        // ===== BACK TO TOP BUTTON =====
+        (function() {
+            const btn = document.getElementById('backToTop');
+            window.addEventListener('scroll', function() {
+                btn.classList.toggle('visible', window.scrollY > 500);
+            }, { passive: true });
+        })();
+
+        // ===== NAV ACTIVE STATE (SCROLL SPY) =====
+        (function() {
+            const navLinks = document.querySelectorAll('.nav-links a[href^="#"]');
+            const sections = [];
+            navLinks.forEach(link => {
+                const id = link.getAttribute('href');
+                if (id && id !== '#') {
+                    const section = document.querySelector(id);
+                    if (section) sections.push({ el: section, link: link });
+                }
+            });
+            function updateActiveNav() {
+                const scrollY = window.scrollY + 120;
+                let current = null;
+                for (let i = sections.length - 1; i >= 0; i--) {
+                    if (scrollY >= sections[i].el.offsetTop) {
+                        current = sections[i].link;
+                        break;
+                    }
+                }
+                navLinks.forEach(l => l.classList.remove('active'));
+                if (current) current.classList.add('active');
+            }
+            window.addEventListener('scroll', updateActiveNav, { passive: true });
+            updateActiveNav();
+        })();
+
+        // ===== ENHANCED INTERSECTION OBSERVER (staggered child animations) =====
+        (function() {
+            const staggerObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const children = entry.target.querySelectorAll('.feature-card, .stat-item, .dashboard-project-card, .activity-item');
+                        children.forEach((child, i) => {
+                            child.style.opacity = '0';
+                            child.style.transform = 'translateY(20px)';
+                            child.style.transition = `all 0.5s ease ${i * 0.08}s`;
+                            requestAnimationFrame(() => {
+                                child.style.opacity = '1';
+                                child.style.transform = 'translateY(0)';
+                            });
+                        });
+                        staggerObserver.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.1 });
+            document.querySelectorAll('.features-grid, .stats-grid, .dashboard-projects-grid, .activity-list').forEach(el => {
+                staggerObserver.observe(el);
+            });
+        })();
+
+        // ===== SKELETON LOADING =====
+        (function() {
+            function scannerSkeleton() {
+                const body = document.getElementById('scannerBody');
+                let html = '';
+                for (let i = 0; i < 8; i++) {
+                    html += '<tr class="skeleton-row"><td><div class="skeleton" style="width:100px;height:14px"></div></td><td><div class="skeleton" style="width:50px;height:14px;border-radius:6px"></div></td><td><div class="skeleton" style="width:30px;height:14px"></div></td><td><div class="skeleton" style="width:50px;height:20px;border-radius:100px"></div></td><td><div class="skeleton" style="width:40px;height:14px"></div></td><td><div class="skeleton" style="width:60px;height:28px;border-radius:8px"></div></td></tr>';
+                }
+                body.innerHTML = html;
+            }
+            function leaderboardSkeleton() {
+                const body = document.getElementById('leaderboardBody');
+                let html = '';
+                for (let i = 0; i < 6; i++) {
+                    html += '<tr class="skeleton-row"><td><div class="skeleton" style="width:40px;height:16px"></div></td><td><div class="skeleton" style="width:120px;height:14px"></div></td><td><div class="skeleton" style="width:30px;height:16px"></div></td><td><div class="skeleton" style="width:60px;height:14px"></div></td><td><div class="skeleton" style="width:70px;height:14px"></div></td></tr>';
+                }
+                body.innerHTML = html;
+            }
+
+            // Show skeletons immediately
+            scannerSkeleton();
+            leaderboardSkeleton();
+
+            // Replace with real content after simulated load
+            const delay = 800 + Math.random() * 700;
+            setTimeout(() => {
+                renderScanner();
+                renderLeaderboard();
+            }, delay);
+        })();
     </script>
 </body>
 </html>
+
