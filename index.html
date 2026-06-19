@@ -404,6 +404,119 @@
         }
         .chat-input-row .search-input:focus { border-color: rgba(139,92,246,0.3); }
 
+        /* ===== AI CHATBOT SECTION ===== */
+        .chatbot-section { padding: 20px 0 60px; }
+        .chatbot-card {
+            background: var(--bg-card); border: 1px solid var(--border);
+            border-radius: 20px; padding: 0; max-width: 700px; margin: 0 auto;
+            transition: all 0.3s; position: relative; overflow: hidden;
+            box-shadow: 0 0 40px rgba(139,92,246,0.05);
+        }
+        .chatbot-card:hover { border-color: rgba(139,92,246,0.25); box-shadow: 0 0 60px rgba(139,92,246,0.1); }
+
+        .chatbot-header { display: flex; align-items: center; gap: 16px; padding: 28px 28px 0; }
+        .chatbot-icon {
+            width: 52px; height: 52px; border-radius: 14px;
+            background: linear-gradient(135deg, rgba(139,92,246,0.15), rgba(88,28,135,0.1));
+            display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+            border: 1px solid rgba(139,92,246,0.15);
+        }
+        .chatbot-header-text h2 { font-size: 22px; font-weight: 700; letter-spacing: -0.5px; margin-bottom: 4px; }
+        .chatbot-subtitle { font-size: 13px; color: var(--text-secondary); line-height: 1.5; }
+
+        .chatbot-container {
+            margin: 20px 28px 28px;
+            border: 1px solid rgba(139,92,246,0.1); border-radius: 14px;
+            background: rgba(0,0,0,0.25); overflow: hidden;
+            backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+        }
+        .chatbot-messages {
+            height: 420px; overflow-y: auto; padding: 20px;
+            display: flex; flex-direction: column; gap: 12px;
+            scrollbar-width: thin; scrollbar-color: rgba(139,92,246,0.3) transparent;
+        }
+        .chatbot-messages::-webkit-scrollbar { width: 5px; }
+        .chatbot-messages::-webkit-scrollbar-track { background: transparent; }
+        .chatbot-messages::-webkit-scrollbar-thumb { background: rgba(139,92,246,0.25); border-radius: 3px; }
+
+        .chatbot-msg {
+            max-width: 85%; padding: 12px 16px; border-radius: 16px;
+            font-size: 14px; line-height: 1.65; animation: chatbotMsgIn 0.35s ease forwards;
+            opacity: 0; word-wrap: break-word;
+        }
+        .chatbot-msg-user {
+            background: linear-gradient(135deg, #7c3aed 0%, #a78bfa 100%);
+            color: white; align-self: flex-end; border-bottom-right-radius: 4px;
+            box-shadow: 0 4px 15px rgba(124,58,237,0.25);
+        }
+        .chatbot-msg-ai {
+            background: rgba(255,255,255,0.04); border: 1px solid rgba(139,92,246,0.1);
+            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            color: var(--text); align-self: flex-start; border-bottom-left-radius: 4px;
+        }
+        .chatbot-msg-ai strong { color: #a78bfa; }
+        .chatbot-msg-ai code {
+            background: rgba(139,92,246,0.12); padding: 2px 6px;
+            border-radius: 4px; font-size: 13px;
+        }
+
+        @keyframes chatbotMsgIn {
+            from { opacity: 0; transform: translateY(12px) scale(0.97); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        .chatbot-typing {
+            display: flex; align-items: center; gap: 12px;
+            padding: 14px 18px; align-self: flex-start;
+            background: rgba(255,255,255,0.04); border: 1px solid rgba(139,92,246,0.1);
+            border-radius: 16px; border-bottom-left-radius: 4px;
+            animation: chatbotMsgIn 0.35s ease forwards;
+        }
+        .chatbot-typing-dots { display: flex; gap: 5px; }
+        .chatbot-typing-dots span {
+            width: 7px; height: 7px; background: var(--accent); border-radius: 50%;
+            animation: typingBounce 1.4s ease-in-out infinite;
+        }
+        .chatbot-typing-dots span:nth-child(2) { animation-delay: 0.2s; }
+        .chatbot-typing-dots span:nth-child(3) { animation-delay: 0.4s; }
+
+        .chatbot-chips {
+            display: flex; gap: 8px; padding: 14px 20px; flex-wrap: wrap;
+            border-top: 1px solid rgba(255,255,255,0.04);
+            background: rgba(0,0,0,0.1);
+        }
+        .chatbot-chip {
+            background: rgba(139,92,246,0.08); border: 1px solid rgba(139,92,246,0.15);
+            color: var(--accent-2); padding: 7px 16px; border-radius: 100px;
+            font-size: 12px; font-weight: 500; cursor: pointer;
+            transition: all 0.2s; font-family: inherit; white-space: nowrap;
+        }
+        .chatbot-chip:hover {
+            background: rgba(139,92,246,0.18); border-color: rgba(139,92,246,0.35);
+            transform: translateY(-1px); box-shadow: 0 4px 12px rgba(139,92,246,0.15);
+        }
+
+        .chatbot-input-area {
+            display: flex; gap: 10px; padding: 16px 20px;
+            border-top: 1px solid rgba(255,255,255,0.04);
+            background: rgba(0,0,0,0.1);
+        }
+        .chatbot-input {
+            flex: 1; background: rgba(255,255,255,0.04); border: 1px solid var(--border);
+            border-radius: 12px; padding: 12px 16px; color: var(--text);
+            font-size: 14px; font-family: inherit; outline: none; transition: all 0.3s;
+        }
+        .chatbot-input:focus { border-color: rgba(139,92,246,0.4); box-shadow: 0 0 20px rgba(139,92,246,0.1); }
+        .chatbot-input::placeholder { color: var(--text-muted); }
+        .chatbot-send-btn {
+            background: linear-gradient(135deg, #7c3aed, #a78bfa); color: white;
+            border: none; border-radius: 12px; padding: 12px 20px; cursor: pointer;
+            font-weight: 600; font-size: 14px; font-family: inherit; transition: all 0.3s;
+            display: flex; align-items: center; gap: 8px; white-space: nowrap;
+        }
+        .chatbot-send-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 20px rgba(139,92,246,0.4); }
+        .chatbot-send-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
+
         /* Features */
         .features-section { padding: 40px 0; }
         .section-header { text-align: center; margin-bottom: 24px; }
@@ -554,6 +667,10 @@
             .wallet-dropdown { right: -8px; min-width: 200px; }
             .dashboard-grid { grid-template-columns: 1fr; }
             .dashboard-projects-grid { grid-template-columns: 1fr; }
+            .chatbot-header { padding: 20px 20px 0; }
+            .chatbot-container { margin: 16px 20px 20px; }
+            .chatbot-messages { height: 320px; }
+            .chatbot-chips { overflow-x: auto; flex-wrap: nowrap; -webkit-overflow-scrolling: touch; }
         }
 
         /* ===== WALLET CONNECT BUTTON ===== */
@@ -815,7 +932,7 @@
                 <a href="#features">Features</a>
                 <a href="#scout">Scout</a>
                 <a href="#ai-scoring">AI Score</a>
-                <a href="#chat">AI Chat</a>
+                <a href="#chatbot">AI Chat</a>
                 <a href="https://github.com/ryurea6/0g-scout" target="_blank">GitHub</a>
                 <a href="https://0g.ai" target="_blank" class="nav-cta">Explore ØG</a>
                 <div id="walletNavArea">
@@ -1131,20 +1248,49 @@
         <p style="color:var(--text-secondary);font-size:13px;">Analyzing with ØG Compute...</p>
     </div>
 
-    <!-- Chat -->
-    <section id="chat">
+    <!-- AI Chatbot -->
+    <section id="chatbot">
         <div class="container">
-            <div class="chat-section fade-up">
-                <div class="chat-header">
-                    <h2>AI Scout Assistant</h2>
-                    <span class="ai-badge">ØG Compute</span>
-                </div>
-                <div class="chat-messages" id="chatMessages">
-                    <div class="msg msg-ai">👋 Hi! I'm your AI Airdrop Scout powered by ØG Compute. Ask me about any crypto project. Try: <strong>"What are the hottest airdrops right now?"</strong></div>
-                </div>
-                <div class="chat-input-row">
-                    <input type="text" class="search-input" id="chatInput" placeholder="Ask about a project..." onkeydown="if(event.key==='Enter')sendChat()">
-                    <button class="btn btn-dark" onclick="sendChat()">Send</button>
+            <div class="chatbot-section fade-up">
+                <div class="chatbot-card">
+                    <div class="chatbot-header">
+                        <div class="chatbot-icon">
+                            <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="var(--accent-2)" stroke-width="1.5">
+                                <rect x="3" y="11" width="18" height="10" rx="2"/>
+                                <circle cx="12" cy="5" r="2"/>
+                                <path d="M12 7v4"/>
+                                <line x1="8" y1="16" x2="8" y2="16"/>
+                                <line x1="16" y1="16" x2="16" y2="16"/>
+                                <path d="M9 21l-2 2"/>
+                                <path d="M15 21l2 2"/>
+                            </svg>
+                        </div>
+                        <div class="chatbot-header-text">
+                            <h2>Ask ØG Scout AI</h2>
+                            <p class="chatbot-subtitle">Chat with our AI about airdrops, projects, and strategies</p>
+                        </div>
+                    </div>
+                    <div class="chatbot-container">
+                        <div class="chatbot-messages" id="chatbotMessages">
+                            <div class="chatbot-msg chatbot-msg-ai">
+                                👋 Hey! I'm <strong>ØG Scout AI</strong>, your airdrop advisor powered by <strong>0G Network</strong>.<br><br>
+                                Ask me about crypto airdrops, project analysis, or farming strategies. I'm here to help you discover alpha! 🚀
+                            </div>
+                        </div>
+                        <div class="chatbot-chips" id="chatbotChips">
+                            <button class="chatbot-chip" onclick="sendQuickPrompt('Best airdrops right now')">🔥 Best airdrops right now</button>
+                            <button class="chatbot-chip" onclick="sendQuickPrompt('Analyze 0G ecosystem')">🔍 Analyze 0G ecosystem</button>
+                            <button class="chatbot-chip" onclick="sendQuickPrompt('How to qualify for airdrops?')">🎯 How to qualify for airdrops?</button>
+                            <button class="chatbot-chip" onclick="sendQuickPrompt('Whale movement alerts')">🐋 Whale movement alerts</button>
+                        </div>
+                        <div class="chatbot-input-area">
+                            <input type="text" class="chatbot-input" id="chatbotInput" placeholder="Ask about airdrops, projects, strategies..." onkeydown="if(event.key==='Enter')sendChatbotMessage()">
+                            <button class="chatbot-send-btn" id="chatbotSendBtn" onclick="sendChatbotMessage()">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+                                Send
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -1391,44 +1537,117 @@
             document.getElementById("results").style.display = "block";
         }
 
+        // ===== AI CHATBOT =====
+        const CHATBOT_API_URL = 'https://router-api.0g.ai/v1/chat/completions';
+        const CHATBOT_API_KEY = 'sk-376f7ace-4949-4ac3-8282-3a6e2cf586b0';
+        const CHATBOT_MODEL = 'deepseek-v4-flash';
+        const CHATBOT_SYSTEM_PROMPT = 'You are ØG Scout AI, an expert airdrop advisor built on 0G Network. Help users discover crypto airdrops, analyze projects, and optimize their farming strategy. Be concise, helpful, and Web3-native.';
+
+        let chatbotHistory = [];
+        let chatbotBusy = false;
+
+        async function sendChatbotMessage(msg) {
+            const input = document.getElementById('chatbotInput');
+            if (!msg) msg = input.value.trim();
+            if (!msg || chatbotBusy) return;
+            input.value = '';
+
+            addChatbotMessage(msg, 'user');
+            chatbotHistory.push({ role: 'user', content: msg });
+
+            // Keep history manageable (last 20 messages = 10 exchanges)
+            if (chatbotHistory.length > 20) chatbotHistory.splice(0, 2);
+
+            chatbotBusy = true;
+            document.getElementById('chatbotSendBtn').disabled = true;
+            showChatbotTyping();
+
+            try {
+                const response = await fetch(CHATBOT_API_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + CHATBOT_API_KEY
+                    },
+                    body: JSON.stringify({
+                        model: CHATBOT_MODEL,
+                        messages: [
+                            { role: 'system', content: CHATBOT_SYSTEM_PROMPT },
+                            ...chatbotHistory
+                        ],
+                        temperature: 0.7,
+                        max_tokens: 600
+                    })
+                });
+
+                if (!response.ok) {
+                    const errText = await response.text();
+                    throw new Error('API error ' + response.status + ': ' + errText.substring(0, 100));
+                }
+
+                const data = await response.json();
+                const reply = data.choices?.[0]?.message?.content || 'Sorry, I could not process that request.';
+
+                chatbotHistory.push({ role: 'assistant', content: reply });
+                hideChatbotTyping();
+                addChatbotMessage(reply, 'ai');
+            } catch (e) {
+                console.error('Chatbot error:', e);
+                hideChatbotTyping();
+                addChatbotMessage('⚠️ Sorry, I encountered an error connecting to 0G Compute. Please try again in a moment.\n\n*Error: ' + e.message + '*', 'ai');
+            } finally {
+                chatbotBusy = false;
+                document.getElementById('chatbotSendBtn').disabled = false;
+                document.getElementById('chatbotInput').focus();
+            }
+        }
+
+        function sendQuickPrompt(text) {
+            document.getElementById('chatbotInput').value = text;
+            sendChatbotMessage();
+        }
+
+        function addChatbotMessage(text, type) {
+            const container = document.getElementById('chatbotMessages');
+            const div = document.createElement('div');
+            div.className = 'chatbot-msg chatbot-msg-' + type;
+            // Simple markdown rendering
+            let html = text
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                .replace(/\*(.*?)\*/g, '<em>$1</em>')
+                .replace(/`([^`]+)`/g, '<code>$1</code>')
+                .replace(/\n/g, '<br>');
+            div.innerHTML = html;
+            container.appendChild(div);
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function showChatbotTyping() {
+            const container = document.getElementById('chatbotMessages');
+            const div = document.createElement('div');
+            div.className = 'chatbot-typing';
+            div.id = 'chatbotTyping';
+            div.innerHTML = '<div class="chatbot-typing-dots"><span></span><span></span><span></span></div>';
+            container.appendChild(div);
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function hideChatbotTyping() {
+            const el = document.getElementById('chatbotTyping');
+            if (el) el.remove();
+        }
+
+        // Legacy chat functions (kept for backward compat)
         const chatResponses = {
             "airdrop": "🔥 Hot airdrops:\\n\\n1. **0G Protocol** (9.2) — AI infrastructure\\n2. **EigenLayer** (8.8) — Restaking\\n3. **Monad** (8.5) — Parallel EVM\\n\\nDeep-dive on any?",
             "0g": "ØG ecosystem:\\n\\n• **ØG Chain** — Modular EVM L1\\n• **ØG Storage** — Decentralized storage\\n• **ØG Compute** — AI inference\\n\\nScore: 9.2/10",
         };
         const chatHistory = [];
-        async function sendChat() {
-            const input = document.getElementById("chatInput");
-            const msg = input.value.trim();
-            if (!msg) return;
-            addMessage(msg, "user"); input.value = "";
-
-            try {
-                const resp = await fetch(`${API_BASE}/api/chat`, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ message: msg, history: chatHistory }),
-                });
-                if (!resp.ok) throw new Error(`API error: ${resp.status}`);
-                const data = await resp.json();
-                const response = data.response || "I couldn't process that request.";
-                chatHistory.push({ role: "user", content: msg });
-                chatHistory.push({ role: "assistant", content: response });
-                if (chatHistory.length > 10) chatHistory.splice(0, 2); // Keep history manageable
-                addMessage(response, "ai");
-            } catch (e) {
-                console.warn("Chat API failed, using fallback:", e.message);
-                let response = "Analyzing with ØG Compute... 🤔\\n\\nBased on on-chain data, I'd recommend projects with strong dev activity. Want me to scan something?";
-                for (const [k, v] of Object.entries(chatResponses)) { if (msg.toLowerCase().includes(k)) { response = v; break; } }
-                addMessage(response, "ai");
-            }
-        }
-        function addMessage(text, type) {
-            const c = document.getElementById("chatMessages");
-            const d = document.createElement("div");
-            d.className = `msg msg-${type}`;
-            d.innerHTML = text.replace(/\n/g, "<br>").replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
-            c.appendChild(d); c.scrollTop = c.scrollHeight;
-        }
+        async function sendChat() { sendChatbotMessage(); }
+        function addMessage(text, type) { addChatbotMessage(text, type === 'user' ? 'user' : 'ai'); }
 
         // Mouse glow effect
         document.addEventListener('mousemove', (e) => {
@@ -1477,7 +1696,7 @@
         // ===== AI SCORING WITH LLM =====
         const HF_MODEL_URL = "https://api-inference.huggingface.co/models/mistralai/Mistral-7B-Instruct-v0.3";
         const OG_ROUTER_URL = "https://router-api.0g.ai/v1/chat/completions";
-        const OG_DEFAULT_KEY = "***";
+        const OG_DEFAULT_KEY = "sk-376f7ace-4949-4ac3-8282-3a6e2cf586b0";
 
         function onProviderChange() {
             const provider = document.getElementById('llmProvider').value;
