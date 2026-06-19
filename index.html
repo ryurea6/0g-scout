@@ -1053,47 +1053,6 @@
         .scanner-last-update { font-size: 11px; color: var(--text-muted); display: flex; align-items: center; gap: 6px; }
 
         /* ===== LEADERBOARD ===== */
-        .leaderboard-section { padding: 40px 0 60px; }
-        .leaderboard-header { text-align: center; margin-bottom: 28px; }
-        .leaderboard-header h2 { font-size: clamp(28px, 4vw, 40px); font-weight: 800; letter-spacing: -1px; margin-bottom: 8px; }
-        .leaderboard-header p { color: var(--text-secondary); font-size: 15px; }
-        .leaderboard-card {
-            background: var(--bg-card); border: 1px solid var(--border);
-            border-radius: 16px; overflow: hidden; max-width: 800px; margin: 0 auto;
-        }
-        .leaderboard-table { width: 100%; border-collapse: collapse; }
-        .leaderboard-table th {
-            text-align: left; padding: 14px 20px; font-size: 11px; font-weight: 600;
-            color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px;
-            border-bottom: 1px solid var(--border); background: rgba(0,0,0,0.2);
-        }
-        .leaderboard-table td {
-            padding: 14px 20px; font-size: 13px; border-bottom: 1px solid rgba(255,255,255,0.03);
-        }
-        .leaderboard-table tbody tr { transition: all 0.3s; }
-        .leaderboard-table tbody tr:hover { background: rgba(139,92,246,0.04); }
-        .leaderboard-rank {
-            font-weight: 800; font-size: 16px; width: 40px; text-align: center;
-        }
-        .leaderboard-rank.gold { color: #fbbf24; text-shadow: 0 0 10px rgba(251,191,36,0.3); }
-        .leaderboard-rank.silver { color: #94a3b8; text-shadow: 0 0 10px rgba(148,163,184,0.3); }
-        .leaderboard-rank.bronze { color: #d97706; text-shadow: 0 0 10px rgba(217,119,6,0.3); }
-        .leaderboard-table tbody tr.rank-gold { background: rgba(251,191,36,0.04); }
-        .leaderboard-table tbody tr.rank-silver { background: rgba(148,163,184,0.03); }
-        .leaderboard-table tbody tr.rank-bronze { background: rgba(217,119,60,0.03); }
-        .leaderboard-address { font-family: 'Courier New', monospace; font-size: 13px; color: var(--text-secondary); }
-        .leaderboard-score { font-weight: 700; font-size: 16px; color: var(--accent-2); }
-        .leaderboard-projects { color: var(--text-secondary); }
-        .leaderboard-rewards { font-weight: 600; color: var(--green); }
-        .leaderboard-your-rank {
-            background: rgba(139,92,246,0.06); border: 1px solid rgba(139,92,246,0.15);
-            border-radius: 12px; padding: 16px 20px; margin-top: 16px;
-            max-width: 800px; margin-left: auto; margin-right: auto;
-            display: flex; align-items: center; justify-content: space-between;
-            flex-wrap: wrap; gap: 12px;
-        }
-        .leaderboard-your-rank-label { font-size: 13px; color: var(--text-secondary); }
-        .leaderboard-your-rank-value { font-size: 24px; font-weight: 800; color: var(--accent-2); }
 
         /* ===== 0G STORAGE / SCAN HISTORY ===== */
         .save-storage-btn {
@@ -1194,8 +1153,6 @@
             .notif-dropdown { right: -20px; width: 300px; }
             .scanner-table-wrap { overflow-x: auto; }
             .scanner-table { min-width: 700px; }
-            .leaderboard-table { min-width: 600px; }
-            .leaderboard-card { overflow-x: auto; }
         }
     </style>
 </head>
@@ -1230,7 +1187,6 @@
                 <a href="#features">Features</a>
                 <a href="#scout">Scout</a>
                 <a href="#scanner">Scanner</a>
-                <a href="#leaderboard">Leaderboard</a>
                 <a href="#ai-scoring">AI Score</a>
                 <a href="#chatbot">AI Chat</a>
                 <a href="https://github.com/ryurea6/0g-scout" target="_blank">GitHub</a>
@@ -2672,9 +2628,6 @@ Profile/Bio: "${text}" [/INST]</s>`;
             setTimeout(() => {
                 dash.querySelectorAll('.dash-fade-up').forEach(el => el.classList.add('visible'));
             }, 100);
-
-            // Update leaderboard your rank
-            if (typeof updateLeaderboardYourRank === 'function') updateLeaderboardYourRank();
         }
 
         function generatePortfolioScore(address) {
@@ -2944,50 +2897,6 @@ Profile/Bio: "${text}" [/INST]</s>`;
         setInterval(refreshScanner, 30000);
 
         // ===== LEADERBOARD =====
-        const leaderboardData = [
-            { address: '0x7a3B...9f2E', score: 94, projects: 47, rewards: '~$12,400' },
-            { address: '0xb4C1...8dA3', score: 91, projects: 42, rewards: '~$10,800' },
-            { address: '0x2eF9...4c7D', score: 88, projects: 38, rewards: '~$9,200' },
-            { address: '0x9dA5...1bE8', score: 85, projects: 35, rewards: '~$7,600' },
-            { address: '0x1cD7...6fA2', score: 82, projects: 31, rewards: '~$6,100' },
-            { address: '0x5eB3...2cF9', score: 79, projects: 28, rewards: '~$5,000' },
-            { address: '0x8fC6...7aD1', score: 76, projects: 25, rewards: '~$4,200' },
-            { address: '0x3aE8...5bC4', score: 73, projects: 22, rewards: '~$3,500' },
-            { address: '0xd2F1...9eA7', score: 70, projects: 19, rewards: '~$2,800' },
-            { address: '0x6bA4...3dB6', score: 67, projects: 16, rewards: '~$2,100' },
-        ];
-
-        function renderLeaderboard() {
-            const body = document.getElementById('leaderboardBody');
-            if (!body) return;
-            body.innerHTML = leaderboardData.map((entry, i) => {
-                let rankClass = '';
-                let rowClass = '';
-                if (i === 0) { rankClass = 'gold'; rowClass = 'rank-gold'; }
-                else if (i === 1) { rankClass = 'silver'; rowClass = 'rank-silver'; }
-                else if (i === 2) { rankClass = 'bronze'; rowClass = 'rank-bronze'; }
-                const medal = i === 0 ? '👑' : i === 1 ? '🥈' : i === 2 ? '🥉' : '';
-                return `<tr class="${rowClass}">
-                    <td><span class="leaderboard-rank ${rankClass}">${medal} #${i + 1}</span></td>
-                    <td><span class="leaderboard-address">${entry.address}</span></td>
-                    <td><span class="leaderboard-score">${entry.score}</span></td>
-                    <td><span class="leaderboard-projects">${entry.projects}</span></td>
-                    <td><span class="leaderboard-rewards">${entry.rewards}</span></td>
-                </tr>`;
-            }).join('');
-        }
-
-        function updateLeaderboardYourRank() {
-            const yourRankEl = document.getElementById('leaderboardYourRank');
-            if (!yourRankEl) return;
-            if (walletState.connected) {
-                const yourScore = generatePortfolioScore(walletState.address).value;
-                const rank = leaderboardData.filter(e => e.score > yourScore).length + 1;
-                document.getElementById('leaderboardYourRank').style.display = 'flex';
-                document.getElementById('yourRankValue').textContent = '#' + rank;
-                document.getElementById('yourScoreValue').textContent = yourScore;
-            }
-        }
 
         // ===== 0G STORAGE / SCAN HISTORY =====
         const STORAGE_KEY = 'og_scout_scan_history';
@@ -3076,15 +2985,10 @@ Profile/Bio: "${text}" [/INST]</s>`;
             saveBtn.disabled = false;
             saveBtn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg> Save to 0G Storage`;
         };
-
-        // Initialize new sections on page load (scanner & leaderboard via skeleton loader above)
         renderScanHistory();
-
-        // Update leaderboard "Your Rank" when wallet connects
         const _origRenderDashboard = renderDashboard;
         async function renderDashboardWrapper(address, chainId) {
             await _origRenderDashboard(address, chainId);
-            updateLeaderboardYourRank();
         }
         // Re-assign for auto-reconnect
         window._renderDashboardForReconnect = renderDashboardWrapper;
@@ -3200,25 +3104,14 @@ Profile/Bio: "${text}" [/INST]</s>`;
                 }
                 body.innerHTML = html;
             }
-            function leaderboardSkeleton() {
-                const body = document.getElementById('leaderboardBody');
-                if (!body) return;
-                let html = '';
-                for (let i = 0; i < 6; i++) {
-                    html += '<tr class="skeleton-row"><td><div class="skeleton" style="width:40px;height:16px"></div></td><td><div class="skeleton" style="width:120px;height:14px"></div></td><td><div class="skeleton" style="width:30px;height:16px"></div></td><td><div class="skeleton" style="width:60px;height:14px"></div></td><td><div class="skeleton" style="width:70px;height:14px"></div></td></tr>';
-                }
-                body.innerHTML = html;
-            }
 
             // Show skeletons immediately
             scannerSkeleton();
-            leaderboardSkeleton();
 
             // Replace with real content after simulated load
             const delay = 800 + Math.random() * 700;
             setTimeout(() => {
                 renderScanner();
-                renderLeaderboard();
             }, delay);
         })();
     </script>
