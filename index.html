@@ -562,10 +562,10 @@
                     <div class="ai-scoring-row">
                         <label class="ai-label">LLM Provider</label>
                         <select id="llmProvider" class="ai-select" onchange="onProviderChange()">
+                            <option value="0g-default" selected>⚡ 0G Compute (Default)</option>
+                            <option value="0g-custom">⚡ 0G Compute (Custom Key)</option>
                             <option value="huggingface">🤗 Hugging Face (Free)</option>
-                            <option value="0g-router">⚡ 0G Router (API Key)</option>
-                            <option value="0g-free">⚡ 0G Compute (Free Trial)</option>
-                            <option value="rule-based">📐 Rule-based (Fallback)</option>
+                            <option value="rule-based">📐 Rule-based (No API)</option>
                         </select>
                     </div>
 
@@ -925,16 +925,14 @@
         // ===== AI SCORING WITH LLM =====
         const HF_MODEL_URL = "https://api-inference.huggingface.co/models/mistralai/Mistral-7B-Instruct-v0.3";
         const OG_ROUTER_URL = "https://router-api.0g.ai/v1/chat/completions";
+        const OG_DEFAULT_KEY = "***";
 
         function onProviderChange() {
             const provider = document.getElementById('llmProvider').value;
-            document.getElementById('apiKeyRow').style.display = (provider === '0g-router' || provider === '0g-free') ? 'flex' : 'none';
-            if (provider === '0g-free') {
-                document.querySelector('#apiKeyRow label').textContent = '0G API Key (get free at pc.0g.ai)';
-                document.getElementById('ogApiKey').placeholder = 'sk-... (register at pc.0g.ai for free credits)';
-            } else {
-                document.querySelector('#apiKeyRow label').textContent = '0G Router API Key';
-                document.getElementById('ogApiKey').placeholder = 'Enter your 0G Router API key...';
+            document.getElementById('apiKeyRow').style.display = provider === '0g-custom' ? 'flex' : 'none';
+            if (provider === '0g-custom') {
+                document.querySelector('#apiKeyRow label').textContent = 'Your 0G API Key';
+                document.getElementById('ogApiKey').placeholder = 'sk-... (get free at pc.0g.ai)';
             }
         }
 
@@ -1103,37 +1101,50 @@ Profile/Bio: "${text}" [/INST]</s>`;
                 return;
             }
 
-            if (provider === '0g-router' || provider === '0g-free') {
+            if (provider === '0g-custom') {
                 const apiKey = document.getElementById('ogApiKey').value.trim();
                 if (!apiKey) {
                     hideTyping();
-                    alert(provider === '0g-free' ? 'Get your free API key at pc.0g.ai → Generate Key' : 'Please enter your 0G Router API key.');
+                    alert('Get your free API key at pc.0g.ai → Generate Key');
                     btn.disabled = false;
                     return;
                 }
-                const label = provider === '0g-free' ? '0G Compute' : '0G Router';
-                showTyping('Contacting ' + label + '...');
+                showTyping('Contacting 0G Compute (your key)...');
                 try {
                     const result = await scoreWithOGRouter(input, apiKey);
-                    showResult(result.score, result.reasoning, '0G Router', false);
+                    showResult(result.score, result.reasoning, '0G Compute', false);
                 } catch (e) {
                     console.warn('0G Router failed, falling back to rule-based:', e);
                     const fb = ruleBasedScore(input);
-                    showResult(fb.score, fb.reasoning + '\n\n[0G Router error: ' + e.message + ']', 'Rule-based (fallback)', true);
+                    showResult(fb.score, fb.reasoning + '\n\n[0G error: ' + e.message + ']', 'Rule-based (fallback)', true);
                 }
                 btn.disabled = false;
                 return;
             }
 
-            // Default: Hugging Face
-            showTyping('Contacting Hugging Face (Mistral 7B)...');
+            if (provider === 'huggingface') {
+                showTyping('Contacting Hugging Face (Mistral 7B)...');
+                try {
+                    const result = await scoreWithHuggingFace(input);
+                    showResult(result.score, result.reasoning, 'Hugging Face', false);
+                } catch (e) {
+                    console.warn('Hugging Face failed, falling back to rule-based:', e);
+                    const fb = ruleBasedScore(input);
+                    showResult(fb.score, fb.reasoning + '\n\n[HF error: ' + e.message + ']', 'Rule-based (fallback)', true);
+                }
+                btn.disabled = false;
+                return;
+            }
+
+            // Default: 0G Compute with built-in key
+            showTyping('Analyzing with ØG Compute...');
             try {
-                const result = await scoreWithHuggingFace(input);
-                showResult(result.score, result.reasoning, 'Hugging Face', false);
+                const result = await scoreWithOGRouter(input, OG_DEFAULT_KEY);
+                showResult(result.score, result.reasoning, 'ØG Compute', false);
             } catch (e) {
-                console.warn('Hugging Face failed, falling back to rule-based:', e);
+                console.warn('0G Compute failed, falling back to rule-based:', e);
                 const fb = ruleBasedScore(input);
-                showResult(fb.score, fb.reasoning + '\n\n[HF error: ' + e.message + ']', 'Rule-based (fallback)', true);
+                showResult(fb.score, fb.reasoning + '\n\n[ØG error: ' + e.message + ']', 'Rule-based (fallback)', true);
             }
             btn.disabled = false;
         }
