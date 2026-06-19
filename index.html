@@ -671,6 +671,7 @@
             .chatbot-container { margin: 16px 20px 20px; }
             .chatbot-messages { height: 320px; }
             .chatbot-chips { overflow-x: auto; flex-wrap: nowrap; -webkit-overflow-scrolling: touch; }
+            #backToTop { bottom: 20px; right: 20px; width: 40px; height: 40px; }
         }
 
         /* ===== WALLET CONNECT BUTTON ===== */
@@ -1114,6 +1115,61 @@
         }
         .scan-history-empty { text-align: center; padding: 40px; color: var(--text-muted); font-size: 13px; }
 
+        /* ===== SCROLL PROGRESS BAR ===== */
+        #scrollProgress {
+            position: fixed; top: 0; left: 0; width: 0; height: 3px;
+            background: linear-gradient(90deg, #7c3aed, #a78bfa, #c084fc);
+            z-index: 9999; transition: width 0.1s linear;
+            box-shadow: 0 0 8px rgba(139,92,246,0.5);
+        }
+
+        /* ===== BACK TO TOP BUTTON ===== */
+        #backToTop {
+            position: fixed; bottom: 32px; right: 32px;
+            width: 44px; height: 44px; border-radius: 12px;
+            background: linear-gradient(135deg, #7c3aed, #a78bfa);
+            color: white; border: none; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            z-index: 50; opacity: 0; visibility: hidden;
+            transform: translateY(16px);
+            transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
+            box-shadow: 0 4px 20px rgba(139,92,246,0.4);
+        }
+        #backToTop.visible { opacity: 1; visibility: visible; transform: translateY(0); }
+        #backToTop:hover { transform: translateY(-4px); box-shadow: 0 8px 30px rgba(139,92,246,0.6); }
+        #backToTop svg { width: 20px; height: 20px; }
+
+        /* ===== NAV ACTIVE STATE ===== */
+        .nav-links a.active { color: var(--text); }
+        .nav-links a.active::after { width: 100%; }
+
+        /* ===== SKELETON LOADING ===== */
+        @keyframes skeletonPulse {
+            0%, 100% { background-position: -200% 0; }
+            50% { background-position: 200% 0; }
+        }
+        .skeleton {
+            background: linear-gradient(90deg, rgba(255,255,255,0.04) 25%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0.04) 75%);
+            background-size: 200% 100%; animation: skeletonPulse 1.5s ease-in-out infinite;
+            border-radius: 8px; min-height: 14px;
+        }
+        .skeleton-row {
+            display: flex; align-items: center; gap: 16px;
+            padding: 14px 16px; border-bottom: 1px solid rgba(255,255,255,0.03);
+        }
+        .skeleton-circle {
+            width: 32px; height: 32px; border-radius: 8px;
+            background: linear-gradient(90deg, rgba(255,255,255,0.04) 25%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0.04) 75%);
+            background-size: 200% 100%; animation: skeletonPulse 1.5s ease-in-out infinite;
+            flex-shrink: 0;
+        }
+        .skeleton-line { height: 14px; border-radius: 6px; }
+        .skeleton-line-sm { height: 10px; border-radius: 4px; margin-top: 6px; }
+
+        /* ===== PAGE LOAD ANIMATION ===== */
+        body { opacity: 0; animation: pageLoadFadeIn 0.6s ease 0.1s forwards; }
+        @keyframes pageLoadFadeIn { from { opacity: 0; } to { opacity: 1; } }
+
         @media (max-width: 768px) {
             .notif-dropdown { right: -20px; width: 300px; }
             .scanner-table-wrap { overflow-x: auto; }
@@ -1131,6 +1187,14 @@
         <div class="orb orb-3"></div>
     </div>
     <canvas id="particles"></canvas>
+
+    <!-- Scroll Progress Bar -->
+    <div id="scrollProgress"></div>
+
+    <!-- Back to Top Button -->
+    <button id="backToTop" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Back to top">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 15l-6-6-6 6"/></svg>
+    </button>
 
     <!-- Navigation -->
     <nav id="navbar">
@@ -2921,9 +2985,7 @@ Profile/Bio: "${text}" [/INST]</s>`;
             saveBtn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg> Save to 0G Storage`;
         };
 
-        // Initialize new sections on page load
-        renderScanner();
-        renderLeaderboard();
+        // Initialize new sections on page load (scanner & leaderboard via skeleton loader above)
         renderScanHistory();
 
         // Update leaderboard "Your Rank" when wallet connects
@@ -2964,6 +3026,107 @@ Profile/Bio: "${text}" [/INST]</s>`;
             } catch (e) {
                 clearWalletState();
             }
+        })();
+
+        // ===== SCROLL PROGRESS BAR =====
+        (function() {
+            const progressBar = document.getElementById('scrollProgress');
+            window.addEventListener('scroll', function() {
+                const scrollTop = window.scrollY;
+                const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+                const progress = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+                progressBar.style.width = progress + '%';
+            }, { passive: true });
+        })();
+
+        // ===== BACK TO TOP BUTTON =====
+        (function() {
+            const btn = document.getElementById('backToTop');
+            window.addEventListener('scroll', function() {
+                btn.classList.toggle('visible', window.scrollY > 500);
+            }, { passive: true });
+        })();
+
+        // ===== NAV ACTIVE STATE (SCROLL SPY) =====
+        (function() {
+            const navLinks = document.querySelectorAll('.nav-links a[href^="#"]');
+            const sections = [];
+            navLinks.forEach(link => {
+                const id = link.getAttribute('href');
+                if (id && id !== '#') {
+                    const section = document.querySelector(id);
+                    if (section) sections.push({ el: section, link: link });
+                }
+            });
+            function updateActiveNav() {
+                const scrollY = window.scrollY + 120;
+                let current = null;
+                for (let i = sections.length - 1; i >= 0; i--) {
+                    if (scrollY >= sections[i].el.offsetTop) {
+                        current = sections[i].link;
+                        break;
+                    }
+                }
+                navLinks.forEach(l => l.classList.remove('active'));
+                if (current) current.classList.add('active');
+            }
+            window.addEventListener('scroll', updateActiveNav, { passive: true });
+            updateActiveNav();
+        })();
+
+        // ===== ENHANCED INTERSECTION OBSERVER (staggered child animations) =====
+        (function() {
+            const staggerObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const children = entry.target.querySelectorAll('.feature-card, .stat-item, .dashboard-project-card, .activity-item');
+                        children.forEach((child, i) => {
+                            child.style.opacity = '0';
+                            child.style.transform = 'translateY(20px)';
+                            child.style.transition = `all 0.5s ease ${i * 0.08}s`;
+                            requestAnimationFrame(() => {
+                                child.style.opacity = '1';
+                                child.style.transform = 'translateY(0)';
+                            });
+                        });
+                        staggerObserver.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.1 });
+            document.querySelectorAll('.features-grid, .stats-grid, .dashboard-projects-grid, .activity-list').forEach(el => {
+                staggerObserver.observe(el);
+            });
+        })();
+
+        // ===== SKELETON LOADING =====
+        (function() {
+            function scannerSkeleton() {
+                const body = document.getElementById('scannerBody');
+                let html = '';
+                for (let i = 0; i < 8; i++) {
+                    html += '<tr class="skeleton-row"><td><div class="skeleton" style="width:100px;height:14px"></div></td><td><div class="skeleton" style="width:50px;height:14px;border-radius:6px"></div></td><td><div class="skeleton" style="width:30px;height:14px"></div></td><td><div class="skeleton" style="width:50px;height:20px;border-radius:100px"></div></td><td><div class="skeleton" style="width:40px;height:14px"></div></td><td><div class="skeleton" style="width:60px;height:28px;border-radius:8px"></div></td></tr>';
+                }
+                body.innerHTML = html;
+            }
+            function leaderboardSkeleton() {
+                const body = document.getElementById('leaderboardBody');
+                let html = '';
+                for (let i = 0; i < 6; i++) {
+                    html += '<tr class="skeleton-row"><td><div class="skeleton" style="width:40px;height:16px"></div></td><td><div class="skeleton" style="width:120px;height:14px"></div></td><td><div class="skeleton" style="width:30px;height:16px"></div></td><td><div class="skeleton" style="width:60px;height:14px"></div></td><td><div class="skeleton" style="width:70px;height:14px"></div></td></tr>';
+                }
+                body.innerHTML = html;
+            }
+
+            // Show skeletons immediately
+            scannerSkeleton();
+            leaderboardSkeleton();
+
+            // Replace with real content after simulated load
+            const delay = 800 + Math.random() * 700;
+            setTimeout(() => {
+                renderScanner();
+                renderLeaderboard();
+            }, delay);
         })();
     </script>
 </body>
