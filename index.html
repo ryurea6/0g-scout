@@ -1895,12 +1895,10 @@
 
         // Demo data (fallback if API is unavailable) — Updated June 2026
         const demoProjects = [
-            { name: "0G Protocol", desc: "Decentralized AI Operating System — Compute, Storage, Chain", tags: ["AI", "Storage", "Compute"], score: 9.5, chain: "0G", status: "active" },
             { name: "Abstract", desc: "Consumer L2 by Pudgy Penguins/IGLOO — gaming & social", tags: ["L2", "Consumer", "Gaming"], score: 8.5, chain: "Ethereum", status: "active" },
             { name: "Ritual", desc: "Decentralized AI inference network — on-chain AI execution", tags: ["AI", "Inference", "Infrastructure"], score: 8.3, chain: "Ethereum", status: "active" },
             { name: "Eclipse", desc: "SVM L2 on Ethereum — Solana speed + Ethereum settlement", tags: ["L2", "SVM", "Solana"], score: 8.0, chain: "Ethereum", status: "active" },
             { name: "Farcaster", desc: "Decentralized social protocol — Frames, Channels, ecosystem", tags: ["Social", "Protocol", "Web3"], score: 8.0, chain: "Ethereum", status: "active" },
-            { name: "Pharos", desc: "Modular L1 for DeFi and cross-chain interoperability", tags: ["L1", "Modular", "DeFi"], score: 7.5, chain: "Pharos", status: "testnet" },
             { name: "Fhenix", desc: "FHE L2 — confidential smart contracts with fully homomorphic encryption", tags: ["L2", "FHE", "Privacy"], score: 7.3, chain: "Ethereum", status: "testnet" },
             { name: "Ambient", desc: "Gas-efficient AMM DEX with concentrated liquidity", tags: ["DEX", "AMM", "DeFi"], score: 7.0, chain: "Ethereum", status: "active" },
             { name: "Lens Protocol", desc: "Decentralized social graph by Aave — portable identity", tags: ["Social", "Identity", "Aave"], score: 7.0, chain: "Polygon", status: "active" },
@@ -1971,21 +1969,19 @@
         const CHATBOT_SYSTEM_PROMPT = `You are ØG Scout AI, an expert airdrop advisor built on 0G Network. Current date: June 2026. Help users discover crypto airdrops, analyze projects, and optimize their farming strategy. Be concise, helpful, and Web3-native.
 
 ACTIVE PROJECTS (June 2026 — no token launched yet):
-1. 0G Protocol (Score: 9.5) — Decentralized AI OS. Chain: 0G. Status: Active. Zero Cup Hackathon deadline June 23, 2026.
-2. Abstract (Score: 8.5) — Consumer L2 by Pudgy Penguins/IGLOO. Chain: Ethereum. Status: Active. Mainnet live, no token.
-3. Ritual (Score: 8.3) — Decentralized AI inference network. Chain: Ethereum. Status: Active.
-4. Eclipse (Score: 8.0) — SVM L2 on Ethereum (Solana speed). Chain: Ethereum. Status: Active.
-5. Farcaster (Score: 8.0) — Decentralized social protocol with Frames. Chain: Ethereum. Status: Active. No token announced.
-6. Pharos (Score: 7.5) — Modular L1 for DeFi. Chain: Pharos. Status: Testnet.
-7. Fhenix (Score: 7.3) — FHE privacy L2 with confidential smart contracts. Chain: Ethereum. Status: Testnet.
-8. Ambient (Score: 7.0) — Gas-efficient AMM DEX. Chain: Ethereum. Status: Active.
-9. Lens Protocol (Score: 7.0) — Decentralized social graph by Aave. Chain: Polygon. Status: Active.
-10. DeBank (Score: 7.0) — Web3 portfolio tracker + Rabby wallet. Chain: Multi-chain. Status: Active.
-11. Marginfi (Score: 6.8) — Solana lending with mPoints. Chain: Solana. Status: Active.
-12. Beraborrow (Score: 6.5) — Native borrowing on Berachain. Chain: Berachain. Status: Active.
+1. Abstract (Score: 8.5) — Consumer L2 by Pudgy Penguins/IGLOO. Chain: Ethereum. Status: Active. Mainnet live, no token.
+2. Ritual (Score: 8.3) — Decentralized AI inference network. Chain: Ethereum. Status: Active.
+3. Eclipse (Score: 8.0) — SVM L2 on Ethereum (Solana speed). Chain: Ethereum. Status: Active.
+4. Farcaster (Score: 8.0) — Decentralized social protocol with Frames. Chain: Ethereum. Status: Active. No token announced.
+5. Fhenix (Score: 7.3) — FHE privacy L2 with confidential smart contracts. Chain: Ethereum. Status: Testnet.
+6. Ambient (Score: 7.0) — Gas-efficient AMM DEX. Chain: Ethereum. Status: Active.
+7. Lens Protocol (Score: 7.0) — Decentralized social graph by Aave. Chain: Polygon. Status: Active.
+8. DeBank (Score: 7.0) — Web3 portfolio tracker + Rabby wallet. Chain: Multi-chain. Status: Active.
+9. Marginfi (Score: 6.8) — Solana lending with mPoints. Chain: Solana. Status: Active.
+10. Beraborrow (Score: 6.5) — Native borrowing on Berachain. Chain: Berachain. Status: Active.
 
 ENDED PROJECTS (token launched — do NOT recommend):
-- Monad (MON), MegaETH (MEGA), Sahara AI (SAHARA), Linea (LINEA), Corn (CORN), Hyperliquid (HYPE), EigenLayer (EIGEN), Berachain (BERA), Scroll (SCR), Initia (INIT), Jupiter (JTO), Babylon (BABY), Kamino, Tensor, Drift, Parcl
+- 0G (0G), Pharos (PROS), Monad (MON), MegaETH (MEGA), Sahara AI (SAHARA), Linea (LINEA), Corn (CORN), Hyperliquid (HYPE), EigenLayer (EIGEN), Berachain (BERA), Scroll (SCR), Initia (INIT), Jupiter (JTO), Babylon (BABY), Kamino, Tensor, Drift, Parcl
 
 Always mention current date (June 2026) and emphasize projects WITHOUT tokens yet. Never recommend ended projects.`;
 
@@ -2170,8 +2166,8 @@ Always mention current date (June 2026) and emphasize projects WITHOUT tokens ye
 
         // Legacy chat functions (kept for backward compat)
         const chatResponses = {
-            "airdrop": "🔥 **Top Active Airdrops (June 2026):**\\n\\n1. **0G Protocol** (9.5) — AI infra, Zero Cup hackathon\\n2. **Abstract** (8.5) — Consumer L2 by Pudgy Penguins\\n3. **Ritual** (8.3) — AI inference network\\n4. **Eclipse** (8.0) — SVM L2 on Ethereum\\n5. **Farcaster** (8.0) — Decentralized social\\n\\nAll **no token yet** — farm now! 🎯",
-            "0g": "**0G Protocol** — The Decentralized AI OS\\n\\n• **0G Chain** — Fastest modular EVM L1\\n• **0G Storage** — Decentralized data storage\\n• **0G Compute** — AI inference marketplace\\n\\n🏆 **Zero Cup Hackathon** deadline: June 23, 2026\\n💰 Airdrop potential: ⭐⭐⭐⭐⭐ (9.5/10)",
+            "airdrop": "🔥 **Top Active Airdrops (June 2026):**\\n\\n1. **Abstract** (8.5) — Consumer L2 by Pudgy Penguins\\n2. **Ritual** (8.3) — AI inference network\\n3. **Eclipse** (8.0) — SVM L2 on Ethereum\\n4. **Farcaster** (8.0) — Decentralized social\\n5. **Fhenix** (7.3) — FHE privacy L2\\n\\nAll **no token yet** — farm now! 🎯",
+            "0g": "**0G Protocol** — Token ALREADY LAUNCHED\\n\\n0G is now trading on exchanges.\\nIf you missed the airdrop, look at still-active projects like Abstract, Ritual, Eclipse.",
             "abstract": "**Abstract** — Consumer L2 by Pudgy Penguins\\n\\n• Mainnet live since early 2025\\n• Gaming & social focus\\n• Growing TVL and ecosystem\\n\\nStatus: **No token announced**\\nAirdrop potential: ⭐⭐⭐⭐ (8.5/10)",
             "farcaster": "**Farcaster** — Decentralized Social Protocol\\n\\n• Frames & mini-apps ecosystem\\n• Millions of users\\n• Strong developer activity\\n\\nStatus: **No token announced**\\nAirdrop potential: ⭐⭐⭐⭐ (8.0/10)",
         };
