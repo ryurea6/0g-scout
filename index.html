@@ -2959,6 +2959,7 @@ Profile/Bio: "${text}" [/INST]</s>`;
 
         function renderLeaderboard() {
             const body = document.getElementById('leaderboardBody');
+            if (!body) return;
             body.innerHTML = leaderboardData.map((entry, i) => {
                 let rankClass = '';
                 let rowClass = '';
@@ -2977,6 +2978,8 @@ Profile/Bio: "${text}" [/INST]</s>`;
         }
 
         function updateLeaderboardYourRank() {
+            const yourRankEl = document.getElementById('leaderboardYourRank');
+            if (!yourRankEl) return;
             if (walletState.connected) {
                 const yourScore = generatePortfolioScore(walletState.address).value;
                 const rank = leaderboardData.filter(e => e.score > yourScore).length + 1;
@@ -3199,6 +3202,7 @@ Profile/Bio: "${text}" [/INST]</s>`;
             }
             function leaderboardSkeleton() {
                 const body = document.getElementById('leaderboardBody');
+                if (!body) return;
                 let html = '';
                 for (let i = 0; i < 6; i++) {
                     html += '<tr class="skeleton-row"><td><div class="skeleton" style="width:40px;height:16px"></div></td><td><div class="skeleton" style="width:120px;height:14px"></div></td><td><div class="skeleton" style="width:30px;height:16px"></div></td><td><div class="skeleton" style="width:60px;height:14px"></div></td><td><div class="skeleton" style="width:70px;height:14px"></div></td></tr>';
