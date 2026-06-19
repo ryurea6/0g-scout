@@ -74,12 +74,56 @@
         /* Hero */
         .hero { text-align: center; padding: 60px 0 40px; }
         .hero-panda {
-            width: 80px; height: 80px; margin: 0 auto 24px;
-            border-radius: 24px; overflow: hidden;
-            border: 2px solid var(--border);
-            box-shadow: 0 0 40px rgba(123,97,255,0.2);
+            width: 160px; height: 160px; margin: 0 auto 28px;
+            border-radius: 32px; overflow: hidden; position: relative;
+            border: 2px solid rgba(123,97,255,0.3);
+            box-shadow: 0 0 60px rgba(123,97,255,0.25), 0 0 120px rgba(123,97,255,0.1);
+            animation: pandaFloat 4s ease-in-out infinite, pandaGlow 3s ease-in-out infinite;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .hero-panda:hover {
+            transform: scale(1.1) rotate(3deg);
+            box-shadow: 0 0 80px rgba(123,97,255,0.4), 0 0 160px rgba(123,97,255,0.2);
+        }
+        .hero-panda:active {
+            transform: scale(0.95);
         }
         .hero-panda img { width: 100%; height: 100%; object-fit: cover; }
+        @keyframes pandaFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-12px); }
+        }
+        @keyframes pandaGlow {
+            0%, 100% { box-shadow: 0 0 60px rgba(123,97,255,0.25), 0 0 120px rgba(123,97,255,0.1); }
+            50% { box-shadow: 0 0 80px rgba(123,97,255,0.4), 0 0 160px rgba(123,97,255,0.2); }
+        }
+        .panda-sparkles {
+            position: absolute; inset: -20px; pointer-events: none;
+        }
+        .sparkle {
+            position: absolute; width: 4px; height: 4px;
+            background: var(--accent); border-radius: 50%;
+            animation: sparkle 2s ease-in-out infinite;
+        }
+        .sparkle:nth-child(1) { top: 10%; left: 5%; animation-delay: 0s; }
+        .sparkle:nth-child(2) { top: 5%; right: 10%; animation-delay: 0.5s; }
+        .sparkle:nth-child(3) { bottom: 15%; left: 10%; animation-delay: 1s; }
+        .sparkle:nth-child(4) { bottom: 10%; right: 5%; animation-delay: 1.5s; }
+        .sparkle:nth-child(5) { top: 50%; left: -5%; animation-delay: 0.3s; }
+        .sparkle:nth-child(6) { top: 50%; right: -5%; animation-delay: 0.8s; }
+        @keyframes sparkle {
+            0%, 100% { opacity: 0; transform: scale(0); }
+            50% { opacity: 1; transform: scale(1.5); }
+        }
+        @keyframes pandaSpin {
+            0% { transform: rotate(0deg) scale(1); }
+            25% { transform: rotate(10deg) scale(1.1); }
+            50% { transform: rotate(-5deg) scale(1.05); }
+            75% { transform: rotate(3deg) scale(1.02); }
+            100% { transform: rotate(0deg) scale(1); }
+        }
+        .hero-panda:hover .sparkle { animation-duration: 1s; }
         .powered-by {
             display: inline-flex; align-items: center; gap: 8px;
             background: var(--card); border: 1px solid var(--border);
@@ -257,8 +301,16 @@
 
         <!-- Hero -->
         <section class="hero">
-            <div class="hero-panda">
-                <img src="https://cdn.prod.website-files.com/680b884d38733122a923739b/68472a74f675fac2540505e5_panda%20loop_v5-poster-00001.jpg" alt="0G Panda">
+            <div class="hero-panda" onclick="this.style.animation='none';void this.offsetHeight;this.style.animation='pandaFloat 4s ease-in-out infinite, pandaGlow 3s ease-in-out infinite, pandaSpin 0.6s ease';" title="Click me!">
+                <img src="https://cdn.prod.website-files.com/680b884d38733122a923739b/68472a74f675fac2540505e5_panda%20loop_v5-poster-00001.jpg" alt="0G Panda Mascot">
+                <div class="panda-sparkles">
+                    <div class="sparkle"></div>
+                    <div class="sparkle"></div>
+                    <div class="sparkle"></div>
+                    <div class="sparkle"></div>
+                    <div class="sparkle"></div>
+                    <div class="sparkle"></div>
+                </div>
             </div>
             <div class="powered-by">
                 <svg viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="8" stroke="currentColor" stroke-width="1.5"/><path d="M6 10h8M10 6v8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
