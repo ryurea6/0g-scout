@@ -457,6 +457,12 @@
         .feature-card:nth-child(4) .feature-icon svg {
             animation: cubeRotate 4s ease-in-out infinite;
         }
+        .feature-card:nth-child(5) .feature-icon svg {
+            animation: bellRing 2s ease-in-out infinite;
+        }
+        .feature-card:nth-child(6) .feature-icon svg {
+            animation: barGrow 2.5s ease-in-out infinite;
+        }
 
         @keyframes chainLink {
             0%, 100% { transform: rotate(0deg) scale(1); }
@@ -480,6 +486,20 @@
             50% { transform: rotateY(0deg) rotateX(10deg); }
             75% { transform: rotateY(-15deg) rotateX(5deg); }
         }
+        @keyframes bellRing {
+            0%, 100% { transform: rotate(0deg); }
+            10% { transform: rotate(14deg); }
+            20% { transform: rotate(-12deg); }
+            30% { transform: rotate(10deg); }
+            40% { transform: rotate(-8deg); }
+            50% { transform: rotate(5deg); }
+            60% { transform: rotate(0deg); }
+        }
+        @keyframes barGrow {
+            0%, 100% { transform: scaleY(1); }
+            30% { transform: scaleY(1.15); }
+            60% { transform: scaleY(0.9); }
+        }
 
         /* Glow effect on hover */
         .feature-card:nth-child(1):hover .feature-icon { box-shadow: 0 0 20px rgba(139,92,246,0.3); }
@@ -493,6 +513,10 @@
         .feature-card:nth-child(3):hover .feature-icon svg { stroke: #c084fc; }
         .feature-card:nth-child(4):hover .feature-icon { background: rgba(52,211,153,0.12); }
         .feature-card:nth-child(4):hover .feature-icon svg { stroke: #6ee7b7; }
+        .feature-card:nth-child(5):hover .feature-icon { background: rgba(251,191,36,0.12); box-shadow: 0 0 20px rgba(251,191,36,0.3); }
+        .feature-card:nth-child(5):hover .feature-icon svg { stroke: #fbbf24; }
+        .feature-card:nth-child(6):hover .feature-icon { background: rgba(96,165,250,0.12); box-shadow: 0 0 20px rgba(96,165,250,0.3); }
+        .feature-card:nth-child(6):hover .feature-icon svg { stroke: #60a5fa; }
         .feature-card h3 { font-size: 16px; font-weight: 600; margin-bottom: 8px; position: relative; z-index: 1; }
         .feature-card p { font-size: 13px; color: var(--text-secondary); line-height: 1.6; position: relative; z-index: 1; }
 
