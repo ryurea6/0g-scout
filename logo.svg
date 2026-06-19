@@ -13,7 +13,7 @@
       <stop offset="100%" style="stop-color:#22d3ee;stop-opacity:0.2" />
     </linearGradient>
     <filter id="glow">
-      <feGaussianBlur stdDeviation="6" result="blur"/>
+      <feGaussianBlur stdDeviation="5" result="blur"/>
       <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
     </filter>
     <filter id="softGlow">
@@ -25,10 +25,7 @@
   </defs>
   
   <g clip-path="url(#round)">
-    <!-- Full background -->
     <rect width="512" height="512" fill="url(#bg)"/>
-    
-    <!-- Ambient glow -->
     <circle cx="256" cy="220" r="180" fill="#8b5cf6" opacity="0.04" filter="url(#softGlow)"/>
     <circle cx="200" cy="180" r="100" fill="#06b6d4" opacity="0.03" filter="url(#softGlow)"/>
     
@@ -37,11 +34,11 @@
     <circle cx="256" cy="216" r="80" fill="none" stroke="url(#ring)" stroke-width="1.5"/>
     <circle cx="256" cy="216" r="50" fill="none" stroke="url(#accent)" stroke-width="1" opacity="0.25"/>
     
-    <!-- Sweep arc -->
+    <!-- Sweep -->
     <path d="M 256 216 L 256 106 A 110 110 0 0 1 351 161 Z" fill="url(#accent)" opacity="0.06"/>
     <line x1="256" y1="216" x2="256" y2="106" stroke="url(#accent)" stroke-width="2" opacity="0.6" filter="url(#glow)"/>
     
-    <!-- Network nodes -->
+    <!-- Nodes -->
     <g filter="url(#glow)">
       <circle cx="256" cy="106" r="6" fill="#8b5cf6"/>
       <circle cx="351" cy="161" r="5" fill="#06b6d4" opacity="0.8"/>
@@ -50,7 +47,7 @@
       <circle cx="196" cy="286" r="4" fill="#8b5cf6" opacity="0.6"/>
     </g>
     
-    <!-- Connection lines -->
+    <!-- Lines -->
     <line x1="256" y1="106" x2="256" y2="180" stroke="#8b5cf6" stroke-width="1" opacity="0.3"/>
     <line x1="351" y1="161" x2="286" y2="216" stroke="#06b6d4" stroke-width="1" opacity="0.2"/>
     <line x1="161" y1="161" x2="226" y2="216" stroke="#a78bfa" stroke-width="1" opacity="0.2"/>
@@ -64,19 +61,20 @@
       <polygon points="256,198 276,216 256,234 236,216" fill="url(#accent)" opacity="0.6"/>
     </g>
     
-    <!-- ØG Text — Official 0G brand style with bold diagonal strike-through -->
-    <g transform="translate(256, 375)" filter="url(#glow)">
-      <!-- Ø: outer ellipse -->
-      <ellipse cx="-50" cy="0" rx="36" ry="40" fill="none" stroke="url(#accent)" stroke-width="10"/>
-      <!-- Ø: bold diagonal strike-through — top-right to bottom-left -->
-      <line x1="-80" y1="32" x2="-20" y2="-32" stroke="#0c0014" stroke-width="14" stroke-linecap="round"/>
-      <line x1="-80" y1="32" x2="-20" y2="-32" stroke="url(#accent)" stroke-width="10" stroke-linecap="round"/>
+    <!-- ØG — Custom paths matching 0G brand style -->
+    <g transform="translate(256, 370)" filter="url(#glow)">
+      <!-- Ø outer ring — clean ellipse -->
+      <ellipse cx="-48" cy="0" rx="32" ry="36" fill="none" stroke="url(#accent)" stroke-width="9" stroke-linecap="round"/>
+      <!-- Ø diagonal strike — bold, clean -->
+      <line x1="-74" y1="28" x2="-22" y2="-28" stroke="url(#accent)" stroke-width="9" stroke-linecap="round"/>
       
-      <!-- G: arc + horizontal bar -->
-      <path d="M 22 -40 A 40 40 0 1 0 22 32 L 22 4 L 4 4" fill="none" stroke="url(#accent)" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+      <!-- G — proper arc shape -->
+      <path d="M 18 -36 C 38 -36 48 -20 48 0 C 48 20 38 36 18 36 C 6 36 -2 28 -2 18" fill="none" stroke="url(#accent)" stroke-width="9" stroke-linecap="round"/>
+      <!-- G horizontal bar -->
+      <line x1="-2" y1="0" x2="28" y2="0" stroke="url(#accent)" stroke-width="9" stroke-linecap="round"/>
     </g>
     
-    <!-- SCOUT text -->
-    <text x="256" y="438" text-anchor="middle" font-family="Inter, SF Pro Display, system-ui, -apple-system, sans-serif" font-size="22" font-weight="600" letter-spacing="14" fill="#a78bfa" opacity="0.7">SCOUT</text>
+    <!-- SCOUT — clean, wide-tracked, matching 0G style -->
+    <text x="256" y="432" text-anchor="middle" font-family="'Plus Jakarta Sans', 'Inter', 'SF Pro Display', system-ui, sans-serif" font-size="20" font-weight="500" letter-spacing="12" fill="#a78bfa" opacity="0.65">SCOUT</text>
   </g>
 </svg>
