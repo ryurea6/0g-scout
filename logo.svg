@@ -1,12 +1,24 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
   <defs>
-    <linearGradient id="bg" x1="0%" y1="50%" x2="100%" y2="50%">
-      <stop offset="0%" style="stop-color:#B94EFF;stop-opacity:1" />
-      <stop offset="100%" style="stop-color:#F8C8FF;stop-opacity:1" />
+    <linearGradient id="face" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#7C3AED;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#C084FC;stop-opacity:1" />
     </linearGradient>
-    <linearGradient id="ring" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#ffffff;stop-opacity:0.1" />
-      <stop offset="100%" style="stop-color:#ffffff;stop-opacity:0.05" />
+    <linearGradient id="ear" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#6D28D9;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#A855F7;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="cheekL" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#DDD6FE;stop-opacity:0.8" />
+      <stop offset="100%" style="stop-color:#C4B5FD;stop-opacity:0.8" />
+    </linearGradient>
+    <linearGradient id="cheekR" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#F0ABFC;stop-opacity:0.8" />
+      <stop offset="100%" style="stop-color:#E9D5FF;stop-opacity:0.8" />
+    </linearGradient>
+    <linearGradient id="eyeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#8B5CF6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#D946EF;stop-opacity:1" />
     </linearGradient>
     <filter id="glow">
       <feGaussianBlur stdDeviation="3" result="blur"/>
@@ -18,49 +30,55 @@
   </defs>
   
   <g clip-path="url(#round)">
-    <!-- Purple gradient background -->
-    <rect width="512" height="512" fill="url(#bg)"/>
+    <!-- Light off-white background -->
+    <rect width="512" height="512" fill="#F5F0FF"/>
     
-    <!-- Subtle scanner rings -->
-    <circle cx="256" cy="256" r="200" fill="none" stroke="url(#ring)" stroke-width="1"/>
-    <circle cx="256" cy="256" r="160" fill="none" stroke="url(#ring)" stroke-width="1"/>
-    <circle cx="256" cy="256" r="120" fill="none" stroke="#ffffff" stroke-width="0.7" opacity="0.08"/>
+    <!-- Left ear -->
+    <ellipse cx="165" cy="110" rx="58" ry="55" fill="url(#ear)"/>
+    <!-- Right ear -->
+    <ellipse cx="347" cy="110" rx="58" ry="55" fill="url(#ear)"/>
     
-    <!-- Network nodes -->
-    <g opacity="0.35">
-      <circle cx="256" cy="56" r="4" fill="#ffffff"/>
-      <circle cx="430" cy="140" r="3.5" fill="#ffffff" opacity="0.7"/>
-      <circle cx="82" cy="140" r="3.5" fill="#ffffff" opacity="0.7"/>
-      <circle cx="380" cy="350" r="3" fill="#ffffff" opacity="0.5"/>
-      <circle cx="132" cy="350" r="3" fill="#ffffff" opacity="0.5"/>
+    <!-- Face circle -->
+    <circle cx="256" cy="265" r="155" fill="url(#face)"/>
+    
+    <!-- Left cheek -->
+    <ellipse cx="185" cy="310" rx="40" ry="25" fill="url(#cheekL)" opacity="0.7"/>
+    <!-- Right cheek -->
+    <ellipse cx="327" cy="310" rx="40" ry="25" fill="url(#cheekR)" opacity="0.7"/>
+    
+    <!-- LEFT EYE — Ø (circle with diagonal slash) -->
+    <g>
+      <circle cx="195" cy="245" r="42" fill="url(#eyeGrad)"/>
+      <!-- Inner cutout -->
+      <circle cx="195" cy="245" r="28" fill="#F5F0FF"/>
+      <!-- Diagonal slash (white) from bottom-left to top-right -->
+      <line x1="161" y1="279" x2="229" y2="211" stroke="#F5F0FF" stroke-width="14" stroke-linecap="round"/>
     </g>
     
-    <!-- Connection lines -->
-    <g opacity="0.12" stroke="#ffffff" stroke-width="1">
-      <line x1="256" y1="56" x2="256" y2="170"/>
-      <line x1="430" y1="140" x2="326" y2="256"/>
-      <line x1="82" y1="140" x2="186" y2="256"/>
-      <line x1="380" y1="350" x2="300" y2="290"/>
-      <line x1="132" y1="350" x2="212" y2="290"/>
+    <!-- RIGHT EYE — G (circle with horizontal bar) -->
+    <g>
+      <circle cx="317" cy="245" r="42" fill="url(#eyeGrad)"/>
+      <!-- Inner cutout -->
+      <circle cx="317" cy="245" r="28" fill="#F5F0FF"/>
+      <!-- Gap on right side + horizontal bar -->
+      <rect x="317" y="237" width="42" height="16" fill="#F5F0FF" rx="2"/>
+      <!-- Small bar extending inward from right -->
+      <rect x="305" y="237" width="20" height="16" fill="#F5F0FF" rx="2"/>
     </g>
     
-    <!-- Center diamond -->
-    <polygon points="256,200 312,256 256,312 200,256" fill="#ffffff" opacity="0.06"/>
-    <polygon points="256,215 298,256 256,297 214,256" fill="none" stroke="#ffffff" stroke-width="0.8" opacity="0.1"/>
-    
-    <!-- ØG — Official 0G style -->
-    <g filter="url(#glow)">
-      <!-- Ø: full thick circle -->
-      <circle cx="206" cy="256" r="62" fill="none" stroke="#ffffff" stroke-width="26"/>
-      <!-- Ø: diagonal slash from bottom-left to top-right -->
-      <line x1="156" y1="306" x2="256" y2="206" stroke="#ffffff" stroke-width="26" stroke-linecap="round"/>
-      
-      <!-- G: thick circle — draw as near-full arc with gap at right-center -->
-      <!-- Gap is around 3 o'clock position (right side, centered vertically) -->
-      <circle cx="326" cy="256" r="62" fill="none" stroke="#ffffff" stroke-width="26" 
-              stroke-dasharray="326 70" stroke-dashoffset="-55"/>
-      <!-- G: horizontal bar from right edge inward to center -->
-      <line x1="388" y1="256" x2="326" y2="256" stroke="#ffffff" stroke-width="26" stroke-linecap="round"/>
+    <!-- NOSE — double arrow down -->
+    <g transform="translate(256, 305)">
+      <!-- Top arrow -->
+      <polygon points="0,-18 -12,-4 12,-4" fill="none" stroke="#F5F0FF" stroke-width="3" stroke-linejoin="round"/>
+      <!-- Bottom arrow -->
+      <polygon points="0,0 -12,14 12,14" fill="none" stroke="#F5F0FF" stroke-width="3" stroke-linejoin="round"/>
     </g>
+    
+    <!-- SCOUT text — curved along bottom of face -->
+    <path id="textPath" d="M 140 370 A 130 130 0 0 0 372 370" fill="none"/>
+    <text font-family="'Plus Jakarta Sans', 'Inter', 'SF Pro Display', system-ui, sans-serif" 
+          font-size="32" font-weight="700" letter-spacing="6" fill="#F5F0FF">
+      <textPath href="#textPath" startOffset="50%" text-anchor="middle">SCOUT</textPath>
+    </text>
   </g>
 </svg>
