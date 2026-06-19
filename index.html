@@ -142,6 +142,79 @@
         }
         @keyframes scrollDown { 0% { opacity: 1; transform: translateX(-50%) translateY(0); } 100% { opacity: 0; transform: translateX(-50%) translateY(12px); } }
 
+        /* AI Scoring Section */
+        .ai-scoring-section { padding: 20px 0 40px; }
+        .ai-scoring-card {
+            background: var(--bg-card); border: 1px solid var(--border);
+            border-radius: 16px; padding: 32px; transition: all 0.3s;
+            max-width: 700px; margin: 0 auto;
+        }
+        .ai-scoring-card:hover { border-color: rgba(139,92,246,0.2); }
+        .ai-scoring-header { display: flex; align-items: center; gap: 16px; margin-bottom: 28px; }
+        .ai-scoring-icon {
+            width: 52px; height: 52px; border-radius: 14px;
+            background: rgba(139,92,246,0.1); display: flex;
+            align-items: center; justify-content: center; flex-shrink: 0;
+        }
+        .ai-scoring-header h2 { font-size: 22px; font-weight: 700; letter-spacing: -0.5px; margin-bottom: 4px; }
+        .ai-scoring-subtitle { font-size: 13px; color: var(--text-secondary); line-height: 1.5; }
+        .ai-scoring-controls { display: flex; flex-direction: column; gap: 16px; }
+        .ai-scoring-row { display: flex; flex-direction: column; gap: 6px; }
+        .ai-label { font-size: 12px; font-weight: 600; color: var(--text-secondary); letter-spacing: 0.5px; text-transform: uppercase; }
+        .ai-select, .ai-input {
+            background: rgba(255,255,255,0.04); border: 1px solid var(--border);
+            border-radius: 10px; padding: 12px 16px; color: var(--text);
+            font-size: 14px; font-family: inherit; outline: none; transition: all 0.3s;
+        }
+        .ai-select:focus, .ai-input:focus { border-color: rgba(139,92,246,0.4); box-shadow: 0 0 20px rgba(139,92,246,0.1); }
+        .ai-select { cursor: pointer; -webkit-appearance: none; appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L6 6L11 1' stroke='%238b5cf6' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E");
+            background-repeat: no-repeat; background-position: right 14px center; padding-right: 36px;
+        }
+        .ai-select option { background: #1a1030; color: var(--text); }
+        .ai-score-btn { margin-top: 4px; justify-content: center; }
+
+        /* Typing indicator */
+        .typing-indicator { display: flex; align-items: center; gap: 12px; padding: 20px 0; justify-content: center; }
+        .typing-dots { display: flex; gap: 4px; }
+        .typing-dots span {
+            width: 8px; height: 8px; background: var(--accent); border-radius: 50%;
+            animation: typingBounce 1.4s ease-in-out infinite;
+        }
+        .typing-dots span:nth-child(2) { animation-delay: 0.2s; }
+        .typing-dots span:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes typingBounce {
+            0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+            30% { transform: translateY(-8px); opacity: 1; }
+        }
+        .typing-text { font-size: 13px; color: var(--text-secondary); font-style: italic; }
+
+        /* AI Result Card */
+        .ai-result-card {
+            margin-top: 24px; padding: 28px; border-radius: 14px;
+            background: linear-gradient(135deg, rgba(139,92,246,0.06), rgba(88,28,135,0.04));
+            border: 1px solid rgba(139,92,246,0.15); animation: fadeUp 0.5s ease;
+        }
+        .ai-result-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; flex-wrap: wrap; gap: 8px; }
+        .ai-result-badge {
+            font-size: 14px; font-weight: 700; padding: 6px 18px;
+            border-radius: 100px; background: linear-gradient(135deg, var(--accent), #6d28d9);
+            color: white; letter-spacing: 0.5px;
+        }
+        .ai-result-provider { font-size: 11px; color: var(--text-muted); background: rgba(255,255,255,0.04); padding: 4px 12px; border-radius: 6px; font-weight: 500; }
+        .ai-result-score-wrap { text-align: center; margin-bottom: 16px; }
+        .ai-result-score {
+            font-size: 64px; font-weight: 900; letter-spacing: -2px;
+            background: linear-gradient(180deg, #a78bfa 0%, #7c3aed 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        .ai-result-score-label { font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1.5px; margin-top: 4px; }
+        .ai-result-bar-wrap { margin-bottom: 20px; }
+        .ai-result-bar { width: 100%; height: 6px; background: rgba(255,255,255,0.06); border-radius: 3px; overflow: hidden; }
+        .ai-result-bar-fill { height: 100%; border-radius: 3px; transition: width 1s ease; background: linear-gradient(90deg, #7c3aed, #a78bfa, #34d399); }
+        .ai-result-reasoning { font-size: 13px; color: var(--text-secondary); line-height: 1.7; padding: 16px; background: rgba(0,0,0,0.2); border-radius: 10px; border-left: 3px solid rgba(139,92,246,0.3); }
+        .ai-result-fallback-note { margin-top: 12px; font-size: 11px; color: var(--yellow); padding: 8px 12px; background: rgba(251,191,36,0.06); border-radius: 8px; border: 1px solid rgba(251,191,36,0.15); }
+
         /* Animations */
         @keyframes fadeUp {
             from { opacity: 0; transform: translateY(30px); }
@@ -386,6 +459,7 @@
             <div class="nav-links">
                 <a href="#features">Features</a>
                 <a href="#scout">Scout</a>
+                <a href="#ai-scoring">AI Score</a>
                 <a href="#chat">AI Chat</a>
                 <a href="https://github.com/ryurea6/0g-scout" target="_blank">GitHub</a>
                 <a href="https://0g.ai" target="_blank" class="nav-cta">Explore ØG</a>
@@ -465,6 +539,74 @@
                 <span class="results-count" id="resultsCount"></span>
             </div>
             <div class="project-list" id="projectList"></div>
+        </div>
+    </section>
+
+    <!-- AI Scoring Section -->
+    <section class="ai-scoring-section fade-up" id="ai-scoring">
+        <div class="container">
+            <div class="ai-scoring-card">
+                <div class="ai-scoring-header">
+                    <div class="ai-scoring-icon">
+                        <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="var(--accent-2)" stroke-width="1.5">
+                            <path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h2>AI-Powered Profile Scoring</h2>
+                        <p class="ai-scoring-subtitle">Analyze Twitter profiles using LLM inference to estimate Web3 engagement &amp; airdrop potential</p>
+                    </div>
+                </div>
+
+                <div class="ai-scoring-controls">
+                    <div class="ai-scoring-row">
+                        <label class="ai-label">LLM Provider</label>
+                        <select id="llmProvider" class="ai-select" onchange="onProviderChange()">
+                            <option value="huggingface">🤗 Hugging Face (Free)</option>
+                            <option value="0g-router">⚡ 0G Router (API Key)</option>
+                            <option value="rule-based">📐 Rule-based (Fallback)</option>
+                        </select>
+                    </div>
+
+                    <div class="ai-scoring-row" id="apiKeyRow" style="display:none;">
+                        <label class="ai-label">0G Router API Key</label>
+                        <input type="password" class="ai-input" id="ogApiKey" placeholder="Enter your 0G Router API key...">
+                    </div>
+
+                    <div class="ai-scoring-row">
+                        <label class="ai-label">Twitter Handle or Bio Text</label>
+                        <input type="text" class="ai-input" id="twitterInput" placeholder="@username or paste bio/content..." onkeydown="if(event.key==='Enter')runAIScoring()">
+                    </div>
+
+                    <button class="btn btn-dark ai-score-btn" id="aiScoreBtn" onclick="runAIScoring()">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+                        Analyze with AI
+                    </button>
+                </div>
+
+                <!-- Typing indicator -->
+                <div class="typing-indicator" id="typingIndicator" style="display:none;">
+                    <div class="typing-dots"><span></span><span></span><span></span></div>
+                    <span class="typing-text" id="typingText">Contacting LLM...</span>
+                </div>
+
+                <!-- Result Card -->
+                <div class="ai-result-card" id="aiResultCard" style="display:none;">
+                    <div class="ai-result-header">
+                        <span class="ai-result-badge" id="aiResultBadge">AI Pioneer</span>
+                        <span class="ai-result-provider" id="aiResultProvider">via Hugging Face</span>
+                    </div>
+                    <div class="ai-result-score-wrap">
+                        <div class="ai-result-score" id="aiResultScore">0</div>
+                        <div class="ai-result-score-label">Engagement Score</div>
+                    </div>
+                    <div class="ai-result-bar-wrap">
+                        <div class="ai-result-bar"><div class="ai-result-bar-fill" id="aiResultBarFill" style="width:0%"></div></div>
+                    </div>
+                    <div class="ai-result-reasoning" id="aiResultReasoning"></div>
+                    <div class="ai-result-fallback-note" id="aiFallbackNote" style="display:none;"></div>
+                </div>
+            </div>
         </div>
     </section>
 
@@ -663,7 +805,12 @@
             links.style.borderBottom = '1px solid var(--border)';
         }
 
-        // Demo data
+        // API base URL — change to your deployed worker URL
+        const API_BASE = window.location.hostname === 'localhost'
+            ? 'http://localhost:8787'
+            : 'https://0g-scout-api.YOUR_SUBDOMAIN.workers.dev';
+
+        // Demo data (fallback if API is unavailable)
         const demoProjects = [
             { name: "0G Protocol", desc: "Decentralized AI Operating System", tags: ["AI", "Storage", "Compute"], score: 9.2 },
             { name: "EigenLayer", desc: "Restaking protocol for Ethereum", tags: ["Restaking", "DeFi"], score: 8.8 },
@@ -675,21 +822,42 @@
             { name: "Initia", desc: "L1 for interwoven rollups", tags: ["L1", "Rollup"], score: 7.1 },
         ];
 
-        function scanProject() {
+        async function scanProject() {
             const input = document.getElementById("searchInput").value.trim();
             if (!input) return;
             document.getElementById("loading").style.display = "block";
             document.getElementById("results").style.display = "none";
             document.getElementById("scanBtn").disabled = true;
-            setTimeout(() => {
-                document.getElementById("loading").style.display = "none";
-                document.getElementById("scanBtn").disabled = false;
+
+            try {
+                const resp = await fetch(`${API_BASE}/api/score`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ project: input }),
+                });
+                if (!resp.ok) throw new Error(`API error: ${resp.status}`);
+                const data = await resp.json();
+
+                // Render AI-scored result
+                const project = {
+                    name: data.project || input,
+                    desc: data.analysis || "AI-scored project",
+                    tags: [data.badge, data.confidence, data.airdrop_probability].filter(Boolean),
+                    score: data.score,
+                };
+                renderProjects([project]);
+            } catch (e) {
+                console.warn("API call failed, using demo data:", e.message);
+                // Fallback to demo data
                 const filtered = demoProjects.filter(p =>
                     p.name.toLowerCase().includes(input.toLowerCase()) ||
                     p.desc.toLowerCase().includes(input.toLowerCase())
                 );
                 renderProjects(filtered.length > 0 ? filtered : demoProjects);
-            }, 2000);
+            } finally {
+                document.getElementById("loading").style.display = "none";
+                document.getElementById("scanBtn").disabled = false;
+            }
         }
 
         function renderProjects(projects) {
@@ -708,19 +876,35 @@
         }
 
         const chatResponses = {
-            "airdrop": "🔥 Hot airdrops:\n\n1. **0G Protocol** (9.2) — AI infrastructure\n2. **EigenLayer** (8.8) — Restaking\n3. **Monad** (8.5) — Parallel EVM\n\nDeep-dive on any?",
-            "0g": "ØG ecosystem:\n\n• **ØG Chain** — Modular EVM L1\n• **ØG Storage** — Decentralized storage\n• **ØG Compute** — AI inference\n\nScore: 9.2/10",
+            "airdrop": "🔥 Hot airdrops:\\n\\n1. **0G Protocol** (9.2) — AI infrastructure\\n2. **EigenLayer** (8.8) — Restaking\\n3. **Monad** (8.5) — Parallel EVM\\n\\nDeep-dive on any?",
+            "0g": "ØG ecosystem:\\n\\n• **ØG Chain** — Modular EVM L1\\n• **ØG Storage** — Decentralized storage\\n• **ØG Compute** — AI inference\\n\\nScore: 9.2/10",
         };
-        function sendChat() {
+        const chatHistory = [];
+        async function sendChat() {
             const input = document.getElementById("chatInput");
             const msg = input.value.trim();
             if (!msg) return;
             addMessage(msg, "user"); input.value = "";
-            setTimeout(() => {
-                let response = "Analyzing with ØG Compute... 🤔\n\nBased on on-chain data, I'd recommend projects with strong dev activity. Want me to scan something?";
+
+            try {
+                const resp = await fetch(`${API_BASE}/api/chat`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ message: msg, history: chatHistory }),
+                });
+                if (!resp.ok) throw new Error(`API error: ${resp.status}`);
+                const data = await resp.json();
+                const response = data.response || "I couldn't process that request.";
+                chatHistory.push({ role: "user", content: msg });
+                chatHistory.push({ role: "assistant", content: response });
+                if (chatHistory.length > 10) chatHistory.splice(0, 2); // Keep history manageable
+                addMessage(response, "ai");
+            } catch (e) {
+                console.warn("Chat API failed, using fallback:", e.message);
+                let response = "Analyzing with ØG Compute... 🤔\\n\\nBased on on-chain data, I'd recommend projects with strong dev activity. Want me to scan something?";
                 for (const [k, v] of Object.entries(chatResponses)) { if (msg.toLowerCase().includes(k)) { response = v; break; } }
                 addMessage(response, "ai");
-            }, 1500);
+            }
         }
         function addMessage(text, type) {
             const c = document.getElementById("chatMessages");
@@ -736,6 +920,214 @@
             orbs[0].style.transform = `translate(${e.clientX * 0.02}px, ${e.clientY * 0.02}px)`;
             orbs[1].style.transform = `translate(${-e.clientX * 0.015}px, ${-e.clientY * 0.015}px)`;
         });
+
+        // ===== AI SCORING WITH LLM =====
+        const HF_MODEL_URL = "https://api-inference.huggingface.co/models/mistralai/Mistral-7B-Instruct-v0.3";
+        const OG_ROUTER_URL = "https://router-api.0g.ai/v1/chat/completions";
+
+        function onProviderChange() {
+            const provider = document.getElementById('llmProvider').value;
+            document.getElementById('apiKeyRow').style.display = provider === '0g-router' ? 'flex' : 'none';
+        }
+
+        function showTyping(text) {
+            const el = document.getElementById('typingIndicator');
+            document.getElementById('typingText').textContent = text || 'Contacting LLM...';
+            el.style.display = 'flex';
+            document.getElementById('aiResultCard').style.display = 'none';
+        }
+        function hideTyping() {
+            document.getElementById('typingIndicator').style.display = 'none';
+        }
+
+        function getBadge(score) {
+            if (score >= 80) return 'AI Pioneer';
+            if (score >= 60) return 'Web3 Builder';
+            if (score >= 40) return 'Crypto Explorer';
+            return 'Builder';
+        }
+
+        function showResult(score, reasoning, providerName, isFallback) {
+            hideTyping();
+            const card = document.getElementById('aiResultCard');
+            const s = Math.max(0, Math.min(100, Math.round(score)));
+            document.getElementById('aiResultScore').textContent = s;
+            document.getElementById('aiResultBadge').textContent = getBadge(s);
+            document.getElementById('aiResultProvider').textContent = 'via ' + providerName;
+            document.getElementById('aiResultReasoning').textContent = reasoning;
+            // Animate bar
+            setTimeout(() => { document.getElementById('aiResultBarFill').style.width = s + '%'; }, 100);
+            // Fallback note
+            const note = document.getElementById('aiFallbackNote');
+            if (isFallback) {
+                note.textContent = '⚠️ LLM unavailable — fell back to rule-based scoring.';
+                note.style.display = 'block';
+            } else {
+                note.style.display = 'none';
+            }
+            card.style.display = 'block';
+        }
+
+        // Rule-based scoring (enhanced)
+        function ruleBasedScore(text) {
+            const lower = text.toLowerCase();
+            let score = 20;
+            const aiTerms = ['ai', 'artificial intelligence', 'machine learning', 'ml', 'llm', 'neural', 'deep learning', 'gpt', 'transformer'];
+            const web3Terms = ['web3', 'blockchain', 'defi', 'nft', 'dao', 'crypto', 'token', 'wallet', 'ethereum', 'eth', 'solana', 'sol'];
+            const buildTerms = ['builder', 'developer', 'dev', 'founder', 'building', 'protocol', 'open source', 'contributor'];
+            const ogTerms = ['0g', '0g labs', 'zero gravity', 'og labs'];
+            const engagementTerms = ['followers', 'community', 'engagement', 'gm', 'wagmi', 'ser', 'anon'];
+
+            aiTerms.forEach(t => { if (lower.includes(t)) score += 10; });
+            web3Terms.forEach(t => { if (lower.includes(t)) score += 8; });
+            buildTerms.forEach(t => { if (lower.includes(t)) score += 7; });
+            ogTerms.forEach(t => { if (lower.includes(t)) score += 15; });
+            engagementTerms.forEach(t => { if (lower.includes(t)) score += 4; });
+            // Length bonus for detailed bios
+            if (text.length > 100) score += 5;
+            if (text.length > 200) score += 5;
+
+            score = Math.min(100, Math.max(10, score));
+            const matched = [];
+            [...aiTerms, ...web3Terms, ...buildTerms, ...ogTerms].forEach(t => { if (lower.includes(t)) matched.push(t); });
+            const reasoning = matched.length > 0
+                ? `Detected keywords: ${[...new Set(matched)].join(', ')}. Score based on term relevance and bio depth.`
+                : 'Limited matching keywords found. Score reflects baseline engagement potential.';
+            return { score, reasoning };
+        }
+
+        // Hugging Face free Inference API
+        async function scoreWithHuggingFace(text) {
+            const prompt = `<s>[INST] You are a Web3 engagement analyst. Analyze the following Twitter profile/bio and rate the user's Web3 engagement and airdrop potential on a scale of 0-100. Respond ONLY with a JSON object: {"score": <number>, "reasoning": "<brief explanation>"}
+
+Profile/Bio: "${text}" [/INST]</s>`;
+
+            const response = await fetch(HF_MODEL_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    inputs: prompt,
+                    parameters: { max_new_tokens: 300, temperature: 0.3, return_full_text: false }
+                })
+            });
+
+            if (!response.ok) {
+                const errText = await response.text();
+                throw new Error('HF API error: ' + response.status + ' - ' + errText);
+            }
+
+            const data = await response.json();
+            let generated = '';
+            if (Array.isArray(data) && data[0]?.generated_text) {
+                generated = data[0].generated_text;
+            } else if (data.generated_text) {
+                generated = data.generated_text;
+            } else {
+                throw new Error('Unexpected HF response format');
+            }
+
+            // Parse JSON from response
+            const jsonMatch = generated.match(/\{[\s\S]*?\}/);
+            if (jsonMatch) {
+                const parsed = JSON.parse(jsonMatch[0]);
+                return { score: parsed.score, reasoning: parsed.reasoning, provider: 'Hugging Face' };
+            }
+            // Fallback: extract number
+            const numMatch = generated.match(/(\d{1,3})/);
+            if (numMatch) {
+                return { score: parseInt(numMatch[1]), reasoning: generated.substring(0, 200), provider: 'Hugging Face' };
+            }
+            throw new Error('Could not parse LLM response');
+        }
+
+        // 0G Router (OpenAI-compatible)
+        async function scoreWithOGRouter(text, apiKey) {
+            const response = await fetch(OG_ROUTER_URL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + apiKey
+                },
+                body: JSON.stringify({
+                    model: 'zai-org/GLM-5-FP8',
+                    messages: [
+                        { role: 'system', content: 'You are a Web3 engagement analyst. Analyze Twitter profiles/bios and rate Web3 engagement & airdrop potential. Respond ONLY with JSON: {"score": <0-100>, "reasoning": "<brief explanation>"}' },
+                        { role: 'user', content: `Analyze this Twitter profile/bio and score it 0-100 for Web3 engagement & airdrop potential:\n\n"${text}"` }
+                    ],
+                    temperature: 0.3,
+                    max_tokens: 300
+                })
+            });
+
+            if (!response.ok) {
+                const errText = await response.text();
+                throw new Error('0G Router error: ' + response.status + ' - ' + errText);
+            }
+
+            const data = await response.json();
+            const content = data.choices?.[0]?.message?.content || '';
+            const jsonMatch = content.match(/\{[\s\S]*?\}/);
+            if (jsonMatch) {
+                const parsed = JSON.parse(jsonMatch[0]);
+                return { score: parsed.score, reasoning: parsed.reasoning, provider: '0G Router' };
+            }
+            const numMatch = content.match(/(\d{1,3})/);
+            if (numMatch) {
+                return { score: parseInt(numMatch[1]), reasoning: content.substring(0, 200), provider: '0G Router' };
+            }
+            throw new Error('Could not parse 0G Router response');
+        }
+
+        async function runAIScoring() {
+            const input = document.getElementById('twitterInput').value.trim();
+            if (!input) { document.getElementById('twitterInput').focus(); return; }
+
+            const provider = document.getElementById('llmProvider').value;
+            const btn = document.getElementById('aiScoreBtn');
+            btn.disabled = true;
+
+            if (provider === 'rule-based') {
+                showTyping('Running rule-based analysis...');
+                await new Promise(r => setTimeout(r, 800));
+                const result = ruleBasedScore(input);
+                showResult(result.score, result.reasoning, 'Rule-based', false);
+                btn.disabled = false;
+                return;
+            }
+
+            if (provider === '0g-router') {
+                const apiKey = document.getElementById('ogApiKey').value.trim();
+                if (!apiKey) {
+                    hideTyping();
+                    alert('Please enter your 0G Router API key.');
+                    btn.disabled = false;
+                    return;
+                }
+                showTyping('Contacting 0G Router...');
+                try {
+                    const result = await scoreWithOGRouter(input, apiKey);
+                    showResult(result.score, result.reasoning, '0G Router', false);
+                } catch (e) {
+                    console.warn('0G Router failed, falling back to rule-based:', e);
+                    const fb = ruleBasedScore(input);
+                    showResult(fb.score, fb.reasoning + '\n\n[0G Router error: ' + e.message + ']', 'Rule-based (fallback)', true);
+                }
+                btn.disabled = false;
+                return;
+            }
+
+            // Default: Hugging Face
+            showTyping('Contacting Hugging Face (Mistral 7B)...');
+            try {
+                const result = await scoreWithHuggingFace(input);
+                showResult(result.score, result.reasoning, 'Hugging Face', false);
+            } catch (e) {
+                console.warn('Hugging Face failed, falling back to rule-based:', e);
+                const fb = ruleBasedScore(input);
+                showResult(fb.score, fb.reasoning + '\n\n[HF error: ' + e.message + ']', 'Rule-based (fallback)', true);
+            }
+            btn.disabled = false;
+        }
     </script>
 </body>
 </html>

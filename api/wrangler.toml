@@ -1,0 +1,17 @@
+name = "0g-scout-api"
+main = "src/index.js"
+compatibility_date = "2024-12-01"
+compatibility_flags = ["nodejs_compat"]
+
+# Free tier: 100k requests/day
+# Routes: Add your custom domain in Cloudflare dashboard
+# routes = [{ pattern = "scout.jebod.my.id/api/*", zone_name = "jebod.my.id" }]
+
+[vars]
+ALLOWED_ORIGINS = "https://scout.jebod.my.id,http://localhost:8080,http://localhost:3000"
+HF_MODEL = "mistralai/Mistral-7B-Instruct-v0.3"
+OG_MODEL = "zai-org/GLM-5-FP8"
+
+# Secrets (set via `wrangler secret put`)
+# HF_API_KEY = ""  # Optional, some models work without
+# OG_API_KEY = ""   # Required for 0G Router
