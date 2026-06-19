@@ -172,6 +172,47 @@
             background-repeat: no-repeat; background-position: right 14px center; padding-right: 36px;
         }
         .ai-select option { background: #1a1030; color: var(--text); }
+
+        /* Custom Select Dropdown */
+        .custom-select-wrapper { position: relative; width: 100%; }
+        .custom-select-trigger {
+            display: flex; align-items: center; justify-content: space-between;
+            background: rgba(255,255,255,0.04); border: 1px solid var(--border);
+            border-radius: 10px; padding: 10px 14px; cursor: pointer;
+            transition: all 0.3s; user-select: none;
+        }
+        .custom-select-trigger:hover { border-color: rgba(139,92,246,0.3); background: rgba(255,255,255,0.06); }
+        .custom-select-trigger.active { border-color: rgba(139,92,246,0.5); box-shadow: 0 0 20px rgba(139,92,246,0.15); }
+        .custom-select-trigger.active .dropdown-arrow { transform: rotate(180deg); }
+        .dropdown-arrow { width: 16px; height: 16px; color: var(--text-muted); transition: transform 0.3s; flex-shrink: 0; }
+        .custom-options {
+            position: absolute; top: calc(100% + 6px); left: 0; right: 0;
+            background: rgba(15,10,30,0.97); border: 1px solid rgba(139,92,246,0.2);
+            border-radius: 12px; padding: 6px; z-index: 100;
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5), 0 0 30px rgba(139,92,246,0.1);
+            opacity: 0; visibility: hidden; transform: translateY(-8px);
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .custom-options.open { opacity: 1; visibility: visible; transform: translateY(0); }
+        .custom-option {
+            display: flex; align-items: center; padding: 10px 12px;
+            border-radius: 8px; cursor: pointer; transition: all 0.2s;
+            border: 1px solid transparent;
+        }
+        .custom-option:hover { background: rgba(139,92,246,0.1); border-color: rgba(139,92,246,0.15); }
+        .custom-option.selected { background: rgba(139,92,246,0.12); border-color: rgba(139,92,246,0.2); }
+        .custom-option-content { display: flex; align-items: center; gap: 12px; }
+        .provider-icon {
+            width: 20px; height: 20px; color: #8b5cf6; flex-shrink: 0;
+            filter: drop-shadow(0 0 4px rgba(139,92,246,0.3));
+        }
+        .provider-icon.hf-icon { color: #fbbf24; filter: drop-shadow(0 0 4px rgba(251,191,36,0.3)); }
+        .provider-icon.rule-icon { color: #34d399; filter: drop-shadow(0 0 4px rgba(52,211,153,0.3)); }
+        .provider-text { display: flex; flex-direction: column; }
+        .provider-name { font-size: 14px; font-weight: 600; color: var(--text); }
+        .provider-desc { font-size: 11px; color: var(--text-muted); margin-top: 1px; }
+        .custom-option.selected .provider-name { color: #a78bfa; }
         .ai-score-btn { margin-top: 4px; justify-content: center; }
 
         /* Typing indicator */
@@ -561,12 +602,57 @@
                 <div class="ai-scoring-controls">
                     <div class="ai-scoring-row">
                         <label class="ai-label">LLM Provider</label>
-                        <select id="llmProvider" class="ai-select" onchange="onProviderChange()">
-                            <option value="0g-default" selected>⚡ 0G Compute (Default)</option>
-                            <option value="0g-custom">⚡ 0G Compute (Custom Key)</option>
-                            <option value="huggingface">🤗 Hugging Face (Free)</option>
-                            <option value="rule-based">📐 Rule-based (No API)</option>
-                        </select>
+                        <div class="custom-select-wrapper" id="llmProviderWrapper">
+                            <div class="custom-select-trigger" id="llmTrigger" onclick="toggleDropdown()">
+                                <div class="custom-option-content">
+                                    <svg class="provider-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                                    <div class="provider-text">
+                                        <span class="provider-name">0G Compute</span>
+                                        <span class="provider-desc">Default</span>
+                                    </div>
+                                </div>
+                                <svg class="dropdown-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+                            </div>
+                            <div class="custom-options" id="llmOptions">
+                                <div class="custom-option selected" data-value="0g-default" onclick="selectOption(this)">
+                                    <div class="custom-option-content">
+                                        <svg class="provider-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                                        <div class="provider-text">
+                                            <span class="provider-name">0G Compute</span>
+                                            <span class="provider-desc">Default · DeepSeek V4 Flash</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="custom-option" data-value="0g-custom" onclick="selectOption(this)">
+                                    <div class="custom-option-content">
+                                        <svg class="provider-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+                                        <div class="provider-text">
+                                            <span class="provider-name">0G Compute</span>
+                                            <span class="provider-desc">Custom API Key</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="custom-option" data-value="huggingface" onclick="selectOption(this)">
+                                    <div class="custom-option-content">
+                                        <svg class="provider-icon hf-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
+                                        <div class="provider-text">
+                                            <span class="provider-name">Hugging Face</span>
+                                            <span class="provider-desc">Free · Mistral 7B</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="custom-option" data-value="rule-based" onclick="selectOption(this)">
+                                    <div class="custom-option-content">
+                                        <svg class="provider-icon rule-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+                                        <div class="provider-text">
+                                            <span class="provider-name">Rule-based</span>
+                                            <span class="provider-desc">No API · Keyword Analysis</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <input type="hidden" id="llmProvider" value="0g-default">
+                        </div>
                     </div>
 
                     <div class="ai-scoring-row" id="apiKeyRow" style="display:none;">
@@ -921,6 +1007,43 @@
             orbs[0].style.transform = `translate(${e.clientX * 0.02}px, ${e.clientY * 0.02}px)`;
             orbs[1].style.transform = `translate(${-e.clientX * 0.015}px, ${-e.clientY * 0.015}px)`;
         });
+
+        // ===== CUSTOM SELECT DROPDOWN =====
+        function toggleDropdown() {
+            const options = document.getElementById('llmOptions');
+            const trigger = document.getElementById('llmTrigger');
+            const isOpen = options.classList.contains('open');
+            options.classList.toggle('open');
+            trigger.classList.toggle('active');
+            if (!isOpen) {
+                document.addEventListener('click', closeDropdownOutside, true);
+            }
+        }
+
+        function closeDropdownOutside(e) {
+            const wrapper = document.getElementById('llmProviderWrapper');
+            if (!wrapper.contains(e.target)) {
+                document.getElementById('llmOptions').classList.remove('open');
+                document.getElementById('llmTrigger').classList.remove('active');
+                document.removeEventListener('click', closeDropdownOutside, true);
+            }
+        }
+
+        function selectOption(el) {
+            document.querySelectorAll('.custom-option').forEach(o => o.classList.remove('selected'));
+            el.classList.add('selected');
+            const value = el.dataset.value;
+            document.getElementById('llmProvider').value = value;
+            // Update trigger display
+            const trigger = document.getElementById('llmTrigger');
+            trigger.querySelector('.custom-option-content').innerHTML = el.querySelector('.custom-option-content').innerHTML;
+            // Close
+            document.getElementById('llmOptions').classList.remove('open');
+            trigger.classList.remove('active');
+            document.removeEventListener('click', closeDropdownOutside, true);
+            // Trigger provider change
+            onProviderChange();
+        }
 
         // ===== AI SCORING WITH LLM =====
         const HF_MODEL_URL = "https://api-inference.huggingface.co/models/mistralai/Mistral-7B-Instruct-v0.3";
