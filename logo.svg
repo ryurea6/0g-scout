@@ -1,81 +1,74 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
   <defs>
     <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#1a0533;stop-opacity:1" />
-      <stop offset="100%" style="stop-color:#0a0015;stop-opacity:1" />
+      <stop offset="0%" style="stop-color:#0c0014;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#12002a;stop-opacity:1" />
     </linearGradient>
     <linearGradient id="accent" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" style="stop-color:#8b5cf6;stop-opacity:1" />
       <stop offset="100%" style="stop-color:#06b6d4;stop-opacity:1" />
     </linearGradient>
-    <linearGradient id="glow" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#a78bfa;stop-opacity:0.6" />
-      <stop offset="100%" style="stop-color:#22d3ee;stop-opacity:0.6" />
+    <linearGradient id="ring" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#a78bfa;stop-opacity:0.2" />
+      <stop offset="100%" style="stop-color:#22d3ee;stop-opacity:0.2" />
     </linearGradient>
-    <filter id="blur">
-      <feGaussianBlur stdDeviation="8" />
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="6" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
     </filter>
+    <filter id="softGlow">
+      <feGaussianBlur stdDeviation="12" />
+    </filter>
+    <clipPath id="round">
+      <rect width="512" height="512" rx="108" ry="108"/>
+    </clipPath>
   </defs>
   
-  <!-- Background -->
-  <rect width="512" height="512" rx="96" fill="url(#bg)"/>
-  
-  <!-- Subtle grid pattern -->
-  <g opacity="0.05" stroke="#8b5cf6" stroke-width="1">
-    <line x1="0" y1="128" x2="512" y2="128"/>
-    <line x1="0" y1="256" x2="512" y2="256"/>
-    <line x1="0" y1="384" x2="512" y2="384"/>
-    <line x1="128" y1="0" x2="128" y2="512"/>
-    <line x1="256" y1="0" x2="256" y2="512"/>
-    <line x1="384" y1="0" x2="384" y2="512"/>
+  <g clip-path="url(#round)">
+    <!-- Full background -->
+    <rect width="512" height="512" fill="url(#bg)"/>
+    
+    <!-- Subtle noise texture -->
+    <rect width="512" height="512" fill="url(#bg)" opacity="0.98"/>
+    
+    <!-- Ambient glow -->
+    <circle cx="256" cy="220" r="180" fill="#8b5cf6" opacity="0.04" filter="url(#softGlow)"/>
+    <circle cx="200" cy="180" r="100" fill="#06b6d4" opacity="0.03" filter="url(#softGlow)"/>
+    
+    <!-- Scanner rings -->
+    <circle cx="256" cy="216" r="110" fill="none" stroke="url(#ring)" stroke-width="1.5"/>
+    <circle cx="256" cy="216" r="80" fill="none" stroke="url(#ring)" stroke-width="1.5"/>
+    <circle cx="256" cy="216" r="50" fill="none" stroke="url(#accent)" stroke-width="1" opacity="0.25"/>
+    
+    <!-- Sweep arc -->
+    <path d="M 256 216 L 256 106 A 110 110 0 0 1 351 161 Z" fill="url(#accent)" opacity="0.06"/>
+    <line x1="256" y1="216" x2="256" y2="106" stroke="url(#accent)" stroke-width="2" opacity="0.6" filter="url(#glow)"/>
+    
+    <!-- Network nodes -->
+    <g filter="url(#glow)">
+      <circle cx="256" cy="106" r="6" fill="#8b5cf6"/>
+      <circle cx="351" cy="161" r="5" fill="#06b6d4" opacity="0.8"/>
+      <circle cx="161" cy="161" r="5" fill="#a78bfa" opacity="0.8"/>
+      <circle cx="316" cy="286" r="4" fill="#22d3ee" opacity="0.6"/>
+      <circle cx="196" cy="286" r="4" fill="#8b5cf6" opacity="0.6"/>
+    </g>
+    
+    <!-- Connection lines -->
+    <line x1="256" y1="106" x2="256" y2="180" stroke="#8b5cf6" stroke-width="1" opacity="0.3"/>
+    <line x1="351" y1="161" x2="286" y2="216" stroke="#06b6d4" stroke-width="1" opacity="0.2"/>
+    <line x1="161" y1="161" x2="226" y2="216" stroke="#a78bfa" stroke-width="1" opacity="0.2"/>
+    <line x1="316" y1="286" x2="276" y2="236" stroke="#22d3ee" stroke-width="1" opacity="0.15"/>
+    <line x1="196" y1="286" x2="236" y2="236" stroke="#8b5cf6" stroke-width="1" opacity="0.15"/>
+    
+    <!-- Center diamond -->
+    <g filter="url(#glow)">
+      <polygon points="256,178 296,216 256,254 216,216" fill="url(#accent)" opacity="0.85"/>
+      <polygon points="256,188 286,216 256,244 226,216" fill="#0c0014"/>
+      <polygon points="256,198 276,216 256,234 236,216" fill="url(#accent)" opacity="0.6"/>
+    </g>
+    
+    <!-- Text -->
+    <text x="256" y="380" text-anchor="middle" font-family="Inter, SF Pro Display, system-ui, -apple-system, sans-serif" font-size="68" font-weight="800" letter-spacing="4" fill="url(#accent)">0G</text>
+    <text x="256" y="420" text-anchor="middle" font-family="Inter, SF Pro Display, system-ui, -apple-system, sans-serif" font-size="22" font-weight="600" letter-spacing="14" fill="#a78bfa" opacity="0.7">SCOUT</text>
   </g>
-  
-  <!-- Outer glow ring -->
-  <circle cx="256" cy="240" r="140" fill="none" stroke="url(#glow)" stroke-width="2" opacity="0.3" filter="url(#blur)"/>
-  
-  <!-- Radar/Scanner rings -->
-  <circle cx="256" cy="240" r="120" fill="none" stroke="url(#accent)" stroke-width="2.5" opacity="0.15"/>
-  <circle cx="256" cy="240" r="90" fill="none" stroke="url(#accent)" stroke-width="2" opacity="0.25"/>
-  <circle cx="256" cy="240" r="60" fill="none" stroke="url(#accent)" stroke-width="1.5" opacity="0.4"/>
-  
-  <!-- Scanner sweep line -->
-  <line x1="256" y1="240" x2="256" y2="120" stroke="url(#accent)" stroke-width="3" opacity="0.8"/>
-  <path d="M 256 240 L 256 120 A 120 120 0 0 1 360 180 Z" fill="url(#accent)" opacity="0.08"/>
-  
-  <!-- Center diamond/node -->
-  <polygon points="256,195 297,240 256,285 215,240" fill="url(#accent)" opacity="0.9"/>
-  <polygon points="256,205 287,240 256,275 225,240" fill="#1a0533"/>
-  <polygon points="256,215 277,240 256,265 235,240" fill="url(#accent)" opacity="0.7"/>
-  
-  <!-- Orbiting nodes -->
-  <circle cx="256" cy="120" r="8" fill="#8b5cf6"/>
-  <circle cx="360" cy="180" r="6" fill="#06b6d4" opacity="0.8"/>
-  <circle cx="152" cy="180" r="6" fill="#a78bfa" opacity="0.8"/>
-  <circle cx="320" cy="310" r="5" fill="#22d3ee" opacity="0.6"/>
-  <circle cx="192" cy="310" r="5" fill="#8b5cf6" opacity="0.6"/>
-  
-  <!-- Connection lines -->
-  <line x1="256" y1="120" x2="256" y2="195" stroke="#8b5cf6" stroke-width="1.5" opacity="0.4"/>
-  <line x1="360" y1="180" x2="297" y2="240" stroke="#06b6d4" stroke-width="1.5" opacity="0.3"/>
-  <line x1="152" y1="180" x2="215" y2="240" stroke="#a78bfa" stroke-width="1.5" opacity="0.3"/>
-  
-  <!-- AI Brain icon (small, inside center) -->
-  <g transform="translate(244, 228)" opacity="0.9">
-    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z" fill="none" stroke="url(#accent)" stroke-width="1.5"/>
-    <circle cx="9" cy="10" r="1.5" fill="#a78bfa"/>
-    <circle cx="15" cy="10" r="1.5" fill="#22d3ee"/>
-    <path d="M9 14c0 1.66 1.34 3 3 3s3-1.34 3-3" fill="none" stroke="url(#accent)" stroke-width="1.5" stroke-linecap="round"/>
-  </g>
-  
-  <!-- Text: 0G -->
-  <text x="256" y="400" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="72" font-weight="800" fill="url(#accent)">0G</text>
-  
-  <!-- Text: SCOUT -->
-  <text x="256" y="445" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="28" font-weight="600" letter-spacing="12" fill="#a78bfa" opacity="0.8">SCOUT</text>
-  
-  <!-- Decorative dots -->
-  <circle cx="80" cy="80" r="3" fill="#8b5cf6" opacity="0.3"/>
-  <circle cx="432" cy="80" r="3" fill="#06b6d4" opacity="0.3"/>
-  <circle cx="80" cy="432" r="2" fill="#a78bfa" opacity="0.2"/>
-  <circle cx="432" cy="432" r="2" fill="#22d3ee" opacity="0.2"/>
 </svg>
