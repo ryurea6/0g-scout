@@ -564,6 +564,7 @@
                         <select id="llmProvider" class="ai-select" onchange="onProviderChange()">
                             <option value="huggingface">🤗 Hugging Face (Free)</option>
                             <option value="0g-router">⚡ 0G Router (API Key)</option>
+                            <option value="0g-free">⚡ 0G Compute (Free Trial)</option>
                             <option value="rule-based">📐 Rule-based (Fallback)</option>
                         </select>
                     </div>
@@ -927,7 +928,14 @@
 
         function onProviderChange() {
             const provider = document.getElementById('llmProvider').value;
-            document.getElementById('apiKeyRow').style.display = provider === '0g-router' ? 'flex' : 'none';
+            document.getElementById('apiKeyRow').style.display = (provider === '0g-router' || provider === '0g-free') ? 'flex' : 'none';
+            if (provider === '0g-free') {
+                document.querySelector('#apiKeyRow label').textContent = '0G API Key (get free at pc.0g.ai)';
+                document.getElementById('ogApiKey').placeholder = 'sk-... (register at pc.0g.ai for free credits)';
+            } else {
+                document.querySelector('#apiKeyRow label').textContent = '0G Router API Key';
+                document.getElementById('ogApiKey').placeholder = 'Enter your 0G Router API key...';
+            }
         }
 
         function showTyping(text) {
@@ -1049,7 +1057,7 @@ Profile/Bio: "${text}" [/INST]</s>`;
                     'Authorization': 'Bearer ' + apiKey
                 },
                 body: JSON.stringify({
-                    model: 'zai-org/GLM-5-FP8',
+                    model: 'deepseek-v4-flash',
                     messages: [
                         { role: 'system', content: 'You are a Web3 engagement analyst. Analyze Twitter profiles/bios and rate Web3 engagement & airdrop potential. Respond ONLY with JSON: {"score": <0-100>, "reasoning": "<brief explanation>"}' },
                         { role: 'user', content: `Analyze this Twitter profile/bio and score it 0-100 for Web3 engagement & airdrop potential:\n\n"${text}"` }
@@ -1095,15 +1103,16 @@ Profile/Bio: "${text}" [/INST]</s>`;
                 return;
             }
 
-            if (provider === '0g-router') {
+            if (provider === '0g-router' || provider === '0g-free') {
                 const apiKey = document.getElementById('ogApiKey').value.trim();
                 if (!apiKey) {
                     hideTyping();
-                    alert('Please enter your 0G Router API key.');
+                    alert(provider === '0g-free' ? 'Get your free API key at pc.0g.ai → Generate Key' : 'Please enter your 0G Router API key.');
                     btn.disabled = false;
                     return;
                 }
-                showTyping('Contacting 0G Router...');
+                const label = provider === '0g-free' ? '0G Compute' : '0G Router';
+                showTyping('Contacting ' + label + '...');
                 try {
                     const result = await scoreWithOGRouter(input, apiKey);
                     showResult(result.score, result.reasoning, '0G Router', false);
