@@ -907,6 +907,220 @@
         .dash-fade-d3 { transition-delay: 0.3s; }
         .dash-fade-d4 { transition-delay: 0.4s; }
         .dash-fade-d5 { transition-delay: 0.5s; }
+
+        /* ===== NOTIFICATION SYSTEM ===== */
+        .notif-wrap { position: relative; }
+        .notif-bell {
+            background: none; border: none; color: var(--text-secondary);
+            cursor: pointer; padding: 6px; position: relative; transition: all 0.2s;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .notif-bell:hover { color: var(--text); transform: scale(1.1); }
+        .notif-bell svg { width: 20px; height: 20px; }
+        .notif-badge {
+            position: absolute; top: 0; right: 0; width: 16px; height: 16px;
+            background: var(--red); border-radius: 50%; font-size: 9px; font-weight: 700;
+            color: white; display: flex; align-items: center; justify-content: center;
+            border: 2px solid var(--bg-dark); animation: badgePop 0.3s ease;
+        }
+        @keyframes badgePop { 0% { transform: scale(0); } 50% { transform: scale(1.3); } 100% { transform: scale(1); } }
+        .notif-badge.hidden { display: none; }
+        .notif-dropdown {
+            position: absolute; top: calc(100% + 10px); right: -60px;
+            width: 340px; max-height: 420px; overflow-y: auto;
+            background: rgba(15,10,30,0.97); border: 1px solid rgba(139,92,246,0.2);
+            border-radius: 14px; backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5), 0 0 30px rgba(139,92,246,0.1);
+            opacity: 0; visibility: hidden; transform: translateY(-8px);
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); z-index: 300;
+        }
+        .notif-dropdown.open { opacity: 1; visibility: visible; transform: translateY(0); }
+        .notif-dropdown-header {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 14px 16px; border-bottom: 1px solid var(--border);
+        }
+        .notif-dropdown-header h4 { font-size: 14px; font-weight: 700; }
+        .notif-clear-btn {
+            background: none; border: none; color: var(--accent-2); font-size: 11px;
+            cursor: pointer; font-weight: 600; font-family: inherit; transition: color 0.2s;
+        }
+        .notif-clear-btn:hover { color: var(--text); }
+        .notif-list { padding: 6px; }
+        .notif-item {
+            display: flex; gap: 12px; padding: 12px; border-radius: 10px;
+            cursor: pointer; transition: all 0.2s; border: 1px solid transparent;
+            animation: notifSlideIn 0.3s ease forwards; opacity: 0;
+        }
+        @keyframes notifSlideIn { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
+        .notif-item:hover { background: rgba(139,92,246,0.08); border-color: rgba(139,92,246,0.12); }
+        .notif-item.unread { background: rgba(139,92,246,0.04); }
+        .notif-item.unread::before { content: ''; width: 6px; height: 6px; background: var(--accent); border-radius: 50%; flex-shrink: 0; margin-top: 6px; }
+        .notif-item.read::before { content: ''; width: 6px; height: 6px; background: transparent; border-radius: 50%; flex-shrink: 0; margin-top: 6px; }
+        .notif-icon { font-size: 18px; flex-shrink: 0; width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; }
+        .notif-icon.project { background: rgba(139,92,246,0.1); }
+        .notif-icon.whale { background: rgba(59,130,246,0.1); }
+        .notif-icon.tvl { background: rgba(52,211,153,0.1); }
+        .notif-content { flex: 1; min-width: 0; }
+        .notif-content p { font-size: 12px; color: var(--text-secondary); line-height: 1.5; }
+        .notif-content p strong { color: var(--text); }
+        .notif-time { font-size: 10px; color: var(--text-muted); margin-top: 4px; }
+        .notif-empty { text-align: center; padding: 32px 16px; color: var(--text-muted); font-size: 13px; }
+
+        /* ===== LIVE SCANNER ===== */
+        .scanner-section { padding: 40px 0; }
+        .scanner-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; flex-wrap: wrap; gap: 12px; }
+        .scanner-header h2 { font-size: clamp(24px, 3vw, 32px); font-weight: 800; letter-spacing: -1px; display: flex; align-items: center; gap: 12px; }
+        .scanner-live-dot { width: 10px; height: 10px; background: var(--green); border-radius: 50%; box-shadow: 0 0 8px rgba(52,211,153,0.5); animation: pulse 2s infinite; }
+        .scanner-controls { display: flex; gap: 8px; flex-wrap: wrap; }
+        .scanner-filter {
+            background: rgba(255,255,255,0.04); border: 1px solid var(--border);
+            border-radius: 8px; padding: 8px 12px; color: var(--text);
+            font-size: 12px; font-family: inherit; outline: none; cursor: pointer;
+            -webkit-appearance: none; appearance: none; transition: all 0.2s;
+        }
+        .scanner-filter:focus { border-color: rgba(139,92,246,0.4); }
+        .scanner-filter option { background: #1a1030; color: var(--text); }
+        .scanner-refresh-btn {
+            background: rgba(139,92,246,0.1); border: 1px solid rgba(139,92,246,0.2);
+            color: var(--accent-2); border-radius: 8px; padding: 8px 14px;
+            font-size: 12px; font-weight: 600; cursor: pointer; font-family: inherit;
+            transition: all 0.2s; display: flex; align-items: center; gap: 6px;
+        }
+        .scanner-refresh-btn:hover { background: rgba(139,92,246,0.2); }
+        .scanner-refresh-btn .spin { animation: spin 1s linear infinite; }
+        .scanner-table-wrap {
+            background: var(--bg-card); border: 1px solid var(--border);
+            border-radius: 16px; overflow: hidden;
+        }
+        .scanner-table {
+            width: 100%; border-collapse: collapse;
+        }
+        .scanner-table th {
+            text-align: left; padding: 14px 16px; font-size: 11px; font-weight: 600;
+            color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px;
+            border-bottom: 1px solid var(--border); background: rgba(0,0,0,0.2);
+        }
+        .scanner-table td {
+            padding: 14px 16px; font-size: 13px; border-bottom: 1px solid rgba(255,255,255,0.03);
+            transition: all 0.3s;
+        }
+        .scanner-table tr { transition: all 0.3s; }
+        .scanner-table tbody tr:hover { background: rgba(139,92,246,0.04); }
+        .scanner-table tbody tr.pulse-row { animation: rowPulse 2s ease; }
+        @keyframes rowPulse { 0% { background: rgba(139,92,246,0.15); } 100% { background: transparent; } }
+        .scanner-project-name { font-weight: 600; color: var(--text); }
+        .scanner-chain-tag {
+            font-size: 10px; padding: 3px 8px; border-radius: 6px;
+            background: rgba(139,92,246,0.1); color: var(--accent-2); font-weight: 500;
+        }
+        .scanner-score { font-weight: 700; font-size: 15px; }
+        .scanner-status { font-size: 11px; padding: 3px 10px; border-radius: 100px; font-weight: 600; }
+        .scanner-status.live { background: rgba(52,211,153,0.1); color: var(--green); }
+        .scanner-status.upcoming { background: rgba(251,191,36,0.1); color: var(--yellow); }
+        .scanner-status.ended { background: rgba(248,113,113,0.1); color: var(--red); }
+        .scanner-trend { font-size: 13px; font-weight: 600; }
+        .scanner-trend.up { color: var(--green); }
+        .scanner-trend.down { color: var(--red); }
+        .scanner-trend.neutral { color: var(--text-muted); }
+        .scanner-analyze-btn {
+            background: rgba(139,92,246,0.12); border: 1px solid rgba(139,92,246,0.2);
+            color: var(--accent-2); border-radius: 8px; padding: 6px 14px;
+            font-size: 11px; font-weight: 600; cursor: pointer; font-family: inherit;
+            transition: all 0.2s;
+        }
+        .scanner-analyze-btn:hover { background: rgba(139,92,246,0.25); transform: translateY(-1px); }
+        .scanner-last-update { font-size: 11px; color: var(--text-muted); display: flex; align-items: center; gap: 6px; }
+
+        /* ===== LEADERBOARD ===== */
+        .leaderboard-section { padding: 40px 0 60px; }
+        .leaderboard-header { text-align: center; margin-bottom: 28px; }
+        .leaderboard-header h2 { font-size: clamp(28px, 4vw, 40px); font-weight: 800; letter-spacing: -1px; margin-bottom: 8px; }
+        .leaderboard-header p { color: var(--text-secondary); font-size: 15px; }
+        .leaderboard-card {
+            background: var(--bg-card); border: 1px solid var(--border);
+            border-radius: 16px; overflow: hidden; max-width: 800px; margin: 0 auto;
+        }
+        .leaderboard-table { width: 100%; border-collapse: collapse; }
+        .leaderboard-table th {
+            text-align: left; padding: 14px 20px; font-size: 11px; font-weight: 600;
+            color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px;
+            border-bottom: 1px solid var(--border); background: rgba(0,0,0,0.2);
+        }
+        .leaderboard-table td {
+            padding: 14px 20px; font-size: 13px; border-bottom: 1px solid rgba(255,255,255,0.03);
+        }
+        .leaderboard-table tbody tr { transition: all 0.3s; }
+        .leaderboard-table tbody tr:hover { background: rgba(139,92,246,0.04); }
+        .leaderboard-rank {
+            font-weight: 800; font-size: 16px; width: 40px; text-align: center;
+        }
+        .leaderboard-rank.gold { color: #fbbf24; text-shadow: 0 0 10px rgba(251,191,36,0.3); }
+        .leaderboard-rank.silver { color: #94a3b8; text-shadow: 0 0 10px rgba(148,163,184,0.3); }
+        .leaderboard-rank.bronze { color: #d97706; text-shadow: 0 0 10px rgba(217,119,6,0.3); }
+        .leaderboard-table tbody tr.rank-gold { background: rgba(251,191,36,0.04); }
+        .leaderboard-table tbody tr.rank-silver { background: rgba(148,163,184,0.03); }
+        .leaderboard-table tbody tr.rank-bronze { background: rgba(217,119,60,0.03); }
+        .leaderboard-address { font-family: 'Courier New', monospace; font-size: 13px; color: var(--text-secondary); }
+        .leaderboard-score { font-weight: 700; font-size: 16px; color: var(--accent-2); }
+        .leaderboard-projects { color: var(--text-secondary); }
+        .leaderboard-rewards { font-weight: 600; color: var(--green); }
+        .leaderboard-your-rank {
+            background: rgba(139,92,246,0.06); border: 1px solid rgba(139,92,246,0.15);
+            border-radius: 12px; padding: 16px 20px; margin-top: 16px;
+            max-width: 800px; margin-left: auto; margin-right: auto;
+            display: flex; align-items: center; justify-content: space-between;
+            flex-wrap: wrap; gap: 12px;
+        }
+        .leaderboard-your-rank-label { font-size: 13px; color: var(--text-secondary); }
+        .leaderboard-your-rank-value { font-size: 24px; font-weight: 800; color: var(--accent-2); }
+
+        /* ===== 0G STORAGE / SCAN HISTORY ===== */
+        .save-storage-btn {
+            margin-top: 16px; width: 100%; justify-content: center;
+            background: linear-gradient(135deg, rgba(52,211,153,0.15), rgba(139,92,246,0.15));
+            border: 1px solid rgba(52,211,153,0.2); color: var(--green);
+            padding: 12px 20px; border-radius: 10px; font-size: 13px;
+            font-weight: 600; cursor: pointer; font-family: inherit;
+            transition: all 0.3s; display: inline-flex; align-items: center; gap: 8px;
+        }
+        .save-storage-btn:hover { background: linear-gradient(135deg, rgba(52,211,153,0.25), rgba(139,92,246,0.25)); transform: translateY(-2px); }
+        .save-storage-btn.saved { background: rgba(52,211,153,0.1); color: var(--green); pointer-events: none; }
+        .scan-history-section { padding: 40px 0; }
+        .scan-history-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+        .scan-history-header h3 { font-size: 18px; font-weight: 700; display: flex; align-items: center; gap: 10px; }
+        .scan-history-header .count { font-size: 11px; background: rgba(139,92,246,0.1); color: var(--accent-2); padding: 3px 10px; border-radius: 100px; font-weight: 600; }
+        .scan-history-list { display: flex; flex-direction: column; gap: 8px; }
+        .scan-history-item {
+            background: var(--bg-card); border: 1px solid var(--border);
+            border-radius: 12px; padding: 16px 20px; display: flex;
+            align-items: center; gap: 16px; transition: all 0.3s;
+            animation: fadeUp 0.4s ease forwards;
+        }
+        .scan-history-item:hover { background: var(--bg-card-hover); border-color: rgba(139,92,246,0.2); }
+        .scan-history-score {
+            font-size: 24px; font-weight: 800; min-width: 50px; text-align: center;
+        }
+        .scan-history-info { flex: 1; }
+        .scan-history-info h4 { font-size: 14px; font-weight: 600; margin-bottom: 2px; }
+        .scan-history-info p { font-size: 11px; color: var(--text-muted); }
+        .scan-history-badge {
+            font-size: 10px; padding: 3px 10px; border-radius: 100px;
+            background: rgba(139,92,246,0.1); color: var(--accent-2); font-weight: 600;
+        }
+        .scan-history-time { font-size: 11px; color: var(--text-muted); }
+        .scan-history-tx {
+            font-size: 10px; color: var(--green); font-family: 'Courier New', monospace;
+            word-break: break-all; margin-top: 4px;
+        }
+        .scan-history-empty { text-align: center; padding: 40px; color: var(--text-muted); font-size: 13px; }
+
+        @media (max-width: 768px) {
+            .notif-dropdown { right: -20px; width: 300px; }
+            .scanner-table-wrap { overflow-x: auto; }
+            .scanner-table { min-width: 700px; }
+            .leaderboard-table { min-width: 600px; }
+            .leaderboard-card { overflow-x: auto; }
+        }
     </style>
 </head>
 <body>
@@ -931,10 +1145,27 @@
             <div class="nav-links">
                 <a href="#features">Features</a>
                 <a href="#scout">Scout</a>
+                <a href="#scanner">Scanner</a>
+                <a href="#leaderboard">Leaderboard</a>
                 <a href="#ai-scoring">AI Score</a>
                 <a href="#chatbot">AI Chat</a>
                 <a href="https://github.com/ryurea6/0g-scout" target="_blank">GitHub</a>
                 <a href="https://0g.ai" target="_blank" class="nav-cta">Explore ØG</a>
+                <div class="notif-wrap" id="notifWrap">
+                    <button class="notif-bell" id="notifBell" onclick="toggleNotifDropdown()">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+                        <span class="notif-badge" id="notifBadge">0</span>
+                    </button>
+                    <div class="notif-dropdown" id="notifDropdown">
+                        <div class="notif-dropdown-header">
+                            <h4>Notifications</h4>
+                            <button class="notif-clear-btn" onclick="clearAllNotifications()">Clear all</button>
+                        </div>
+                        <div class="notif-list" id="notifList">
+                            <div class="notif-empty">No notifications yet</div>
+                        </div>
+                    </div>
+                </div>
                 <div id="walletNavArea">
                     <button class="wallet-btn" id="walletConnectBtn" onclick="openWalletModal()">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="6" width="20" height="14" rx="2"/><path d="M2 10h20"/><circle cx="17" cy="15" r="1.5"/></svg>
@@ -1238,6 +1469,10 @@
                     </div>
                     <div class="ai-result-reasoning" id="aiResultReasoning"></div>
                     <div class="ai-result-fallback-note" id="aiFallbackNote" style="display:none;"></div>
+                    <button class="save-storage-btn" id="saveStorageBtn" onclick="saveToStorage()" style="display:none;">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+                        Save to 0G Storage
+                    </button>
                 </div>
             </div>
         </div>
@@ -1335,6 +1570,109 @@
                     <h3>Portfolio Tracker</h3>
                     <p>Connect your wallet to track airdrops and estimate potential rewards.</p>
                 </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Live Scanner -->
+    <section class="scanner-section fade-up" id="scanner">
+        <div class="container">
+            <div class="scanner-header">
+                <h2><span class="scanner-live-dot"></span> Live Project Scanner</h2>
+                <div class="scanner-controls">
+                    <select class="scanner-filter" id="scannerChainFilter" onchange="filterScanner()">
+                        <option value="all">All Chains</option>
+                        <option value="0G">0G</option>
+                        <option value="Ethereum">Ethereum</option>
+                        <option value="Solana">Solana</option>
+                        <option value="L2">L2s</option>
+                    </select>
+                    <select class="scanner-filter" id="scannerScoreFilter" onchange="filterScanner()">
+                        <option value="all">All Scores</option>
+                        <option value="high">High (8+)</option>
+                        <option value="mid">Mid (6-8)</option>
+                        <option value="low">Low (&lt;6)</option>
+                    </select>
+                    <select class="scanner-filter" id="scannerStatusFilter" onchange="filterScanner()">
+                        <option value="all">All Status</option>
+                        <option value="live">Live</option>
+                        <option value="upcoming">Upcoming</option>
+                        <option value="ended">Ended</option>
+                    </select>
+                    <button class="scanner-refresh-btn" onclick="refreshScanner()">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+                        Refresh
+                    </button>
+                </div>
+            </div>
+            <div class="scanner-table-wrap">
+                <table class="scanner-table">
+                    <thead>
+                        <tr>
+                            <th>Project</th>
+                            <th>Chain</th>
+                            <th>Score</th>
+                            <th>Status</th>
+                            <th>Trend</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody id="scannerBody"></tbody>
+                </table>
+            </div>
+            <div class="scanner-last-update" id="scannerLastUpdate" style="margin-top:12px;">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+                Last updated: just now
+            </div>
+        </div>
+    </section>
+
+    <!-- Leaderboard -->
+    <section class="leaderboard-section fade-up" id="leaderboard">
+        <div class="container">
+            <div class="leaderboard-header">
+                <div class="section-label">Community</div>
+                <h2>Leaderboard</h2>
+                <p>Top scorers in the ØG Scout ecosystem</p>
+            </div>
+            <div class="leaderboard-card">
+                <table class="leaderboard-table">
+                    <thead>
+                        <tr>
+                            <th>Rank</th>
+                            <th>Address</th>
+                            <th>Score</th>
+                            <th>Projects Tracked</th>
+                            <th>Rewards Est.</th>
+                        </tr>
+                    </thead>
+                    <tbody id="leaderboardBody"></tbody>
+                </table>
+            </div>
+            <div class="leaderboard-your-rank" id="leaderboardYourRank" style="display:none;">
+                <div>
+                    <div class="leaderboard-your-rank-label">Your Rank</div>
+                    <div class="leaderboard-your-rank-value" id="yourRankValue">#—</div>
+                </div>
+                <div style="text-align:right;">
+                    <div class="leaderboard-your-rank-label">Your Score</div>
+                    <div class="leaderboard-your-rank-value" id="yourScoreValue">—</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Scan History (0G Storage) -->
+    <section class="scan-history-section fade-up" id="scan-history">
+        <div class="container">
+            <div class="scan-history-header">
+                <h3>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent-2)" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+                    Scan History <span class="count" id="scanHistoryCount">0</span>
+                </h3>
+            </div>
+            <div class="scan-history-list" id="scanHistoryList">
+                <div class="scan-history-empty">No saved scans yet. Analyze a profile and save to 0G Storage!</div>
             </div>
         </div>
     </section>
@@ -2181,6 +2519,9 @@ Profile/Bio: "${text}" [/INST]</s>`;
             setTimeout(() => {
                 dash.querySelectorAll('.dash-fade-up').forEach(el => el.classList.add('visible'));
             }, 100);
+
+            // Update leaderboard your rank
+            if (typeof updateLeaderboardYourRank === 'function') updateLeaderboardYourRank();
         }
 
         function generatePortfolioScore(address) {
@@ -2265,6 +2606,334 @@ Profile/Bio: "${text}" [/INST]</s>`;
                 </div>
             `).join('');
         }
+
+        // ===== NOTIFICATION SYSTEM =====
+        let notifications = [];
+        let notifOpen = false;
+
+        const mockNotifications = [
+            { type: 'project', icon: '🚀', title: 'New project detected', text: '<strong>Monad</strong> scored <strong>8.5</strong> — Parallel EVM L1 gaining traction' },
+            { type: 'whale', icon: '🐋', title: 'Whale movement', text: 'Whale moved <strong>500 ETH</strong> to <strong>EigenLayer</strong> restaking pool' },
+            { type: 'tvl', icon: '📈', title: 'TVL Update', text: 'Your tracked project <strong>0G Protocol</strong> TVL +15% in 24h' },
+            { type: 'project', icon: '🔥', title: 'Hot project', text: '<strong>Berachain</strong> scored <strong>8.3</strong> — Proof of Liquidity gaining momentum' },
+            { type: 'whale', icon: '🐋', title: 'Whale alert', text: 'Whale deposited <strong>1,200 ETH</strong> into <strong>zkSync Era</strong> bridge' },
+            { type: 'tvl', icon: '📊', title: 'Score update', text: '<strong>Scroll</strong> score increased from <strong>7.2</strong> to <strong>7.6</strong>' },
+            { type: 'project', icon: '⭐', title: 'New listing', text: '<strong>Starknet</strong> scored <strong>7.8</strong> — ZK-rollup with growing ecosystem' },
+            { type: 'whale', icon: '🐋', title: 'Whale movement', text: '3 whales accumulated <strong>2.5M USDC</strong> on <strong>Linea</strong>' },
+            { type: 'tvl', icon: '🎯', title: 'Airdrop signal', text: '<strong>Eclipse</strong> hints at token — TVL surged 200% this week' },
+            { type: 'project', icon: '🔮', title: 'Trending', text: '<strong>Initia</strong> scored <strong>7.1</strong> — Interwoven rollup narrative heating up' },
+        ];
+        let notifIndex = 0;
+
+        function addNotification(notif) {
+            const id = Date.now() + Math.random();
+            notifications.unshift({ ...notif, id, read: false, time: new Date() });
+            if (notifications.length > 20) notifications.pop();
+            renderNotifications();
+            updateNotifBadge();
+        }
+
+        function renderNotifications() {
+            const list = document.getElementById('notifList');
+            if (notifications.length === 0) {
+                list.innerHTML = '<div class="notif-empty">No notifications yet</div>';
+                return;
+            }
+            list.innerHTML = notifications.map((n, i) => {
+                const timeAgo = getTimeAgo(n.time);
+                return `<div class="notif-item ${n.read ? 'read' : 'unread'}" onclick="markNotifRead(${i})" style="animation-delay:${i * 0.05}s">
+                    <div class="notif-icon ${n.type}">${n.icon}</div>
+                    <div class="notif-content">
+                        <p>${n.text}</p>
+                        <div class="notif-time">${timeAgo}</div>
+                    </div>
+                </div>`;
+            }).join('');
+        }
+
+        function getTimeAgo(date) {
+            const secs = Math.floor((new Date() - date) / 1000);
+            if (secs < 60) return 'just now';
+            if (secs < 3600) return Math.floor(secs / 60) + 'm ago';
+            if (secs < 86400) return Math.floor(secs / 3600) + 'h ago';
+            return Math.floor(secs / 86400) + 'd ago';
+        }
+
+        function updateNotifBadge() {
+            const badge = document.getElementById('notifBadge');
+            const unread = notifications.filter(n => !n.read).length;
+            badge.textContent = unread;
+            badge.classList.toggle('hidden', unread === 0);
+        }
+
+        function toggleNotifDropdown() {
+            const dd = document.getElementById('notifDropdown');
+            notifOpen = !notifOpen;
+            dd.classList.toggle('open', notifOpen);
+            if (notifOpen) {
+                document.addEventListener('click', closeNotifOutside, true);
+            }
+        }
+
+        function closeNotifOutside(e) {
+            const wrap = document.getElementById('notifWrap');
+            if (wrap && !wrap.contains(e.target)) {
+                document.getElementById('notifDropdown').classList.remove('open');
+                notifOpen = false;
+                document.removeEventListener('click', closeNotifOutside, true);
+            }
+        }
+
+        function markNotifRead(index) {
+            notifications[index].read = true;
+            renderNotifications();
+            updateNotifBadge();
+        }
+
+        function clearAllNotifications() {
+            notifications = [];
+            renderNotifications();
+            updateNotifBadge();
+        }
+
+        // Cycle notifications every 10 seconds
+        setInterval(() => {
+            const notif = mockNotifications[notifIndex % mockNotifications.length];
+            addNotification(notif);
+            notifIndex++;
+        }, 10000);
+
+        // Add first notification after 3 seconds
+        setTimeout(() => {
+            addNotification(mockNotifications[0]);
+            notifIndex = 1;
+        }, 3000);
+
+        // ===== LIVE PROJECT SCANNER =====
+        const scannerProjects = [
+            { name: '0G Protocol', chain: '0G', score: 9.2, status: 'live', trend: '+12%', trendDir: 'up' },
+            { name: 'EigenLayer', chain: 'Ethereum', score: 8.8, status: 'live', trend: '+8%', trendDir: 'up' },
+            { name: 'Monad', chain: 'Ethereum', score: 8.5, status: 'upcoming', trend: '+15%', trendDir: 'up' },
+            { name: 'Berachain', chain: 'Ethereum', score: 8.3, status: 'live', trend: '+5%', trendDir: 'up' },
+            { name: 'Scroll', chain: 'L2', score: 7.6, status: 'live', trend: '-2%', trendDir: 'down' },
+            { name: 'zkSync Era', chain: 'L2', score: 7.8, status: 'live', trend: '+3%', trendDir: 'up' },
+            { name: 'Linea', chain: 'L2', score: 7.9, status: 'live', trend: '+6%', trendDir: 'up' },
+            { name: 'Starknet', chain: 'L2', score: 7.8, status: 'live', trend: '+4%', trendDir: 'up' },
+            { name: 'Eclipse', chain: 'Solana', score: 7.4, status: 'upcoming', trend: '+22%', trendDir: 'up' },
+            { name: 'Initia', chain: 'Ethereum', score: 7.1, status: 'upcoming', trend: '+9%', trendDir: 'up' },
+            { name: 'LayerZero', chain: 'Ethereum', score: 8.1, status: 'live', trend: '+1%', trendDir: 'up' },
+            { name: 'Wormhole', chain: 'Solana', score: 7.3, status: 'live', trend: '-1%', trendDir: 'down' },
+            { name: 'Arbitrum', chain: 'L2', score: 6.8, status: 'ended', trend: '0%', trendDir: 'neutral' },
+            { name: 'Optimism', chain: 'L2', score: 6.5, status: 'ended', trend: '-3%', trendDir: 'down' },
+            { name: 'Celestia', chain: 'Ethereum', score: 7.7, status: 'live', trend: '+7%', trendDir: 'up' },
+        ];
+
+        function renderScanner(data) {
+            const body = document.getElementById('scannerBody');
+            if (!data) data = getFilteredScannerData();
+            body.innerHTML = data.map((p, i) => {
+                const scoreClass = p.score >= 8 ? 'score-high' : p.score >= 6 ? 'score-mid' : 'score-low';
+                const pulseClass = p._pulse ? 'pulse-row' : '';
+                return `<tr class="${pulseClass}">
+                    <td><span class="scanner-project-name">${p.name}</span></td>
+                    <td><span class="scanner-chain-tag">${p.chain}</span></td>
+                    <td><span class="scanner-score ${scoreClass}">${p.score.toFixed(1)}</span></td>
+                    <td><span class="scanner-status ${p.status}">${p.status.charAt(0).toUpperCase() + p.status.slice(1)}</span></td>
+                    <td><span class="scanner-trend ${p.trendDir}">${p.trendDir === 'up' ? '▲' : p.trendDir === 'down' ? '▼' : '—'} ${p.trend}</span></td>
+                    <td><button class="scanner-analyze-btn" onclick="analyzeFromScanner('${p.name}')">Analyze</button></td>
+                </tr>`;
+            }).join('');
+        }
+
+        function getFilteredScannerData() {
+            const chainF = document.getElementById('scannerChainFilter').value;
+            const scoreF = document.getElementById('scannerScoreFilter').value;
+            const statusF = document.getElementById('scannerStatusFilter').value;
+            return scannerProjects.filter(p => {
+                if (chainF !== 'all' && p.chain !== chainF) return false;
+                if (scoreF === 'high' && p.score < 8) return false;
+                if (scoreF === 'mid' && (p.score < 6 || p.score >= 8)) return false;
+                if (scoreF === 'low' && p.score >= 6) return false;
+                if (statusF !== 'all' && p.status !== statusF) return false;
+                return true;
+            });
+        }
+
+        function filterScanner() { renderScanner(); }
+
+        function refreshScanner() {
+            // Simulate data changes
+            scannerProjects.forEach(p => {
+                const delta = (Math.random() - 0.45) * 0.5;
+                p.score = Math.max(1, Math.min(10, p.score + delta));
+                p.score = Math.round(p.score * 10) / 10;
+                const trendVal = Math.round((Math.random() - 0.4) * 20);
+                p.trend = (trendVal >= 0 ? '+' : '') + trendVal + '%';
+                p.trendDir = trendVal > 0 ? 'up' : trendVal < 0 ? 'down' : 'neutral';
+                p._pulse = Math.random() > 0.6;
+            });
+            renderScanner();
+            document.getElementById('scannerLastUpdate').innerHTML = `
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+                Last updated: just now
+            `;
+            // Clear pulse after animation
+            setTimeout(() => { scannerProjects.forEach(p => p._pulse = false); }, 2000);
+        }
+
+        function analyzeFromScanner(name) {
+            document.getElementById('twitterInput').value = name;
+            document.getElementById('ai-scoring').scrollIntoView({ behavior: 'smooth' });
+            setTimeout(() => runAIScoring(), 500);
+        }
+
+        // Auto-refresh scanner every 30 seconds
+        setInterval(refreshScanner, 30000);
+
+        // ===== LEADERBOARD =====
+        const leaderboardData = [
+            { address: '0x7a3B...9f2E', score: 94, projects: 47, rewards: '~$12,400' },
+            { address: '0xb4C1...8dA3', score: 91, projects: 42, rewards: '~$10,800' },
+            { address: '0x2eF9...4c7D', score: 88, projects: 38, rewards: '~$9,200' },
+            { address: '0x9dA5...1bE8', score: 85, projects: 35, rewards: '~$7,600' },
+            { address: '0x1cD7...6fA2', score: 82, projects: 31, rewards: '~$6,100' },
+            { address: '0x5eB3...2cF9', score: 79, projects: 28, rewards: '~$5,000' },
+            { address: '0x8fC6...7aD1', score: 76, projects: 25, rewards: '~$4,200' },
+            { address: '0x3aE8...5bC4', score: 73, projects: 22, rewards: '~$3,500' },
+            { address: '0xd2F1...9eA7', score: 70, projects: 19, rewards: '~$2,800' },
+            { address: '0x6bA4...3dB6', score: 67, projects: 16, rewards: '~$2,100' },
+        ];
+
+        function renderLeaderboard() {
+            const body = document.getElementById('leaderboardBody');
+            body.innerHTML = leaderboardData.map((entry, i) => {
+                let rankClass = '';
+                let rowClass = '';
+                if (i === 0) { rankClass = 'gold'; rowClass = 'rank-gold'; }
+                else if (i === 1) { rankClass = 'silver'; rowClass = 'rank-silver'; }
+                else if (i === 2) { rankClass = 'bronze'; rowClass = 'rank-bronze'; }
+                const medal = i === 0 ? '👑' : i === 1 ? '🥈' : i === 2 ? '🥉' : '';
+                return `<tr class="${rowClass}">
+                    <td><span class="leaderboard-rank ${rankClass}">${medal} #${i + 1}</span></td>
+                    <td><span class="leaderboard-address">${entry.address}</span></td>
+                    <td><span class="leaderboard-score">${entry.score}</span></td>
+                    <td><span class="leaderboard-projects">${entry.projects}</span></td>
+                    <td><span class="leaderboard-rewards">${entry.rewards}</span></td>
+                </tr>`;
+            }).join('');
+        }
+
+        function updateLeaderboardYourRank() {
+            if (walletState.connected) {
+                const yourScore = generatePortfolioScore(walletState.address).value;
+                const rank = leaderboardData.filter(e => e.score > yourScore).length + 1;
+                document.getElementById('leaderboardYourRank').style.display = 'flex';
+                document.getElementById('yourRankValue').textContent = '#' + rank;
+                document.getElementById('yourScoreValue').textContent = yourScore;
+            }
+        }
+
+        // ===== 0G STORAGE / SCAN HISTORY =====
+        const STORAGE_KEY = 'og_scout_scan_history';
+
+        function getScanHistory() {
+            try {
+                return JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+            } catch { return []; }
+        }
+
+        function saveScanHistory(entry) {
+            const history = getScanHistory();
+            history.unshift(entry);
+            if (history.length > 50) history.pop();
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(history));
+            renderScanHistory();
+        }
+
+        function renderScanHistory() {
+            const history = getScanHistory();
+            const list = document.getElementById('scanHistoryList');
+            document.getElementById('scanHistoryCount').textContent = history.length;
+            if (history.length === 0) {
+                list.innerHTML = '<div class="scan-history-empty">No saved scans yet. Analyze a profile and save to 0G Storage!</div>';
+                return;
+            }
+            list.innerHTML = history.map((entry, i) => {
+                const scoreClass = entry.score >= 80 ? 'score-high' : entry.score >= 60 ? 'score-mid' : 'score-low';
+                const timeStr = new Date(entry.timestamp).toLocaleString();
+                return `<div class="scan-history-item" style="animation-delay:${i * 0.05}s">
+                    <div class="scan-history-score ${scoreClass}">${entry.score}</div>
+                    <div class="scan-history-info">
+                        <h4>${entry.name}</h4>
+                        <p>${entry.reasoning ? entry.reasoning.substring(0, 80) + '...' : 'AI Scored'}</p>
+                        <div class="scan-history-tx">0G TX: ${entry.txHash}</div>
+                    </div>
+                    <span class="scan-history-badge">${entry.badge}</span>
+                    <span class="scan-history-time">${timeStr}</span>
+                </div>`;
+            }).join('');
+        }
+
+        function saveToStorage() {
+            const btn = document.getElementById('saveStorageBtn');
+            const score = document.getElementById('aiResultScore').textContent;
+            const badge = document.getElementById('aiResultBadge').textContent;
+            const reasoning = document.getElementById('aiResultReasoning').textContent;
+            const input = document.getElementById('twitterInput').value.trim();
+
+            // Simulate 0G Storage transaction
+            btn.innerHTML = '<div class="spinner" style="width:16px;height:16px;border-width:2px;margin:0;"></div> Saving to 0G Storage...';
+            btn.disabled = true;
+
+            setTimeout(() => {
+                const txHash = '0x' + Array.from({length: 64}, () => Math.floor(Math.random() * 16).toString(16)).join('');
+                const entry = {
+                    name: input,
+                    score: parseInt(score),
+                    badge: badge,
+                    reasoning: reasoning,
+                    timestamp: new Date().toISOString(),
+                    txHash: txHash,
+                };
+                saveScanHistory(entry);
+
+                btn.innerHTML = '✓ Saved to 0G Storage';
+                btn.classList.add('saved');
+
+                // Add notification
+                addNotification({
+                    type: 'tvl',
+                    icon: '💾',
+                    title: 'Saved to 0G Storage',
+                    text: `<strong>${input}</strong> score (${score}) saved on-chain`
+                });
+            }, 1500);
+        }
+
+        // Update showResult to show save button
+        const _origShowResult = showResult;
+        showResult = function(score, reasoning, providerName, isFallback) {
+            _origShowResult(score, reasoning, providerName, isFallback);
+            const saveBtn = document.getElementById('saveStorageBtn');
+            saveBtn.style.display = 'inline-flex';
+            saveBtn.classList.remove('saved');
+            saveBtn.disabled = false;
+            saveBtn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg> Save to 0G Storage`;
+        };
+
+        // Initialize new sections on page load
+        renderScanner();
+        renderLeaderboard();
+        renderScanHistory();
+
+        // Update leaderboard "Your Rank" when wallet connects
+        const _origRenderDashboard = renderDashboard;
+        async function renderDashboardWrapper(address, chainId) {
+            await _origRenderDashboard(address, chainId);
+            updateLeaderboardYourRank();
+        }
+        // Re-assign for auto-reconnect
+        window._renderDashboardForReconnect = renderDashboardWrapper;
 
         // --- Auto-Reconnect on Page Load ---
         (function autoReconnect() {
