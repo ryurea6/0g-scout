@@ -1896,21 +1896,17 @@
         // Demo data (fallback if API is unavailable) — Updated June 2026
         const demoProjects = [
             { name: "0G Protocol", desc: "Decentralized AI Operating System — Compute, Storage, Chain", tags: ["AI", "Storage", "Compute"], score: 9.5, chain: "0G", status: "active" },
-            { name: "Monad", desc: "High-performance parallel EVM L1 — $225M+ raised from Paradigm", tags: ["L1", "EVM", "Parallel"], score: 9.3, chain: "Monad", status: "testnet" },
-            { name: "MegaETH", desc: "Real-time L2 targeting 100k TPS — backed by Vitalik & Dragonfly", tags: ["L2", "Real-time", "EVM"], score: 9.0, chain: "Ethereum", status: "testnet" },
-            { name: "Linea", desc: "zkEVM L2 by Consensys — native MetaMask integration", tags: ["L2", "zkEVM", "Consensys"], score: 8.8, chain: "Ethereum", status: "active" },
-            { name: "Sahara AI", desc: "Decentralized AI platform — privacy-preserving model training", tags: ["AI", "Privacy", "Compute"], score: 8.5, chain: "Ethereum", status: "active" },
+            { name: "Abstract", desc: "Consumer L2 by Pudgy Penguins/IGLOO — gaming & social", tags: ["L2", "Consumer", "Gaming"], score: 8.5, chain: "Ethereum", status: "active" },
             { name: "Ritual", desc: "Decentralized AI inference network — on-chain AI execution", tags: ["AI", "Inference", "Infrastructure"], score: 8.3, chain: "Ethereum", status: "active" },
-            { name: "Abstract", desc: "Consumer L2 by Pudgy Penguins — gaming & social focus", tags: ["L2", "Consumer", "Gaming"], score: 8.2, chain: "Ethereum", status: "active" },
             { name: "Eclipse", desc: "SVM L2 on Ethereum — Solana speed + Ethereum settlement", tags: ["L2", "SVM", "Solana"], score: 8.0, chain: "Ethereum", status: "active" },
             { name: "Farcaster", desc: "Decentralized social protocol — Frames, Channels, ecosystem", tags: ["Social", "Protocol", "Web3"], score: 8.0, chain: "Ethereum", status: "active" },
             { name: "Pharos", desc: "Modular L1 for DeFi and cross-chain interoperability", tags: ["L1", "Modular", "DeFi"], score: 7.5, chain: "Pharos", status: "testnet" },
             { name: "Fhenix", desc: "FHE L2 — confidential smart contracts with fully homomorphic encryption", tags: ["L2", "FHE", "Privacy"], score: 7.3, chain: "Ethereum", status: "testnet" },
-            { name: "Corn", desc: "Bitcoin L2 enabling BTC DeFi with innovative yield strategies", tags: ["L2", "Bitcoin", "BTCFi"], score: 7.2, chain: "Ethereum", status: "active" },
             { name: "Ambient", desc: "Gas-efficient AMM DEX with concentrated liquidity", tags: ["DEX", "AMM", "DeFi"], score: 7.0, chain: "Ethereum", status: "active" },
             { name: "Lens Protocol", desc: "Decentralized social graph by Aave — portable identity", tags: ["Social", "Identity", "Aave"], score: 7.0, chain: "Polygon", status: "active" },
             { name: "DeBank", desc: "Web3 portfolio tracker & DeFi dashboard — Rabby wallet", tags: ["Portfolio", "Analytics", "Wallet"], score: 7.0, chain: "Multi-chain", status: "active" },
-            { name: "Marginfi", desc: "Decentralized lending on Solana with portfolio margin", tags: ["Lending", "DeFi", "Solana"], score: 6.8, chain: "Solana", status: "active" },
+            { name: "Marginfi", desc: "Solana lending protocol with mPoints rewards", tags: ["Lending", "DeFi", "Solana"], score: 6.8, chain: "Solana", status: "active" },
+            { name: "Beraborrow", desc: "Native borrowing protocol on Berachain", tags: ["Lending", "DeFi", "Berachain"], score: 6.5, chain: "Berachain", status: "active" },
         ];
 
         async function scanProject() {
@@ -1976,26 +1972,22 @@
 
 ACTIVE PROJECTS (June 2026 — no token launched yet):
 1. 0G Protocol (Score: 9.5) — Decentralized AI OS. Chain: 0G. Status: Active. Zero Cup Hackathon deadline June 23, 2026.
-2. Monad (Score: 9.3) — Parallel EVM L1, $225M+ raised from Paradigm. Chain: Monad. Status: Testnet.
-3. MegaETH (Score: 9.0) — Real-time L2, 100k TPS, backed by Vitalik. Chain: Ethereum. Status: Testnet.
-4. Linea (Score: 8.8) — zkEVM L2 by Consensys, MetaMask integration. Chain: Ethereum. Status: Active.
-5. Sahara AI (Score: 8.5) — Decentralized AI, $40M+ raised. Chain: Ethereum. Status: Active.
-6. Ritual (Score: 8.3) — AI inference network. Chain: Ethereum. Status: Active.
-7. Abstract (Score: 8.2) — Consumer L2 by Pudgy Penguins. Chain: Ethereum. Status: Active.
-8. Eclipse (Score: 8.0) — SVM L2 on Ethereum. Chain: Ethereum. Status: Active.
-9. Farcaster (Score: 8.0) — Decentralized social protocol. Chain: Ethereum. Status: Active.
-10. Pharos (Score: 7.5) — Modular L1 for DeFi. Chain: Pharos. Status: Testnet.
-11. Fhenix (Score: 7.3) — FHE privacy L2. Chain: Ethereum. Status: Testnet.
-12. Corn (Score: 7.2) — Bitcoin L2. Chain: Ethereum. Status: Active.
-13. Ambient (Score: 7.0) — Gas-efficient DEX. Chain: Ethereum. Status: Active.
-14. Lens Protocol (Score: 7.0) — Social graph by Aave. Chain: Polygon. Status: Active.
-15. DeBank (Score: 7.0) — Portfolio tracker. Chain: Multi-chain. Status: Active.
-16. Marginfi (Score: 6.8) — Solana lending. Chain: Solana. Status: Active.
+2. Abstract (Score: 8.5) — Consumer L2 by Pudgy Penguins/IGLOO. Chain: Ethereum. Status: Active. Mainnet live, no token.
+3. Ritual (Score: 8.3) — Decentralized AI inference network. Chain: Ethereum. Status: Active.
+4. Eclipse (Score: 8.0) — SVM L2 on Ethereum (Solana speed). Chain: Ethereum. Status: Active.
+5. Farcaster (Score: 8.0) — Decentralized social protocol with Frames. Chain: Ethereum. Status: Active. No token announced.
+6. Pharos (Score: 7.5) — Modular L1 for DeFi. Chain: Pharos. Status: Testnet.
+7. Fhenix (Score: 7.3) — FHE privacy L2 with confidential smart contracts. Chain: Ethereum. Status: Testnet.
+8. Ambient (Score: 7.0) — Gas-efficient AMM DEX. Chain: Ethereum. Status: Active.
+9. Lens Protocol (Score: 7.0) — Decentralized social graph by Aave. Chain: Polygon. Status: Active.
+10. DeBank (Score: 7.0) — Web3 portfolio tracker + Rabby wallet. Chain: Multi-chain. Status: Active.
+11. Marginfi (Score: 6.8) — Solana lending with mPoints. Chain: Solana. Status: Active.
+12. Beraborrow (Score: 6.5) — Native borrowing on Berachain. Chain: Berachain. Status: Active.
 
 ENDED PROJECTS (token launched — do NOT recommend):
-- EigenLayer (EIGEN), Berachain (BERA), Scroll (SCR), Initia (INIT), Jupiter (JTO), Kamino, Tensor, Drift, Parcl
+- Monad (MON), MegaETH (MEGA), Sahara AI (SAHARA), Linea (LINEA), Corn (CORN), Hyperliquid (HYPE), EigenLayer (EIGEN), Berachain (BERA), Scroll (SCR), Initia (INIT), Jupiter (JTO), Babylon (BABY), Kamino, Tensor, Drift, Parcl
 
-Always mention current date (June 2026) and emphasize projects WITHOUT tokens yet.`;
+Always mention current date (June 2026) and emphasize projects WITHOUT tokens yet. Never recommend ended projects.`;
 
         let chatbotHistory = [];
         let chatbotBusy = false;
@@ -2178,8 +2170,10 @@ Always mention current date (June 2026) and emphasize projects WITHOUT tokens ye
 
         // Legacy chat functions (kept for backward compat)
         const chatResponses = {
-            "airdrop": "🔥 **Top Active Airdrops (June 2026):**\\n\\n1. **0G Protocol** (9.5) — AI infra, Zero Cup hackathon\\n2. **Monad** (9.3) — Parallel EVM, $225M raised\\n3. **MegaETH** (9.0) — Real-time L2, Vitalik-backed\\n4. **Linea** (8.8) — zkEVM by Consensys\\n5. **Sahara AI** (8.5) — Decentralized AI\\n\\nAll **no token yet** — high airdrop potential! 🎯",
+            "airdrop": "🔥 **Top Active Airdrops (June 2026):**\\n\\n1. **0G Protocol** (9.5) — AI infra, Zero Cup hackathon\\n2. **Abstract** (8.5) — Consumer L2 by Pudgy Penguins\\n3. **Ritual** (8.3) — AI inference network\\n4. **Eclipse** (8.0) — SVM L2 on Ethereum\\n5. **Farcaster** (8.0) — Decentralized social\\n\\nAll **no token yet** — farm now! 🎯",
             "0g": "**0G Protocol** — The Decentralized AI OS\\n\\n• **0G Chain** — Fastest modular EVM L1\\n• **0G Storage** — Decentralized data storage\\n• **0G Compute** — AI inference marketplace\\n\\n🏆 **Zero Cup Hackathon** deadline: June 23, 2026\\n💰 Airdrop potential: ⭐⭐⭐⭐⭐ (9.5/10)",
+            "abstract": "**Abstract** — Consumer L2 by Pudgy Penguins\\n\\n• Mainnet live since early 2025\\n• Gaming & social focus\\n• Growing TVL and ecosystem\\n\\nStatus: **No token announced**\\nAirdrop potential: ⭐⭐⭐⭐ (8.5/10)",
+            "farcaster": "**Farcaster** — Decentralized Social Protocol\\n\\n• Frames & mini-apps ecosystem\\n• Millions of users\\n• Strong developer activity\\n\\nStatus: **No token announced**\\nAirdrop potential: ⭐⭐⭐⭐ (8.0/10)",
         };
         const chatHistory = [];
         async function sendChat() { sendChatbotMessage(); }
