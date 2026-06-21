@@ -1,5 +1,5 @@
 // ===== CONFIG =====
-        const PROXY_URL = 'https://applicants-tba-styles-detail.trycloudflare.com';
+        const PROXY_URL = 'https://commonly-clarke-oils-thread.trycloudflare.com';
 
         // ===== PARTICLES =====
         const canvas = document.getElementById('particles');
